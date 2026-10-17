@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>TopRankSM — Pay-to-Rank Boards</title>
+<meta name="description" content="TopRankSM — pay-to-rank social media leaderboard. Bid to claim the #1 spot on TikTok, Facebook, Instagram, YouTube, X, Snapchat, LinkedIn & Threads.">
+<meta name="keywords" content="TopRankSM, social media ranking, bid for number one, TikTok leaderboard, Instagram ranking, pay to rank">
+<meta property="og:title" content="TopRankSM — Pay-to-Rank Boards">
+<meta property="og:description" content="Bid to claim the #1 spot on your favorite platform!">
+<meta property="og:type" content="website">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   :root {
@@ -31,6 +36,14 @@
   .hbtn { background:var(--card2); border:1px solid var(--line); color:var(--txt); border-radius:20px; padding:10px 14px; font-size:15px; font-weight:700; cursor:pointer; min-width:44px; min-height:44px; }
   .season { font-size:11px; color:var(--mut); text-align:right; line-height:1.5; }
   .season b { color:var(--gold); }
+  @media (max-width:560px) {
+    header { padding:10px 10px; }
+    .sitelogo { width:34px; height:34px; border-radius:9px; }
+    .logo { position:static; transform:none; font-size:16px; }
+    .hbtn { min-width:38px; min-height:38px; padding:7px 10px; font-size:13px; border-radius:16px; }
+    .hbtns { gap:6px; }
+    .season { display:none; }
+  }
   nav { display:flex; gap:8px; padding:10px 12px; overflow-x:auto; background:var(--bg); position:sticky; top:62px; z-index:49; border-bottom:1px solid var(--line); scrollbar-width:none; -webkit-overflow-scrolling:touch; }
   nav::-webkit-scrollbar { display:none; }
   nav button { flex:0 0 auto; background:var(--card2); color:var(--mut); border:1px solid var(--line); padding:10px 16px; border-radius:20px; font-size:13.5px; font-weight:700; cursor:pointer; white-space:nowrap; }
