@@ -247,12 +247,21 @@
 <!-- COUNTRIES -->
 <div class="page" id="pg-countries">
   <div class="card">
-    <h3 data-i18n="ctTopT">🏆 Top 3 Bidders — Duniya Bhar Se</h3>
+    <h3 data-i18n="ctChampT">🏆 Country Champions</h3>
+    <div id="ctChamps"></div>
+  </div>
+  <div class="card">
+    <h3 data-i18n="ctTopT">🥇 Top 3 Bidders — Worldwide</h3>
     <div id="ctTop3"></div>
   </div>
   <div class="card">
-    <h3 data-i18n="ctAllT">🌍 Country-wise Bidders</h3>
+    <h3 data-i18n="ctAllT">🌍 All Countries</h3>
     <div id="ctAll"></div>
+  </div>
+  <div class="card">
+    <h3 data-i18n="ctCityT">🏙️ City-wise Bidders</h3>
+    <p class="note" data-i18n="ctCityD" style="margin-top:0">Har country ke cities apas me muqabla karti hain!</p>
+    <div id="ctCities"></div>
   </div>
 </div>
 
@@ -275,6 +284,7 @@
     <select id="bidCountry" onchange="onBidCountryChange()"></select>
     <label data-i18n="fCity">Apna city</label>
     <select id="bidCity"></select>
+    <input id="bidCityTxt" placeholder="Your city" style="display:none">
     <label data-i18n="fPic">Profile photo (optional)</label>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span id="picPrev"></span><input type="file" id="bidPic" accept="image/*" onchange="onPicPick(event)"></div>
     <label data-i18n="fDesc">Short description (optional)</label>
@@ -402,7 +412,7 @@
 // ==================== I18N ====================
 const LANG = {
 en: {
-  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 All Bidders', navCountries:'🌍 Countries', ctTopT:'🏆 Top 3 Bidders — Worldwide', ctAllT:'🌍 Country-wise Bidders', ctCityChamp:'City Champions', ctCityTop3:'Top 3 City Bidders', ctCityAll:'All Cities', hmCityT:'🏙️ Top 3 Cities', hmCtT:'🌍 Top 3 Countries', navBid:'➕ Place Bid', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
+  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 All Bidders', navCountries:'🌍 Countries', ctChampT:'🏆 Country Champions', ctChampLbl:'Country Champion', ctTopT:'🥇 Top 3 Bidders — Worldwide', ctCityT:'🏙️ City-wise Bidders', ctCityD:'Har country ke cities apas me muqabla karti hain!', ctCityBattle:'City Battle', ctAllT:'🌍 Country-wise Bidders', ctCityChamp:'City Champions', ctCityTop3:'Top 3 City Bidders', ctCityAll:'All Cities', hmCityT:'🏙️ Top 3 Cities', hmCtT:'🌍 Top 3 Countries', navBid:'➕ Place Bid', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
   season:'Season 1',
   allT:'👥 All Bidders — Season 1',
   allD:'Every bidder on every board, grouped by platform.',
@@ -484,7 +494,7 @@ en: {
   beFirst:()=>`No bids on this board yet — become <b>#1</b> for ${fmtMoney(currency==='USD'?usd2pkr(MIN_BID_USD):MIN_BID)}! 👑`,
 },
 ru: {
-  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 Sab Bidders', navCountries:'🌍 Countries', ctTopT:'🏆 Top 3 Bidders — Duniya Bhar Se', ctAllT:'🌍 Country-wise Bidders', ctCityChamp:'City Champions', ctCityTop3:'Top 3 City Bidders', ctCityAll:'Tamam Cities', hmCityT:'🏙️ Top 3 Cities', hmCtT:'🌍 Top 3 Countries', navBid:'➕ Bid Lagao', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
+  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 Sab Bidders', navCountries:'🌍 Countries', ctChampT:'🏆 Country Champions', ctChampLbl:'Country Champion', ctTopT:'🥇 Top 3 Bidders — Duniya Bhar Se', ctCityT:'🏙️ City-wise Bidders', ctCityD:'Har country ke cities apas me muqabla karti hain!', ctCityBattle:'City Battle', ctAllT:'🌍 Country-wise Bidders', ctCityChamp:'City Champions', ctCityTop3:'Top 3 City Bidders', ctCityAll:'Tamam Cities', hmCityT:'🏙️ Top 3 Cities', hmCtT:'🌍 Top 3 Countries', navBid:'➕ Bid Lagao', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
   season:'Season 1',
   allT:'👥 Sab Bidders — Season 1',
   allD:'Har board ka har bidder — har social media alag alag.',
@@ -1025,7 +1035,26 @@ function renderAll() {
 }
 function renderCountries() {
   const live = bids.filter(b => b.status === 'live').sort((a, b) => b.amount - a.amount || a.t - b.t);
-  // Top 3 box
+  const crowS = (b, i) => `
+    <div class="rank-row" onclick="rowClick('${b.id}', event)">
+      <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div><div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
+      <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
+    </div>`;
+  const byCountry = {};
+  live.forEach(b => { const cc = b.country || 'PK'; (byCountry[cc] = byCountry[cc] || []).push(b); });
+  const sortedCt = Object.keys(byCountry).sort((a, b) => byCountry[b].length - byCountry[a].length);
+  // Box 1: Country Champions (#1 per country)
+  const ctChamps = sortedCt.map(cc => byCountry[cc].sort((a, b) => b.amount - a.amount)[0]);
+  document.getElementById('ctChamps').innerHTML = ctChamps.length ? ctChamps.map((b, i) => `
+    <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
+      <div class="rnum">👑</div>
+      ${avatar(b)}<div class="rinfo"><div class="h"><span class="cflag">${countryFlag(b.country)}</span>${countryName(b.country)}</div>
+      <div class="m" style="font-weight:700;color:var(--gold)">${t('ctChampLbl')}</div>
+      <div class="m">${b.handle} • by ${b.bidder} • ${boardName(b.board)}</div></div>
+      <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
+    </div>`).join('') : `<div class="empty">${t('empty')()}</div>`;
+  // Box 2: Top 3 worldwide
   const top3 = live.slice(0, 3);
   document.getElementById('ctTop3').innerHTML = top3.length ? top3.map((b, i) => `
     <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
@@ -1035,41 +1064,32 @@ function renderCountries() {
       <div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
       <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
     </div>`).join('') : `<div class="empty">${t('empty')()}</div>`;
-  // All bidders grouped by country, then by city (3 boxes for PK cities)
-  const byCountry = {};
-  live.forEach(b => { const c = b.country || 'PK'; (byCountry[c] = byCountry[c] || []).push(b); });
-  const sorted = Object.keys(byCountry).sort((a, b) => byCountry[b].length - byCountry[a].length);
-  const crowS = (b, i) => `
-    <div class="rank-row" onclick="rowClick('${b.id}', event)">
-      <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div><div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
-      <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
-    </div>`;
-  document.getElementById('ctAll').innerHTML = sorted.length ? sorted.map(c => {
-    if (c !== 'PK') {
-      return `<div class="bsec"><div class="bsec-t">${countryFlag(c)} ${countryName(c)} <span style="color:var(--mut);font-weight:400;font-size:12px">(${byCountry[c].length})</span></div>` +
-        byCountry[c].sort((a, b) => b.amount - a.amount).map(crowS).join('') + `</div>`;
-    }
-    // PK: 3 boxes for cities
+  // Box 3: All countries grouped
+  document.getElementById('ctAll').innerHTML = sortedCt.length ? sortedCt.map(cc => `
+    <div class="bsec"><div class="bsec-t">${countryFlag(cc)} ${countryName(cc)} <span style="color:var(--mut);font-weight:400;font-size:12px">(${byCountry[cc].length})</span></div>` +
+    byCountry[cc].sort((a, b) => b.amount - a.amount).map(crowS).join('') + `</div>`).join('') : `<div class="empty">${t('empty')()}</div>`;
+  // Box 4: City-wise Bidders (cities compete WITHIN each country)
+  document.getElementById('ctCities').innerHTML = sortedCt.length ? sortedCt.map(cc => {
+    const withCity = byCountry[cc].filter(b => b.city);
+    if (!withCity.length) return '';
     const byCity = {};
-    byCountry[c].forEach(b => { const ct = b.city || 'Other'; (byCity[ct] = byCity[ct] || []).push(b); });
+    withCity.forEach(b => { (byCity[b.city] = byCity[b.city] || []).push(b); });
     const cityNames = Object.keys(byCity).sort((a, b) => Math.max(...byCity[b].map(x => x.amount)) - Math.max(...byCity[a].map(x => x.amount)));
-    // Box 1: City Champions (#1 per city)
-    const champs = cityNames.map(ct => byCity[ct].sort((a, b) => b.amount - a.amount)[0]);
-    // Box 2: Top 3 city bidders overall
-    const top3c = [...byCountry[c]].sort((a, b) => b.amount - a.amount).slice(0, 3);
-    return `<div class="bsec"><div class="bsec-t">🏆 ${t('ctCityChamp')}</div>` +
-      champs.map((b, i) => `
+    const cityChamps = cityNames.map(ct => byCity[ct].sort((a, b) => b.amount - a.amount)[0]);
+    const cityTop3 = [...withCity].sort((a, b) => b.amount - a.amount).slice(0, 3);
+    return `<div class="bsec"><div class="bsec-t">${countryFlag(cc)} ${countryName(cc)} — ${t('ctCityBattle')}</div>` +
+      `<div style="margin:8px 0 4px;font-weight:700">🏆 ${t('ctCityChamp')}</div>` +
+      cityChamps.map((b, i) => `
       <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
         <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-        ${avatar(b)}<div class="rinfo"><div class="h">📍 ${b.city || 'Other'}</div>
+        ${avatar(b)}<div class="rinfo"><div class="h">📍 ${b.city}</div>
         <div class="m">${b.handle} • by ${b.bidder} • ${boardName(b.board)}</div></div>
         <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
-      </div>`).join('') + `</div>` +
-      `<div class="bsec"><div class="bsec-t">🥇 ${t('ctCityTop3')}</div>${top3c.map(crowS).join('')}</div>` +
-      `<div class="bsec"><div class="bsec-t">👥 ${t('ctCityAll')}</div>` +
+      </div>`).join('') +
+      `<div style="margin:8px 0 4px;font-weight:700">🥇 ${t('ctCityTop3')}</div>${cityTop3.map(crowS).join('')}` +
+      `<div style="margin:8px 0 4px;font-weight:700">👥 ${t('ctCityAll')}</div>` +
       cityNames.map(ct =>
-        `<div style="margin:8px 0 4px;font-weight:700">📍 ${ct} <span style="color:var(--mut);font-weight:400;font-size:12px">(${byCity[ct].length})</span></div>` +
+        `<div style="margin:6px 0 2px;font-weight:600">📍 ${ct} <span style="color:var(--mut);font-weight:400;font-size:12px">(${byCity[ct].length})</span></div>` +
         byCity[ct].sort((a, b) => b.amount - a.amount).map(crowS).join('')
       ).join('') + `</div>`;
   }).join('') : `<div class="empty">${t('empty')()}</div>`;
@@ -1099,12 +1119,12 @@ function renderBidBoards() {
 function renderCityOptions() {
   const cc = document.getElementById('bidCountry').value;
   const cs = document.getElementById('bidCity');
+  const ct = document.getElementById('bidCityTxt');
   if (cc === 'PK') {
     cs.innerHTML = PK_CITIES.map(c => `<option value="${c}">${c}</option>`).join('');
-    cs.style.display = '';
+    cs.style.display = ''; ct.style.display = 'none';
   } else {
-    cs.innerHTML = `<option value="">—</option>`;
-    cs.style.display = 'none';
+    cs.style.display = 'none'; ct.style.display = '';
   }
 }
 function renderPayments() {
@@ -1161,7 +1181,7 @@ function placeBid() {
   const tid = document.getElementById('bidTid').value.trim();
   const desc = document.getElementById('bidDesc').value.trim();
   const country = document.getElementById('bidCountry').value || 'PK';
-  const city = document.getElementById('bidCity').value || '';
+  const city = country === 'PK' ? (document.getElementById('bidCity').value || '') : (document.getElementById('bidCityTxt').value.trim() || '');
   if (!handle) return toast(t('needHandle'));
   if (!link.startsWith('http')) return toast(t('needLink'));
   if (!bidPic) return toast(t('needPic'));
