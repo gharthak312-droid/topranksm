@@ -362,6 +362,7 @@ en: {
   allD:'Every bidder on every board, grouped by platform.',
   shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} is #${r} on the ${b} board on TopRankSM!\n💰 Bid: Rs ${a} (by ${bidder})${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Join the race: https://gharthak312-droid.github.io/topranksm/\n#TopRankSM`,
   shareCopied:'📣 Share text copied — spread the word!',
+  clicks:'clicks',
   heroT:'Claim for <span>#1</span>!',
   heroS:'A separate leaderboard for every social media platform. Highest bidder takes #1. Money = Rank. Simple.',
   heroBtn:'Place a Bid ➜',
@@ -440,6 +441,7 @@ ru: {
   allD:'Har board ka har bidder — har social media alag alag.',
   shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} TopRankSM ke ${b} board par #${r} par hai!\n💰 Bid: Rs ${a} (${bidder} ne lagai)${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Tum bhi hissa lo: https://gharthak312-droid.github.io/topranksm/\n#TopRankSM`,
   shareCopied:'📣 Share text copy ho gaya — doston ko bhejo!',
+  clicks:'clicks',
   heroT:'Claim for <span>#1</span>!',
   heroS:'Har social media platform ka alag leaderboard. Jo zyada bid kare, wo #1. Paisa = Rank. Simple.',
   heroBtn:'Bid Lagao ➜',
@@ -755,7 +757,7 @@ function rankRows(list, boardId, share) {
     return `
     <div class="rank-row ${i === 0 ? 'top1' : ''}">
       <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">by ${b.bidder} • <a href="${b.link}" target="_blank">profile ↗</a></div></div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span id="clk_${b.id}">${b.clicks||0}</span> ${t('clicks')}</div></div>
       <div class="rbid"><b>Rs ${b.amount.toLocaleString()}</b>
       ${btns.length ? `<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px">${btns.join('')}</div>` : ''}</div>
     </div>`;
@@ -781,6 +783,15 @@ function shareBid(id) {
   const rank = l.findIndex(x => x.id === id) + 1;
   copyTxt(t('shareTxtRank')(b.handle, rank, boardName(b.board), b.amount.toLocaleString(), b.bidder, b.desc||'', b.link));
   toast(t('shareCopied'));
+}
+function countClick(id) {
+  const b = bids.find(x => x.id === id);
+  if (!b) return;
+  b.clicks = (b.clicks||0) + 1;
+  try { store.set('trs_bids', JSON.stringify(bids)); } catch (e) {}
+  const el = document.getElementById('clk_' + id);
+  if (el) el.textContent = b.clicks;
+  cloudSync();
 }
 function renderAll() {
   let html = '';
