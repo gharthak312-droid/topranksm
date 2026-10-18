@@ -412,7 +412,7 @@
 // ==================== I18N ====================
 const LANG = {
 en: {
-  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 All Bidders', navCountries:'🌍 Countries', ctChampT:'🏆 Country Champions', ctChampLbl:'Country Champion', ctTopT:'🥇 Top 3 Bidders — Worldwide', ctCityT:'🏙️ City-wise Bidders', ctCityD:'Har country ke cities apas me muqabla karti hain!', ctCityBattle:'City Battle', ctAllT:'🌍 Country-wise Bidders', ctCityChamp:'City Champions', ctCityTop3:'Top 3 City Bidders', ctCityAll:'All Cities', hmCityT:'🏙️ Top 3 Cities', hmCtT:'🌍 Top 3 Countries', navBid:'➕ Place Bid', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
+  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 All Bidders', navCountries:'🌍 Countries', ctChampT:'🏆 Country Champions', ctChampLbl:'Country Champion', ctTopT:'🥇 Top 3 Bidders — Worldwide', ctCityT:'🏙️ City-wise Bidders', ctCityD:'Cities within each country compete against each other!', ctCityBattle:'City Battle', ctAllT:'🌍 Country-wise Bidders', ctCityChamp:'City Champions', ctCityTop3:'Top 3 City Bidders', ctCityAll:'All Cities', hmCityT:'🏙️ Top 3 Cities', hmCtT:'🌍 Top 3 Countries', navBid:'➕ Place Bid', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
   season:'Season 1',
   allT:'👥 All Bidders — Season 1',
   allD:'Every bidder on every board, grouped by platform.',
@@ -439,7 +439,7 @@ en: {
   howT:'How does it work? ❓',
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start bidding from <b>Rs 100</b> (Pakistan) / <b>$3</b> (International)<br>4️⃣ Highest bidder takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
   bidT:'➕ Place a Bid', fBoard:'Choose board', fHandle:'ID / Handle (e.g. @username)', fLink:'Profile link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Bid ✅',
   fShot:'Payment screenshot (optional — faster verification)',
@@ -521,7 +521,7 @@ ru: {
   howT:'Kaise kaam karta hai? ❓',
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ <b>Rs 100</b> (Pakistan) / <b>$3</b> (International) se bid shuru karo<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
   bidT:'➕ Bid Lagao', fBoard:'Board chunein', fHandle:'ID / Handle (jese @username)', fLink:'Profile ka link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Bid Confirm Karo ✅',
   fShot:'Payment ka screenshot (optional — verification tez hogi)',
@@ -1132,7 +1132,7 @@ function renderCityOptions() {
 function renderPayments() {
   if (currency === 'USD') {
     document.getElementById('payMethods').innerHTML =
-      `<div class="pay-row"><div><div class="pn">💰 USDT (TRC20)</div><div class="pname">Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.</div></div><div class="pv" style="font-size:11px;word-break:break-all">${USDT_ADDRESS}</div></div>` +
+      `<div class="pay-row"><div><div class="pn">💰 USDT (TRC20)</div><div class="pname">${t('usdtFrom')}</div></div><div class="pv" style="font-size:11px;word-break:break-all">${USDT_ADDRESS}</div></div>` +
       `<p class="note">⚠️ ${t('usdtWarn')}</p>`;
     return;
   }
