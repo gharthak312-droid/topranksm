@@ -538,7 +538,7 @@ ru: {
   cur1:(t,r)=>`Current #1: <b>Rs ${t}</b> — outbid karne ke liye kam az kam <b>Rs ${r}</b>`,
   beFirst:'Is board par abhi koi bid nahi — <b>Rs 100</b> me #1 ban jao! 👑',
 }};
-let lang = 'ru';
+let lang = 'en';
 function t(k) { return LANG[lang][k]; }
 function applyLang() {
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -548,7 +548,7 @@ function applyLang() {
   document.getElementById('langBtn').textContent = lang === 'ru' ? 'EN' : 'UR';
   renderRules(); renderFaq(); renderDocs(); renderHome(); renderBoard(cur); renderFans(); renderAll();
 }
-function toggleLang() { lang = lang === 'ru' ? 'en' : 'ru'; store.set('trs_lang', lang); applyLang(); }
+function toggleLang() { lang = lang === 'ru' ? 'en' : 'ru'; store.set('trs_lang2', lang); applyLang(); }
 
 // ==================== THEME ====================
 function setTheme(th) {
@@ -1025,7 +1025,7 @@ setInterval(() => {
 }, 20000);
 
 // ==================== INIT ====================
-lang = store.get('trs_lang', 'ru');
+lang = store.get('trs_lang2', 'en');
 setTheme(store.get('trs_theme', 'light'));
 renderPills(); document.getElementById('stBoards').textContent = BOARDS.length; renderCrossBox(); renderBidBoards(); renderPayments(); updBidInfo(); renderBoard(cur);
 applyLang(); tick();
