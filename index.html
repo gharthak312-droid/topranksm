@@ -829,7 +829,29 @@ async function trackVisit() {
 }
 trackVisit();
 
-let onlineN = 14 + Math.floor(Math.random() * 18);
+let onlineN = 0;
+const SESSION_ID = 'S' + Date.now().toString(36) + Math.floor(Math.random()*99999);
+async function presenceHeartbeat() {
+  try {
+    const now = new Date().toISOString();
+    // Upsert my session
+    await supa.from('presence').upsert([{ session_id: SESSION_ID, last_seen: now }], { onConflict: 'session_id' });
+    // Count active in last 2 minutes
+    const twoMinAgo = new Date(Date.now() - 120000).toISOString();
+    const { count } = await supa.from('presence').select('session_id', { count: 'exact', head: true }).gte('last_seen', twoMinAgo);
+    onlineN = count || 0;
+    document.getElementById('onlineN').textContent = onlineN;
+    // Cleanup old sessions (older than 5 min)
+    const fiveMinAgo = new Date(Date.now() - 300000).toISOString();
+    await supa.from('presence').delete().lt('last_seen', fiveMinAgo);
+  } catch(e) {}
+}
+presenceHeartbeat();
+setInterval(presenceHeartbeat, 30000);
+// Remove my session on leave
+window.addEventListener('beforeunload', () => {
+  try { navigator.sendBeacon && supa.from('presence').delete().eq('session_id', SESSION_ID); } catch(e) {}
+});
 
 // ==================== HELPERS ====================
 function toast(m) { const tt = document.getElementById('toast'); tt.textContent = m; tt.style.display = 'block'; setTimeout(() => tt.style.display = 'none', 2500); }
@@ -1319,11 +1341,6 @@ function tick() {
   document.getElementById('cd').textContent = days + ' ' + LANG[lang].days;
 }
 setInterval(tick, 60000);
-setInterval(() => {
-  onlineN = Math.max(6, onlineN + Math.floor(Math.random() * 7) - 3);
-  const el = document.getElementById('onlineN');
-  if (el) el.textContent = onlineN;
-}, 20000);
 
 // ==================== INIT ====================
 lang = store.get('trs_lang2', 'en');
