@@ -1325,14 +1325,16 @@ function approveBid(id) {
   b.status = 'live'; save(); renderAdmin(); renderHome(); renderBoard(cur); renderAll(); renderFans(); renderCrossBox();
   toast('✅ Bid live ho gayi!');
 }
-function rejectBid(id) {
+async function rejectBid(id) {
   bids = bids.filter(x => x.id !== id);
+  try { if (supa) await supa.from('bids').delete().eq('id', id); } catch (e) {}
   save(); renderAdmin(); toast('🗑️ Bid reject kar di');
 }
-function removeBid(id) {
+async function removeBid(id) {
   if (!confirm('Ye live bid delete karni hai?')) return;
   bids = bids.filter(x => x.id !== id);
-  save(); renderAdmin(); renderHome(); renderBoard(cur); renderAll(); renderFans(); renderCrossBox();
+  try { if (supa) await supa.from('bids').delete().eq('id', id); } catch (e) {}
+  save(); renderAdmin(); renderHome(); renderBoard(cur); renderAll(); renderFans(); renderCrossBox(); cloudLoad(true);
 }
 function changePin() {
   const v = document.getElementById('newPin').value.trim();
