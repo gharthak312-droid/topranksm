@@ -870,6 +870,8 @@ async function trackVisit() {
     const todayStart = new Date(); todayStart.setHours(0,0,0,0);
     const { count: today } = await supa.from('visits').select('id', { count: 'exact', head: true }).gte('created_at', todayStart.toISOString());
     visits.total = total || 0; visits.today = today || 0;
+    const va = document.getElementById('visAll'); if (va) va.textContent = visits.total;
+    const vt = document.getElementById('visToday'); if (vt) vt.textContent = visits.today;
   } catch(e) {}
 }
 trackVisit();
