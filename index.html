@@ -154,6 +154,7 @@
   <div class="hbtns">
     <button class="hbtn" id="themeBtn" onclick="toggleTheme()">🌙</button>
     <button class="hbtn" id="langBtn" onclick="toggleLang()">EN</button>
+    <button class="hbtn" id="curBtn" onclick="setCurrency(currency==='PKR'?'USD':'PKR')">💵 USD</button>
     <div class="season"><span data-i18n="season">Season 1</span><br><b id="seasonEnd">—</b></div>
   </div>
 </header>
@@ -244,7 +245,7 @@
     <input id="bidHandle" placeholder="@yourhandle">
     <label data-i18n="fLink">Profile ka link</label>
     <input id="bidLink" placeholder="https://tiktok.com/@yourhandle">
-    <label data-i18n="fAmt">Bid amount (Rs) — min Rs 100</label>
+    <label id="amtLabel">Bid amount (Rs) — min Rs 100</label>
     <input id="bidAmt" type="number" min="100" value="100">
     <div class="note" id="bidInfo"></div>
     <label data-i18n="fName">Apna naam / nickname (leaderboard par dikhega)</label>
@@ -382,7 +383,7 @@ en: {
   season:'Season 1',
   allT:'👥 All Bidders — Season 1',
   allD:'Every bidder on every board, grouped by platform.',
-  shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} is #${r} on the ${b} board on TopRankSM!\n💰 Bid: Rs ${a} (by ${bidder})${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Join the race: https://topranksm.com/\n#TopRankSM`,
+  shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} is #${r} on the ${b} board on TopRankSM!\n💰 Bid: ${fmtMoney(a)} (by ${bidder})${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Join the race: https://topranksm.com/\n#TopRankSM`,
   shareCopied:'📣 Share text copied — spread the word!',
   clicks:'clicks',
   seeDetails:'see details',
@@ -392,12 +393,12 @@ en: {
   heroS:'A separate leaderboard for every social media platform. Highest bidder takes #1. Money = Rank. Simple.',
   heroBtn:'Place a Bid ➜',
   heroEmpty:(n)=>`🔥 ${n} boards still at only Rs 100 — first come, first served!`,
-  heroCheap:(b,a)=>`🔥 Cheapest #1 right now: Rs ${a} on ${b}!`,
+  heroCheap:(b,a)=>`🔥 Cheapest #1 right now: ${fmtMoney(a)} on ${b}!`,
   seasonEnds:'Season 1 ends in:', days:'days',
   liveT:'Live Stats', lsOnline:'Online now', lsBig:'Biggest bid', lsTodayV:'Today visitors', lsAllV:'All-time visitors',
   actT:'⚡ Live Activity',
-  actWin:(w,h,b,a,link,id)=>`<b>${w}</b> made <b><a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a></b> #1 on the ${b} board — Rs ${a}!`,
-  actBid:(w,b,a,h,link,id)=>`<b>${w}</b> bid Rs ${a} on the ${b} board (<a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a>)`,
+  actWin:(w,h,b,a,link,id)=>`<b>${w}</b> made <b><a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a></b> #1 on the ${b} board — ${fmtMoney(a)}!`,
+  actBid:(w,b,a,h,link,id)=>`<b>${w}</b> bid ${fmtMoney(a)} on the ${b} board (<a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a>)`,
   actEmpty:'No activity yet — place the first bid! 🚀',
   stBoards:'Boards', stPool:'Total Bids', stBidders:'Total Bidders',
   timeAll:'🕰️ All Time', timeToday:'📅 Today',
@@ -405,7 +406,7 @@ en: {
   howT:'How does it work? ❓',
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start bidding from <b>Rs 100</b><br>4️⃣ Highest bidder takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
   bidT:'➕ Place a Bid', fBoard:'Choose board', fHandle:'ID / Handle (e.g. @username)', fLink:'Profile link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', allCountries:'All Countries',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Send USDT via TRC20 network only. Put the transaction hash as TID.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Bid ✅',
   fShot:'Payment screenshot (optional — faster verification)',
@@ -447,16 +448,16 @@ en: {
   todayRank:'📅 Today Ranking — Top 5', allRank:'🏆 All Time Ranking — Champions',
   sendNums:'Send us your real numbers for Nayapay / Sadapay / Upaisa / Bank — we will update them here.',
   challenge:'⚔️ Challenge!',
-  needMin:(n)=>`⚠️ Minimum bid on this board is Rs ${n}!`,
+  needMin:(n)=>`⚠️ Minimum bid on this board is ${n}!`,
   needLink:'⚠️ Enter a valid profile link!',
   needHandle:'⚠️ Enter the ID / Handle!',
   needTid:'⚠️ Enter a valid Transaction ID!',
   needPic:'⚠️ Profile photo lagana lazmi hai! 📷',
   bidPending:'⏳ Bid pending me chali gayi! Payment verify hone ke baad leaderboard par live hogi.',
   bidLive:'✅ Bid is live! Share text copied — send it to friends! 📣',
-  challengeToast:(n)=>`⚔️ To beat #1, bid at least Rs ${n}!`,
-  shareTxt:(h,a,b)=>`🏆 I just bid Rs ${a} on ${h} for the ${b} board on TopRankSM! #TopRankSM`,
-  cur1:(t,r)=>`Current #1: <b>Rs ${t}</b> — bid at least <b>Rs ${r}</b> to outbid`,
+  challengeToast:(n)=>`⚔️ To beat #1, bid at least ${n}!`,
+  shareTxt:(h,a,b)=>`🏆 I just bid ${fmtMoney(a)} on ${h} for the ${b} board on TopRankSM! #TopRankSM`,
+  cur1:(t,r)=>`Current #1: <b>${t}</b> — bid at least <b>${r}</b> to outbid`,
   beFirst:'No bids on this board yet — become <b>#1</b> for Rs 100! 👑',
 },
 ru: {
@@ -464,7 +465,7 @@ ru: {
   season:'Season 1',
   allT:'👥 Sab Bidders — Season 1',
   allD:'Har board ka har bidder — har social media alag alag.',
-  shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} TopRankSM ke ${b} board par #${r} par hai!\n💰 Bid: Rs ${a} (${bidder} ne lagai)${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Tum bhi hissa lo: https://topranksm.com/\n#TopRankSM`,
+  shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} TopRankSM ke ${b} board par #${r} par hai!\n💰 Bid: ${fmtMoney(a)} (${bidder} ne lagai)${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Tum bhi hissa lo: https://topranksm.com/\n#TopRankSM`,
   shareCopied:'📣 Share text copy ho gaya — doston ko bhejo!',
   clicks:'clicks',
   seeDetails:'details dekho',
@@ -474,12 +475,12 @@ ru: {
   heroS:'Har social media platform ka alag leaderboard. Jo zyada bid kare, wo #1. Paisa = Rank. Simple.',
   heroBtn:'Bid Lagao ➜',
   heroEmpty:(n)=>`🔥 ${n} boards abhi bhi sirf Rs 100 par — pehle aao, pehle pao!`,
-  heroCheap:(b,a)=>`🔥 Sab se sasta #1 abhi: Rs ${a} — ${b} par!`,
+  heroCheap:(b,a)=>`🔥 Sab se sasta #1 abhi: ${fmtMoney(a)} — ${b} par!`,
   seasonEnds:'Season 1 khatam hone me:', days:'din',
   liveT:'Live Stats', lsOnline:'Online now', lsBig:'Biggest bid', lsTodayV:'Today visitors', lsAllV:'All-time visitors',
   actT:'⚡ Live Activity',
-  actWin:(w,h,b,a,link,id)=>`<b>${w}</b> ne <b><a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a></b> ko ${b} board par #1 bana diya — Rs ${a}!`,
-  actBid:(w,b,a,h,link,id)=>`<b>${w}</b> ne ${b} board par Rs ${a} ki bid lagai (<a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a>)`,
+  actWin:(w,h,b,a,link,id)=>`<b>${w}</b> ne <b><a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a></b> ko ${b} board par #1 bana diya — ${fmtMoney(a)}!`,
+  actBid:(w,b,a,h,link,id)=>`<b>${w}</b> ne ${b} board par ${fmtMoney(a)} ki bid lagai (<a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a>)`,
   actEmpty:'Abhi koi activity nahi — pehli bid lagao! 🚀',
   stBoards:'Boards', stPool:'Total Bids', stBidders:'Total Bidders',
   timeAll:'🕰️ All Time', timeToday:'📅 Today',
@@ -487,7 +488,7 @@ ru: {
   howT:'Kaise kaam karta hai? ❓',
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ <b>Rs 100</b> se bid shuru karo<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
   bidT:'➕ Bid Lagao', fBoard:'Board chunein', fHandle:'ID / Handle (jese @username)', fLink:'Profile ka link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', allCountries:'Tamam Countries',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Sirf TRC20 network se USDT bhejo. Transaction hash ko TID me likho.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Bid Confirm Karo ✅',
   fShot:'Payment ka screenshot (optional — verification tez hogi)',
@@ -529,16 +530,16 @@ ru: {
   todayRank:'📅 Aaj ki Ranking — Top 5', allRank:'🏆 All Time Ranking — Champions',
   sendNums:'Nayapay / Sadapay / Upaisa / Bank ke asal numbers bhejo — yahan update kar dunga.',
   challenge:'⚔️ Challenge!',
-  needMin:(n)=>`⚠️ Is board par kam az kam Rs ${n} ki bid!`,
+  needMin:(n)=>`⚠️ Is board par kam az kam ${n} ki bid!`,
   needLink:'⚠️ Sahi profile link do!',
   needHandle:'⚠️ ID / Handle likho!',
   needTid:'⚠️ Sahi Transaction ID do!',
   needPic:'⚠️ Profile photo lagana lazmi hai! 📷',
   bidPending:'⏳ Bid pending me chali gayi! Payment verify hone ke baad leaderboard par live hogi.',
   bidLive:'✅ Bid live! Share text copy ho gaya — doston ko bhejo! 📣',
-  challengeToast:(n)=>`⚔️ #1 ko harane ke liye kam az kam Rs ${n} ki bid lagao!`,
-  shareTxt:(h,a,b)=>`🏆 Maine ${h} par Rs ${a} ki bid lagai TopRankSM ke ${b} board par! #TopRankSM`,
-  cur1:(t,r)=>`Current #1: <b>Rs ${t}</b> — outbid karne ke liye kam az kam <b>Rs ${r}</b>`,
+  challengeToast:(n)=>`⚔️ #1 ko harane ke liye kam az kam ${n} ki bid lagao!`,
+  shareTxt:(h,a,b)=>`🏆 Maine ${h} par ${fmtMoney(a)} ki bid lagai TopRankSM ke ${b} board par! #TopRankSM`,
+  cur1:(t,r)=>`Current #1: <b>${t}</b> — outbid karne ke liye kam az kam <b>${r}</b>`,
   beFirst:'Is board par abhi koi bid nahi — <b>Rs 100</b> me #1 ban jao! 👑',
 }};
 let lang = 'en';
@@ -566,6 +567,21 @@ function toggleTheme() { setTheme(document.documentElement.classList.contains('d
 
 // ==================== CONFIG ====================
 const MIN_BID = 100, MIN_RAISE = 50;
+const USD_RATE = 280, MIN_BID_USD = 3, MIN_RAISE_USD = 1;
+const USDT_ADDRESS = 'TGPFEzPoMdmvVf8E7nFLnU8xXpNy4cGWMa';
+let currency = localStorage.getItem('trs_cur') || 'PKR';
+const pkr2usd = p => (p / USD_RATE);
+const usd2pkr = u => Math.round(u * USD_RATE);
+const fmtMoney = pkr => currency === 'USD' ? '$' + pkr2usd(pkr).toFixed(2) : 'Rs ' + pkr.toLocaleString();
+function setCurrency(c) { currency = c; localStorage.setItem('trs_cur', c); renderCurBtn(); renderPayments(); updBidInfo(); renderBoard(cur); renderHome(); }
+function renderCurBtn() { const el = document.getElementById('curBtn'); if (el) el.textContent = currency === 'PKR' ? '💵 USD' : '💷 PKR';
+  const al = document.getElementById('amtLabel');
+  if (al) al.textContent = currency === 'USD' ? t('fAmtUsd') : t('fAmt');
+}
+// Auto-detect country via IP (PK -> PKR, else USD)
+fetch('https://ipapi.co/json/').then(r => r.json()).then(d => {
+  if (!localStorage.getItem('trs_cur')) setCurrency(d && d.country_code === 'PK' ? 'PKR' : 'USD');
+}).catch(() => {});
 const SEASON_END = new Date('2027-01-18T00:00:00+05:00').getTime();
 const BOARDS = [
   { id:'tiktok', name:'TikTok', icon:'🎵', logo:'tiktok' },
@@ -760,7 +776,7 @@ function renderHome() {
       <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
         <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
         ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
-        <div class="rbid"><b>Rs ${b.amount.toLocaleString()}</b></div>
+        <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
       </div>`).join('') + `</div>`;
   });
   document.getElementById('topThrees').innerHTML = html || `<div class="empty">${t('empty')}</div>`;
@@ -785,7 +801,7 @@ function setTimeF(f) {
 function crossBoxHTML() {
   const row = (i, b) => {
     const bd = BOARDS.find(x => x.id === b.board) || {};
-    return `<div class="xrow" onclick="rowClick('${b.id}', event)" style="cursor:pointer" title="Profile kholo"><span class="xrank">${i}</span><b>${b.handle}</b><span class="xboard">${bd.name || ''}</span><span class="xbid">Rs ${b.amount.toLocaleString()}</span></div>`;
+    return `<div class="xrow" onclick="rowClick('${b.id}', event)" style="cursor:pointer" title="Profile kholo"><span class="xrank">${i}</span><b>${b.handle}</b><span class="xboard">${bd.name || ''}</span><span class="xbid">${fmtMoney(b.amount)}</span></div>`;
   };
   if (timeF === 'all') {
     const t5 = bids.filter(b => b.status === 'live' && isToday(b.t)).sort((a, b) => b.amount - a.amount).slice(0, 5);
@@ -815,7 +831,7 @@ function rankRows(list, boardId, share) {
     <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
       <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
       ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
-      <div class="rbid"><b>Rs ${b.amount.toLocaleString()}</b>
+      <div class="rbid"><b>${fmtMoney(b.amount)}</b>
       ${btns.length ? `<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px">${btns.join('')}</div>` : ''}</div>
     </div>`;
   }).join('');
@@ -838,7 +854,7 @@ function shareBid(id) {
   if (!b) return;
   const l = liveBids(b.board, 'all');
   const rank = l.findIndex(x => x.id === id) + 1;
-  copyTxt(t('shareTxtRank')(b.handle, rank, boardName(b.board), b.amount.toLocaleString(), b.bidder, b.desc||'', b.link));
+  copyTxt(t('shareTxtRank')(b.handle, rank, boardName(b.board), b.amount, b.bidder, b.desc||'', b.link));
   toast(t('shareCopied'));
 }
 function countClick(id) {
@@ -867,7 +883,7 @@ function showDetail(id) {
       <div style="font-size:20px;font-weight:800;margin-top:10px">${b.handle}</div>
       <div style="color:var(--gold);font-weight:800;font-size:15px;margin-top:4px">#${rank} ${t('dRank')} — ${boardName(b.board)}</div>
     </div>
-    <div class="drow"><span class="k">💰 ${t('dBid')}</span><span class="v">Rs ${b.amount.toLocaleString()}</span></div>
+    <div class="drow"><span class="k">💰 ${t('dBid')}</span><span class="v">${fmtMoney(b.amount)}</span></div>
     <div class="drow"><span class="k">👤 ${t('dBy')}</span><span class="v">${countryFlag(b.country)} ${b.bidder}</span></div>
     <div class="drow"><span class="k">👆 ${t('dClicks')}</span><span class="v">${b.clicks||0}</span></div>
     ${b.desc ? `<div class="drow"><span class="k">📝 ${t('dDesc')}</span><span class="v">${b.desc}</span></div>` : ''}
@@ -912,6 +928,12 @@ function renderBidBoards() {
   document.getElementById('bidCountry').innerHTML = COUNTRIES.map(c => `<option value="${c.c}">${c.f} ${c.n}</option>`).join('');
 }
 function renderPayments() {
+  if (currency === 'USD') {
+    document.getElementById('payMethods').innerHTML =
+      `<div class="pay-row"><div><div class="pn">💰 USDT (TRC20)</div><div class="pname">Send exact USD amount as USDT</div></div><div class="pv" style="font-size:11px;word-break:break-all">${USDT_ADDRESS}</div></div>` +
+      `<p class="note">⚠️ ${t('usdtWarn')}</p>`;
+    return;
+  }
   document.getElementById('payMethods').innerHTML = PAYMENTS.map(p =>
     `<div class="pay-row"><div><div class="pn">${p.name}</div><div class="pname">${p.title}</div></div><div class="pv">${p.num}<span class="accl">Account No.</span></div></div>`).join('') +
     `<p class="note">⚠️ ${t('verifyName')}</p>`;
@@ -919,7 +941,9 @@ function renderPayments() {
 function updBidInfo() {
   const bd = document.getElementById('bidBoard').value;
   const tb = topBid(bd, 'all');
-  document.getElementById('bidInfo').innerHTML = tb === 0 ? t('beFirst') : t('cur1')(tb.toLocaleString(), (tb + MIN_RAISE).toLocaleString());
+  const raise = currency === 'USD' ? usd2pkr(MIN_RAISE_USD) : MIN_RAISE;
+  document.getElementById('bidInfo').innerHTML = tb === 0 ? t('beFirst') : t('cur1')(fmtMoney(tb), fmtMoney(tb + raise));
+  document.getElementById('bidAmt').value = tb === 0 ? (currency === 'USD' ? MIN_BID_USD : MIN_BID) : (currency === 'USD' ? pkr2usd(tb + raise).toFixed(2) : tb + raise);
 }
 document.getElementById('bidBoard').onchange = updBidInfo;
 
@@ -951,7 +975,8 @@ function placeBid() {
   const board = document.getElementById('bidBoard').value;
   const handle = document.getElementById('bidHandle').value.trim();
   const link = document.getElementById('bidLink').value.trim();
-  const amount = parseInt(document.getElementById('bidAmt').value || 0);
+  const rawAmt = parseFloat(document.getElementById('bidAmt').value || 0);
+  const amount = currency === 'USD' ? usd2pkr(rawAmt) : parseInt(rawAmt);
   const bidder = document.getElementById('bidderName').value.trim() || 'Anonymous';
   const tid = document.getElementById('bidTid').value.trim();
   const desc = document.getElementById('bidDesc').value.trim();
@@ -960,8 +985,10 @@ function placeBid() {
   if (!link.startsWith('http')) return toast(t('needLink'));
   if (!bidPic) return toast(t('needPic'));
   const tb = topBid(board, 'all');
-  const minNeed = tb === 0 ? MIN_BID : tb + MIN_RAISE;
-  if (amount < minNeed) return toast(t('needMin')(minNeed.toLocaleString()));
+  const minNeed = currency === 'USD'
+    ? (tb === 0 ? usd2pkr(MIN_BID_USD) : tb + usd2pkr(MIN_RAISE_USD))
+    : (tb === 0 ? MIN_BID : tb + MIN_RAISE);
+  if (amount < minNeed) return toast(t('needMin')(fmtMoney(minNeed)));
   if (tid.length < 5) return toast(t('needTid'));
   const b = { id: 'TR' + Date.now().toString().slice(-6), board, handle, link, amount, bidder, t: Date.now(), status: 'pending', tid, shot: pendingShot, pic: bidPic, desc, country };
   bids.unshift(b); save();
@@ -1003,7 +1030,7 @@ function renderAdmin() {
     </div>`).join('') : `<div class="empty">Koi pending bid nahi 🎉</div>`;
   const live = bids.filter(b => b.status === 'live').sort((a, b) => b.amount - a.amount);
   document.getElementById('liveList').innerHTML = live.length ? live.map(b => `
-    <div class="xrow"><b>${b.handle}</b><span class="xboard">${boardName(b.board)}</span><span class="xbid">Rs ${b.amount.toLocaleString()}</span><button onclick="removeBid('${b.id}')" style="background:none;border:none;font-size:16px;cursor:pointer">🗑️</button></div>`).join('') : `<div class="empty">—</div>`;
+    <div class="xrow"><b>${b.handle}</b><span class="xboard">${boardName(b.board)}</span><span class="xbid">${fmtMoney(b.amount)}</span><button onclick="removeBid('${b.id}')" style="background:none;border:none;font-size:16px;cursor:pointer">🗑️</button></div>`).join('') : `<div class="empty">—</div>`;
 }
 function approveBid(id) {
   const b = bids.find(x => x.id === id);
@@ -1062,7 +1089,7 @@ setInterval(() => {
 // ==================== INIT ====================
 lang = store.get('trs_lang2', 'en');
 setTheme(store.get('trs_theme', 'light'));
-renderPills(); document.getElementById('stBoards').textContent = BOARDS.length; renderCrossBox(); renderBidBoards(); renderPayments(); updBidInfo(); renderBoard(cur);
+renderPills(); document.getElementById("stBoards").textContent = BOARDS.length; renderCrossBox(); renderBidBoards(); renderCurBtn(); renderPayments(); updBidInfo(); renderBoard(cur);
 applyLang(); tick();
 cloudLoad().then(ok => { if (ok) { renderPills(); renderCrossBox(); renderBidBoards(); renderPayments(); updBidInfo(); renderBoard(cur); renderHome(); } });
 setInterval(() => { cloudLoad().then(ok => { if (ok) { renderBoard(cur); renderHome(); renderCrossBox(); } }); }, 60000);
