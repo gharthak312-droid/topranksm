@@ -360,7 +360,7 @@ en: {
   season:'Season 1',
   allT:'👥 All Bidders — Season 1',
   allD:'Every bidder on every board, grouped by platform.',
-  shareTxtRank:(h,r,b,a)=>`🏆 ${h} is #${r} on the ${b} board on TopRankSM — Rs ${a}! Think you can beat them? #TopRankSM`,
+  shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} is #${r} on the ${b} board on TopRankSM!\n💰 Bid: Rs ${a} (by ${bidder})${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Join the race: https://gharthak312-droid.github.io/topranksm/\n#TopRankSM`,
   shareCopied:'📣 Share text copied — spread the word!',
   heroT:'Claim for <span>#1</span>!',
   heroS:'A separate leaderboard for every social media platform. Highest bidder takes #1. Money = Rank. Simple.',
@@ -438,7 +438,7 @@ ru: {
   season:'Season 1',
   allT:'👥 Sab Bidders — Season 1',
   allD:'Har board ka har bidder — har social media alag alag.',
-  shareTxtRank:(h,r,b,a)=>`🏆 ${h} TopRankSM ke ${b} board par #${r} par hai — Rs ${a}! Himmat hai to hara kar dikhao! #TopRankSM`,
+  shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} TopRankSM ke ${b} board par #${r} par hai!\n💰 Bid: Rs ${a} (${bidder} ne lagai)${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Tum bhi hissa lo: https://gharthak312-droid.github.io/topranksm/\n#TopRankSM`,
   shareCopied:'📣 Share text copy ho gaya — doston ko bhejo!',
   heroT:'Claim for <span>#1</span>!',
   heroS:'Har social media platform ka alag leaderboard. Jo zyada bid kare, wo #1. Paisa = Rank. Simple.',
@@ -779,7 +779,7 @@ function shareBid(id) {
   if (!b) return;
   const l = liveBids(b.board, 'all');
   const rank = l.findIndex(x => x.id === id) + 1;
-  copyTxt(t('shareTxtRank')(b.handle, rank, boardName(b.board), b.amount.toLocaleString()));
+  copyTxt(t('shareTxtRank')(b.handle, rank, boardName(b.board), b.amount.toLocaleString(), b.bidder, b.desc||'', b.link));
   toast(t('shareCopied'));
 }
 function renderAll() {
