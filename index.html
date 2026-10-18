@@ -251,7 +251,7 @@
     <label data-i18n="fName">Apna naam / nickname (leaderboard par dikhega)</label>
     <input id="bidderName" placeholder="e.g. Ahmed K">
     <label data-i18n="fCountry">Apna country</label>
-    <select id="bidCountry"></select>
+    <select id="bidCountry" onchange="onBidCountryChange()"></select>
     <label data-i18n="fPic">Profile photo (optional)</label>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span id="picPrev"></span><input type="file" id="bidPic" accept="image/*" onchange="onPicPick(event)"></div>
     <label data-i18n="fDesc">Short description (optional)</label>
@@ -574,6 +574,10 @@ const pkr2usd = p => (p / USD_RATE);
 const usd2pkr = u => Math.round(u * USD_RATE);
 const fmtMoney = pkr => currency === 'USD' ? '$' + pkr2usd(pkr).toFixed(2) : 'Rs ' + pkr.toLocaleString();
 function setCurrency(c) { currency = c; localStorage.setItem('trs_cur', c); renderCurBtn(); renderPayments(); updBidInfo(); renderBoard(cur); renderHome(); }
+function onBidCountryChange() {
+  const c = document.getElementById('bidCountry').value;
+  setCurrency(c === 'PK' ? 'PKR' : 'USD');
+}
 function renderCurBtn() { const el = document.getElementById('curBtn'); if (el) el.textContent = currency === 'PKR' ? '💵 USD' : '💷 PKR';
   const al = document.getElementById('amtLabel');
   if (al) al.textContent = currency === 'USD' ? t('fAmtUsd') : t('fAmt');
