@@ -601,7 +601,55 @@ function renderCurBtn() { const el = document.getElementById('curBtn'); if (el) 
 fetch('https://ipapi.co/json/').then(r => r.json()).then(d => {
   if (!localStorage.getItem('trs_cur')) setCurrency(d && d.country_code === 'PK' ? 'PKR' : 'USD');
 }).catch(() => {});
-const SEASON_END = new Date('2027-01-18T00:00:00+05:00').getTime();
+let SEASON_END = new Date('2027-01-18T00:00:00+05:00').getTime();
+let SEASON_NUM = 1;
+async function loadSeason() {
+  if (!supa) return;
+  try {
+    const { data } = await supa.from('settings').select('*');
+    if (data) {
+      const s = data.find(r => r.key === 'season');
+      const e = data.find(r => r.key === 'season_end');
+      if (s) SEASON_NUM = parseInt(s.value) || 1;
+      if (e) SEASON_END = new Date(e.value).getTime();
+    }
+  } catch (e) {}
+  updateSeasonUI();
+}
+function updateSeasonUI() {
+  document.querySelectorAll('[data-i18n="season"]').forEach(el => el.textContent = 'Season ' + SEASON_NUM);
+  const d = new Date(SEASON_END);
+  const lbl = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const se = document.getElementById('seasonEnd'); if (se) se.textContent = lbl;
+}
+async function checkSeasonRollover() {
+  if (!supa || Date.now() < SEASON_END) return;
+  try {
+    // Double-check from DB (race protection)
+    const { data: sdata } = await supa.from('settings').select('*').eq('key', 'season_end').single();
+    if (!sdata || Date.now() < new Date(sdata.value).getTime()) return;
+    const oldSeason = SEASON_NUM;
+    // 1. Champions -> Hall of Fame
+    const live = bids.filter(b => b.status === 'live');
+    for (const bd of BOARDS) {
+      const top = live.filter(b => b.board === bd.id).sort((a, b) => b.amount - a.amount || a.t - b.t)[0];
+      if (top) await supa.from('hall_of_fame').insert({
+        season: oldSeason, board: bd.id, handle: top.handle, link: top.link,
+        amount: top.amount, bidder: top.bidder, country: top.country || 'PK', pic: top.pic || null
+      });
+    }
+    // 2. Archive all live bids
+    for (const b of live) { b.status = 'archived'; }
+    await cloudSync();
+    // 3. New season
+    const newEnd = new Date(SEASON_END); newEnd.setMonth(newEnd.getMonth() + 3);
+    SEASON_NUM = oldSeason + 1; SEASON_END = newEnd.getTime();
+    await supa.from('settings').upsert({ key: 'season', value: String(SEASON_NUM) });
+    await supa.from('settings').upsert({ key: 'season_end', value: newEnd.toISOString() });
+    updateSeasonUI(); renderHome(); renderBoard(cur); renderCrossBox();
+    toast('🎉 Season ' + oldSeason + ' khatam! Champions Hall of Fame me! Naya Season shuru!');
+  } catch (e) { console.log('rollover failed', e); }
+}
 const BOARDS = [
   { id:'tiktok', name:'TikTok', icon:'🎵', logo:'tiktok' },
   { id:'facebook', name:'Facebook', icon:'📘', logo:'facebook' },
@@ -1112,8 +1160,25 @@ function renderDocs() {
   document.querySelector('#pg-privacy [data-i18n="ppD"]').innerHTML = LANG[lang].ppD;
   document.querySelector('#pg-terms [data-i18n="tcD"]').innerHTML = LANG[lang].tcD;
 }
-function renderHof() {
-  document.getElementById('hofList').innerHTML = `<div class="empty">${LANG[lang].hofEmpty}</div>`;
+async function renderHof() {
+  const el = document.getElementById('hofList');
+  if (!supa) { el.innerHTML = `<div class="empty">${LANG[lang].hofEmpty}</div>`; return; }
+  try {
+    const { data } = await supa.from('hall_of_fame').select('*').order('season', { ascending: false }).order('amount', { ascending: false });
+    if (!data || !data.length) { el.innerHTML = `<div class="empty">${LANG[lang].hofEmpty}</div>`; return; }
+    const bySeason = {};
+    data.forEach(c => { (bySeason[c.season] = bySeason[c.season] || []).push(c); });
+    el.innerHTML = Object.keys(bySeason).sort((a, b) => b - a).map(s => `
+      <div class="bsec"><div class="bsec-t">🏅 Season ${s} Champions</div>` +
+      bySeason[s].map(c => `
+      <div class="rank-row">
+        <div class="rnum">👑</div>
+        ${avatar(c)}<div class="rinfo"><div class="h">${c.handle}</div>
+        <div class="m" style="font-weight:700;color:var(--gold)">${countryFlag(c.country)} ${countryName(c.country)}</div>
+        <div class="m">by ${c.bidder || '—'} • ${boardName(c.board)}</div></div>
+        <div class="rbid"><b>${fmtMoney(c.amount)}</b></div>
+      </div>`).join('') + `</div>`).join('');
+  } catch (e) { el.innerHTML = `<div class="empty">${LANG[lang].hofEmpty}</div>`; }
 }
 
 // ==================== COUNTDOWN + ONLINE TICKER ====================
@@ -1121,7 +1186,6 @@ function tick() {
   const d = SEASON_END - Date.now();
   const days = Math.max(0, Math.floor(d / 86400000));
   document.getElementById('cd').textContent = days + ' ' + LANG[lang].days;
-  document.getElementById('seasonEnd').textContent = '18 Jan 2027';
 }
 setInterval(tick, 60000);
 setInterval(() => {
@@ -1135,7 +1199,7 @@ lang = store.get('trs_lang2', 'en');
 setTheme(store.get('trs_theme', 'light'));
 renderPills(); document.getElementById("stBoards").textContent = BOARDS.length; renderCrossBox(); renderBidBoards(); renderCurBtn(); renderPayments(); updBidInfo(); renderBoard(cur);
 applyLang(); tick();
-cloudLoad().then(ok => { if (ok) { renderPills(); renderCrossBox(); renderBidBoards(); renderPayments(); updBidInfo(); renderBoard(cur); renderHome(); } });
+cloudLoad().then(async ok => { await loadSeason(); await checkSeasonRollover(); if (ok) { renderPills(); renderCrossBox(); renderBidBoards(); renderCurBtn(); renderPayments(); updBidInfo(); renderBoard(cur); renderHome(); } });
 setInterval(() => { cloudLoad().then(ok => { if (ok) { renderBoard(cur); renderHome(); renderCrossBox(); } }); }, 60000);
 </script>
 </body>
