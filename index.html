@@ -629,10 +629,10 @@ async function checkSeasonRollover() {
     const { data: sdata } = await supa.from('settings').select('*').eq('key', 'season_end').single();
     if (!sdata || Date.now() < new Date(sdata.value).getTime()) return;
     const oldSeason = SEASON_NUM;
-    // 1. Champions -> Hall of Fame (top 5 per board)
+    // 1. Champions -> Hall of Fame (top 10 per board)
     const live = bids.filter(b => b.status === 'live');
     for (const bd of BOARDS) {
-      const tops = live.filter(b => b.board === bd.id).sort((a, b) => b.amount - a.amount || a.t - b.t).slice(0, 5);
+      const tops = live.filter(b => b.board === bd.id).sort((a, b) => b.amount - a.amount || a.t - b.t).slice(0, 10);
       for (let i = 0; i < tops.length; i++) {
         const top = tops[i];
         await supa.from('hall_of_fame').insert({
@@ -1183,7 +1183,7 @@ async function renderHof() {
       const all = bySeason[s];
       const champs = all.filter(c => c.rank === 1);
       const top3 = [...all].sort((a, b) => b.amount - a.amount).slice(0, 3);
-      const top5 = [...all].sort((a, b) => b.amount - a.amount).slice(0, 5);
+      const top10 = [...all].sort((a, b) => b.amount - a.amount).slice(0, 10);
       return `
       <div class="bsec"><div class="bsec-t">👑 Season ${s} — Board Champions</div>${champs.map(crow).join('')}</div>
       <div class="bsec"><div class="bsec-t">🥇 Season ${s} — Top 3 Overall</div>${top3.map(crow).join('')}</div>
