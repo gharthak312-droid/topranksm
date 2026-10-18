@@ -218,6 +218,7 @@
   </div>
   <div id="crossBox" style="margin-bottom:12px"></div>
   <div class="bpills" id="boardPills"></div>
+  <div style="margin:8px 0 12px"><select id="countryFilter" onchange="setCountryF(this.value)" style="width:100%;max-width:320px"></select></div>
   <div class="card">
     <h3 id="boardTitle">—</h3>
     <div id="boardList"></div>
@@ -248,6 +249,8 @@
     <div class="note" id="bidInfo"></div>
     <label data-i18n="fName">Apna naam / nickname (leaderboard par dikhega)</label>
     <input id="bidderName" placeholder="e.g. Ahmed K">
+    <label data-i18n="fCountry">Apna country</label>
+    <select id="bidCountry"></select>
     <label data-i18n="fPic">Profile photo (optional)</label>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span id="picPrev"></span><input type="file" id="bidPic" accept="image/*" onchange="onPicPick(event)"></div>
     <label data-i18n="fDesc">Short description (optional)</label>
@@ -402,7 +405,7 @@ en: {
   howT:'How does it work? ❓',
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start bidding from <b>Rs 100</b><br>4️⃣ Highest bidder takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
   bidT:'➕ Place a Bid', fBoard:'Choose board', fHandle:'ID / Handle (e.g. @username)', fLink:'Profile link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', allCountries:'All Countries',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Bid ✅',
   fShot:'Payment screenshot (optional — faster verification)',
@@ -484,7 +487,7 @@ ru: {
   howT:'Kaise kaam karta hai? ❓',
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ <b>Rs 100</b> se bid shuru karo<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
   bidT:'➕ Bid Lagao', fBoard:'Board chunein', fHandle:'ID / Handle (jese @username)', fLink:'Profile ka link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', allCountries:'Tamam Countries',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Bid Confirm Karo ✅',
   fShot:'Payment ka screenshot (optional — verification tez hogi)',
@@ -576,6 +579,24 @@ const BOARDS = [
   { id:'fans', name:'Fan Board', icon:'⭐' },
 ];
 const boardName = id => (BOARDS.find(b => b.id === id) || {}).name || id;
+const COUNTRIES = [
+  { c:'PK', n:'Pakistan', f:'🇵🇰' }, { c:'IN', n:'India', f:'🇮🇳' }, { c:'US', n:'USA', f:'🇺🇸' },
+  { c:'GB', n:'UK', f:'🇬🇧' }, { c:'AE', n:'UAE', f:'🇦🇪' }, { c:'SA', n:'Saudi Arabia', f:'🇸🇦' },
+  { c:'CA', n:'Canada', f:'🇨🇦' }, { c:'AU', n:'Australia', f:'🇦🇺' }, { c:'DE', n:'Germany', f:'🇩🇪' },
+  { c:'FR', n:'France', f:'🇫🇷' }, { c:'IT', n:'Italy', f:'🇮🇹' }, { c:'ES', n:'Spain', f:'🇪🇸' },
+  { c:'TR', n:'Turkey', f:'🇹🇷' }, { c:'MY', n:'Malaysia', f:'🇲🇾' }, { c:'ID', n:'Indonesia', f:'🇮🇩' },
+  { c:'PH', n:'Philippines', f:'🇵🇭' }, { c:'BD', n:'Bangladesh', f:'🇧🇩' }, { c:'LK', n:'Sri Lanka', f:'🇱🇰' },
+  { c:'NP', n:'Nepal', f:'🇳🇵' }, { c:'AF', n:'Afghanistan', f:'🇦🇫' }, { c:'IR', n:'Iran', f:'🇮🇷' },
+  { c:'IQ', n:'Iraq', f:'🇮🇶' }, { c:'EG', n:'Egypt', f:'🇪🇬' }, { c:'NG', n:'Nigeria', f:'🇳🇬' },
+  { c:'ZA', n:'South Africa', f:'🇿🇦' }, { c:'BR', n:'Brazil', f:'🇧🇷' }, { c:'MX', n:'Mexico', f:'🇲🇽' },
+  { c:'JP', n:'Japan', f:'🇯🇵' }, { c:'KR', n:'South Korea', f:'🇰🇷' }, { c:'CN', n:'China', f:'🇨🇳' },
+  { c:'RU', n:'Russia', f:'🇷🇺' }, { c:'UA', n:'Ukraine', f:'🇺🇦' }, { c:'NL', n:'Netherlands', f:'🇳🇱' },
+  { c:'SE', n:'Sweden', f:'🇸🇪' }, { c:'NO', n:'Norway', f:'🇳🇴' }, { c:'DK', n:'Denmark', f:'🇩🇰' },
+  { c:'FI', n:'Finland', f:'🇫🇮' }, { c:'PL', n:'Poland', f:'🇵🇱' }, { c:'GR', n:'Greece', f:'🇬🇷' },
+  { c:'PT', n:'Portugal', f:'🇵🇹' },
+];
+const countryFlag = c => (COUNTRIES.find(x => x.c === c) || {}).f || '🌍';
+const countryName = c => (COUNTRIES.find(x => x.c === c) || {}).n || c || '—';
 const LOGOS = {
   tiktok: '<svg fill="#000000" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>TikTok</title><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>',
   facebook: '<svg fill="#0866FF" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Facebook</title><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>',
@@ -683,9 +704,11 @@ function toast(m) { const tt = document.getElementById('toast'); tt.textContent 
 function go(p) { document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.p === p)); document.querySelectorAll('.page').forEach(x => x.classList.remove('active')); document.getElementById('pg-' + p).classList.add('active'); if (p === 'boards') renderBoard(cur); if (p === 'allbidders') renderAll(); if (p === 'fans') renderFans(); if (p === 'hof') renderHof(); if (p === 'home') renderHome(); window.scrollTo(0, 0); }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => go(b.dataset.p));
 function isToday(ts) { return new Date(ts).toDateString() === new Date().toDateString(); }
-function liveBids(board, tf) {
+function liveBids(board, tf, cf) {
   let l = bids.filter(b => b.board === board && b.status === 'live');
   if ((tf || timeF) === 'today') l = l.filter(b => isToday(b.t));
+  const c = cf || curCountry;
+  if (c && c !== 'ALL') l = l.filter(b => (b.country || 'PK') === c);
   return l.sort((a, b) => b.amount - a.amount || a.t - b.t);
 }
 function topBid(board, tf) { const l = liveBids(board, tf); return l.length ? l[0].amount : 0; }
@@ -736,7 +759,7 @@ function renderHome() {
     html += l.map((b, i) => `
       <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
         <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
+        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
         <div class="rbid"><b>Rs ${b.amount.toLocaleString()}</b></div>
       </div>`).join('') + `</div>`;
   });
@@ -744,7 +767,15 @@ function renderHome() {
 }
 
 // ==================== BOARDS ====================
-let cur = 'tiktok', timeF = 'all';
+let cur = 'tiktok', timeF = 'all', curCountry = 'ALL';
+function renderCountryFilter() {
+  const used = [...new Set(bids.filter(b => b.status === 'live' && b.country).map(b => b.country))];
+  const opts = [`<option value="ALL">🌍 ${t('allCountries')}</option>`].concat(
+    used.map(c => `<option value="${c}" ${c === curCountry ? 'selected' : ''}>${countryFlag(c)} ${countryName(c)}</option>`)
+  );
+  document.getElementById('countryFilter').innerHTML = opts.join('');
+}
+function setCountryF(c) { curCountry = c; renderCountryFilter(); renderBoard(cur); }
 function setTimeF(f) {
   timeF = f;
   ['tpAll', 'hpAll'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.toggle('active', f === 'all'); });
@@ -783,7 +814,7 @@ function rankRows(list, boardId, share) {
     return `
     <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
       <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
       <div class="rbid"><b>Rs ${b.amount.toLocaleString()}</b>
       ${btns.length ? `<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px">${btns.join('')}</div>` : ''}</div>
     </div>`;
@@ -837,7 +868,7 @@ function showDetail(id) {
       <div style="color:var(--gold);font-weight:800;font-size:15px;margin-top:4px">#${rank} ${t('dRank')} — ${boardName(b.board)}</div>
     </div>
     <div class="drow"><span class="k">💰 ${t('dBid')}</span><span class="v">Rs ${b.amount.toLocaleString()}</span></div>
-    <div class="drow"><span class="k">👤 ${t('dBy')}</span><span class="v">${b.bidder}</span></div>
+    <div class="drow"><span class="k">👤 ${t('dBy')}</span><span class="v">${countryFlag(b.country)} ${b.bidder}</span></div>
     <div class="drow"><span class="k">👆 ${t('dClicks')}</span><span class="v">${b.clicks||0}</span></div>
     ${b.desc ? `<div class="drow"><span class="k">📝 ${t('dDesc')}</span><span class="v">${b.desc}</span></div>` : ''}
     <a class="dbtn gold" href="${b.link}" target="_blank" onclick="countClick('${b.id}')">${t('dOpen')}</a>
@@ -862,6 +893,7 @@ function renderAll() {
 function renderBoard(id) {
   const bd = BOARDS.find(b => b.id === id);
   document.getElementById('boardTitle').innerHTML = `${bicon(bd)} ${bd.name} Board`;
+  renderCountryFilter();
   document.getElementById('boardList').innerHTML = rankRows(liveBids(id), id, true);
 }
 function challenge(boardId) {
@@ -877,6 +909,7 @@ function fanBid() { document.getElementById('bidBoard').value = 'fans'; updBidIn
 // ==================== BID FORM ====================
 function renderBidBoards() {
   document.getElementById('bidBoard').innerHTML = BOARDS.map(b => `<option value="${b.id}">${b.icon} ${b.name}</option>`).join('');
+  document.getElementById('bidCountry').innerHTML = COUNTRIES.map(c => `<option value="${c.c}">${c.f} ${c.n}</option>`).join('');
 }
 function renderPayments() {
   document.getElementById('payMethods').innerHTML = PAYMENTS.map(p =>
@@ -922,6 +955,7 @@ function placeBid() {
   const bidder = document.getElementById('bidderName').value.trim() || 'Anonymous';
   const tid = document.getElementById('bidTid').value.trim();
   const desc = document.getElementById('bidDesc').value.trim();
+  const country = document.getElementById('bidCountry').value || 'PK';
   if (!handle) return toast(t('needHandle'));
   if (!link.startsWith('http')) return toast(t('needLink'));
   if (!bidPic) return toast(t('needPic'));
@@ -929,7 +963,7 @@ function placeBid() {
   const minNeed = tb === 0 ? MIN_BID : tb + MIN_RAISE;
   if (amount < minNeed) return toast(t('needMin')(minNeed.toLocaleString()));
   if (tid.length < 5) return toast(t('needTid'));
-  const b = { id: 'TR' + Date.now().toString().slice(-6), board, handle, link, amount, bidder, t: Date.now(), status: 'pending', tid, shot: pendingShot, pic: bidPic, desc };
+  const b = { id: 'TR' + Date.now().toString().slice(-6), board, handle, link, amount, bidder, t: Date.now(), status: 'pending', tid, shot: pendingShot, pic: bidPic, desc, country };
   bids.unshift(b); save();
   document.getElementById('bidHandle').value = ''; document.getElementById('bidLink').value = '';
   document.getElementById('bidTid').value = ''; document.getElementById('bidderName').value = '';
@@ -957,7 +991,7 @@ function renderAdmin() {
     <div class="rank-row">
       ${avatar(b)}
       <div class="rinfo"><div class="h">${b.handle}</div>
-        <div class="m">${boardName(b.board)} • <b>Rs ${b.amount.toLocaleString()}</b> • by ${b.bidder}</div>
+        <div class="m">${countryFlag(b.country)} ${boardName(b.board)} • <b>Rs ${b.amount.toLocaleString()}</b> • by ${b.bidder}</div>
         <div class="m">TID: <b style="color:var(--gold)">${b.tid || '—'}</b> • ${ago(b.t)}</div>
         ${b.desc ? `<div class="bd">${b.desc}</div>` : ''}
         ${b.shot ? `<img src="${b.shot}" style="width:100%;border-radius:10px;margin-top:6px;border:1px solid var(--line)">` : '<div class="m">📷 screenshot nahi bheja</div>'}
