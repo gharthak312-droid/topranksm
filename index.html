@@ -961,7 +961,7 @@ function renderHome() {
     html += l.map((b, i) => `
       <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
         <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)}${b.city ? ' 📍' + b.city : ''} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${countryFlag(b.country)} ${t('seeDetails')}</a></div></div>
+        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)}${b.city ? ' 📍' + b.city : ''} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
         <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
       </div>`).join('') + `</div>`;
   });
@@ -1043,7 +1043,7 @@ function rankRows(list, boardId, share) {
     return `
     <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
       <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)}${b.city ? ' 📍' + b.city : ''} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${countryFlag(b.country)} ${t('seeDetails')}</a></div></div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)}${b.city ? ' 📍' + b.city : ''} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
       <div class="rbid"><b>${fmtMoney(b.amount)}</b>
       ${btns.length ? `<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px">${btns.join('')}</div>` : ''}</div>
     </div>`;
