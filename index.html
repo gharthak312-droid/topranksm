@@ -598,9 +598,17 @@ function renderCurBtn() { const el = document.getElementById('curBtn'); if (el) 
   if (cs) cs.textContent = currency === 'USD' ? '$' : 'Rs';
 }
 // Auto-detect country via IP (PK -> PKR, else USD)
-fetch('https://ipapi.co/json/').then(r => r.json()).then(d => {
-  if (!localStorage.getItem('trs_cur')) setCurrency(d && d.country_code === 'PK' ? 'PKR' : 'USD');
-}).catch(() => {});
+function autoCurrency() {
+  if (localStorage.getItem('trs_cur')) return;
+  fetch('http://ip-api.com/json/?fields=countryCode').then(r => r.json()).then(d => {
+    if (d && d.countryCode) setCurrency(d.countryCode === 'PK' ? 'PKR' : 'USD');
+  }).catch(() => {
+    fetch('https://ipapi.co/json/').then(r => r.json()).then(d => {
+      if (d && d.country_code) setCurrency(d.country_code === 'PK' ? 'PKR' : 'USD');
+    }).catch(() => {});
+  });
+}
+autoCurrency();
 let SEASON_END = new Date('2027-01-18T00:00:00+05:00').getTime();
 let SEASON_NUM = 1;
 async function loadSeason() {
