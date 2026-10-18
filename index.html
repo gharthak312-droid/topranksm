@@ -795,18 +795,7 @@ document.getElementById('bidShot').onchange = function(e) {
   img.src = URL.createObjectURL(f);
 };
 
-if (!store.get('trs_seeded', null)) {
-  const now = Date.now();
-  const today = new Date(); today.setHours(10, 0, 0, 0);
-  bids = [
-    { id:'S1', board:'tiktok', handle:'@quettavibes', link:'https://tiktok.com/@quettavibes', amount:2500, bidder:'Fan Club', t: now-86400000*2, status:'live' },
-    { id:'S2', board:'tiktok', handle:'@pkfoodie', link:'https://tiktok.com/@pkfoodie', amount:1200, bidder:'Ahmed K', t: today.getTime(), status:'live' },
-    { id:'S3', board:'instagram', handle:'@quetta.clicks', link:'https://instagram.com/quetta.clicks', amount:800, bidder:'Sara M', t: now-86400000*1, status:'live' },
-    { id:'S4', board:'fans', handle:'@quettavibes (TikTok)', link:'https://tiktok.com/@quettavibes', amount:5000, bidder:'Super Fans', t: today.getTime(), status:'live' },
-    { id:'S5', board:'youtube', handle:'Tech with Bilal', link:'https://youtube.com/@techwithbilal', amount:1500, bidder:'Bilal', t: now-86400000*4, status:'live' },
-  ];
-  store.set('trs_seeded', '1'); save();
-}
+// No fake seed bids — only real bids from Supabase. Honesty first! 💯
 
 let visits = { total: 0, today: 0 };
 async function trackVisit() {
