@@ -96,6 +96,17 @@
   .rank-row.top1 { border:1.5px solid var(--goldline); background:var(--goldbg); }
   .rnum { font-size:15px; font-weight:800; min-width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:var(--card2); border:1px solid var(--line); color:var(--mut); }
   .rank-row.top1 .rnum { background:linear-gradient(135deg,var(--gold2),var(--gold)); color:#fff; border:none; box-shadow:0 3px 10px rgba(184,134,11,.4); }
+  .dmodal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:200; align-items:center; justify-content:center; padding:18px; }
+  .dmodal.open { display:flex; }
+  .dmodal-card { background:var(--card); border-radius:20px; max-width:430px; width:100%; padding:26px 22px; position:relative; max-height:86vh; overflow-y:auto; box-shadow:var(--shadow); border:1px solid var(--line); }
+  .dmodal-x { position:absolute; top:10px; right:10px; background:var(--card2); border:1px solid var(--line); border-radius:50%; width:34px; height:34px; font-size:15px; cursor:pointer; color:var(--txt); }
+  .drow { display:flex; justify-content:space-between; gap:10px; padding:9px 2px; border-bottom:1px solid var(--line); font-size:14px; }
+  .drow:last-child { border-bottom:none; }
+  .drow .k { color:var(--mut); }
+  .drow .v { font-weight:700; text-align:right; }
+  .dbtn { display:block; width:100%; margin-top:12px; padding:13px; border-radius:14px; border:none; font-size:15px; font-weight:800; cursor:pointer; text-align:center; text-decoration:none; }
+  .dbtn.gold { background:linear-gradient(135deg,var(--gold2),var(--gold)); color:#fff; }
+  .dbtn.ghost { background:var(--card2); color:var(--txt); border:1px solid var(--line); }
   .rinfo { flex:1; min-width:0; }
   .rinfo .h { font-weight:700; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .rinfo .m { font-size:11.5px; color:var(--mut); margin-top:2px; }
@@ -349,6 +360,13 @@
   <div style="margin-top:8px">© 2026 TopRankSM</div>
 </footer>
 
+<div id="detailModal" class="dmodal" onclick="if(event.target===this)closeDetail()">
+  <div class="dmodal-card">
+    <button class="dmodal-x" onclick="closeDetail()">✕</button>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -363,6 +381,9 @@ en: {
   shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} is #${r} on the ${b} board on TopRankSM!\n💰 Bid: Rs ${a} (by ${bidder})${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Join the race: https://gharthak312-droid.github.io/topranksm/\n#TopRankSM`,
   shareCopied:'📣 Share text copied — spread the word!',
   clicks:'clicks',
+  seeDetails:'see details',
+  dRank:'Rank', dBid:'Bid', dBy:'Bidder', dClicks:'Profile clicks', dDesc:'About',
+  dOpen:'🔗 Open Profile', dShare:'📣 Share',
   heroT:'Claim for <span>#1</span>!',
   heroS:'A separate leaderboard for every social media platform. Highest bidder takes #1. Money = Rank. Simple.',
   heroBtn:'Place a Bid ➜',
@@ -442,6 +463,9 @@ ru: {
   shareTxtRank:(h,r,b,a,bidder,desc,link)=>`🏆 ${h} TopRankSM ke ${b} board par #${r} par hai!\n💰 Bid: Rs ${a} (${bidder} ne lagai)${desc?`\n📝 ${desc}`:''}\n🔗 Profile: ${link}\n🌐 Tum bhi hissa lo: https://gharthak312-droid.github.io/topranksm/\n#TopRankSM`,
   shareCopied:'📣 Share text copy ho gaya — doston ko bhejo!',
   clicks:'clicks',
+  seeDetails:'details dekho',
+  dRank:'Rank', dBid:'Bid', dBy:'Bidder', dClicks:'Profile clicks', dDesc:'About',
+  dOpen:'🔗 Profile kholo', dShare:'📣 Share karo',
   heroT:'Claim for <span>#1</span>!',
   heroS:'Har social media platform ka alag leaderboard. Jo zyada bid kare, wo #1. Paisa = Rank. Simple.',
   heroBtn:'Bid Lagao ➜',
@@ -710,7 +734,7 @@ function renderHome() {
     html += l.map((b, i) => `
       <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
         <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')}</div></div>
+        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
         <div class="rbid"><b>Rs ${b.amount.toLocaleString()}</b></div>
       </div>`).join('') + `</div>`;
   });
@@ -757,7 +781,7 @@ function rankRows(list, boardId, share) {
     return `
     <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
       <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')}</div></div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
       <div class="rbid"><b>Rs ${b.amount.toLocaleString()}</b>
       ${btns.length ? `<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px">${btns.join('')}</div>` : ''}</div>
     </div>`;
@@ -798,6 +822,30 @@ function rowClick(id, ev) {
   if (!b || !b.link) return;
   countClick(id);
   window.open(b.link, '_blank');
+}
+function showDetail(id) {
+  const b = bids.find(x => x.id === id);
+  if (!b) return;
+  const l = liveBids(b.board, 'all');
+  const rank = l.findIndex(x => x.id === id) + 1;
+  document.getElementById('detailBody').innerHTML = `
+    <div style="text-align:center;margin-bottom:14px">
+      ${avatar(b, 84)}
+      <div style="font-size:20px;font-weight:800;margin-top:10px">${b.handle}</div>
+      <div style="color:var(--gold);font-weight:800;font-size:15px;margin-top:4px">#${rank} ${t('dRank')} — ${boardName(b.board)}</div>
+    </div>
+    <div class="drow"><span class="k">💰 ${t('dBid')}</span><span class="v">Rs ${b.amount.toLocaleString()}</span></div>
+    <div class="drow"><span class="k">👤 ${t('dBy')}</span><span class="v">${b.bidder}</span></div>
+    <div class="drow"><span class="k">👆 ${t('dClicks')}</span><span class="v">${b.clicks||0}</span></div>
+    ${b.desc ? `<div class="drow"><span class="k">📝 ${t('dDesc')}</span><span class="v">${b.desc}</span></div>` : ''}
+    <a class="dbtn gold" href="${b.link}" target="_blank" onclick="countClick('${b.id}')">${t('dOpen')}</a>
+    <button class="dbtn ghost" onclick="closeDetail();shareBid('${b.id}')">${t('dShare')}</button>`;
+  document.getElementById('detailModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDetail() {
+  document.getElementById('detailModal').classList.remove('open');
+  document.body.style.overflow = '';
 }
 function renderAll() {
   let html = '';
