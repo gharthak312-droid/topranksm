@@ -392,8 +392,8 @@ en: {
   seasonEnds:'Season 1 ends in:', days:'days',
   liveT:'Live Stats', lsOnline:'Online now', lsBig:'Biggest bid', lsTodayV:'Today visitors', lsAllV:'All-time visitors',
   actT:'⚡ Live Activity',
-  actWin:(w,h,b,a)=>`<b>${w}</b> made <b>${h}</b> #1 on the ${b} board — Rs ${a}!`,
-  actBid:(w,b,a,h)=>`<b>${w}</b> bid Rs ${a} on the ${b} board (${h})`,
+  actWin:(w,h,b,a,link,id)=>`<b>${w}</b> made <b><a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a></b> #1 on the ${b} board — Rs ${a}!`,
+  actBid:(w,b,a,h,link,id)=>`<b>${w}</b> bid Rs ${a} on the ${b} board (<a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a>)`,
   actEmpty:'No activity yet — place the first bid! 🚀',
   stBoards:'Boards', stPool:'Total Bids', stBidders:'Total Bidders',
   timeAll:'🕰️ All Time', timeToday:'📅 Today',
@@ -474,8 +474,8 @@ ru: {
   seasonEnds:'Season 1 khatam hone me:', days:'din',
   liveT:'Live Stats', lsOnline:'Online now', lsBig:'Biggest bid', lsTodayV:'Today visitors', lsAllV:'All-time visitors',
   actT:'⚡ Live Activity',
-  actWin:(w,h,b,a)=>`<b>${w}</b> ne <b>${h}</b> ko ${b} board par #1 bana diya — Rs ${a}!`,
-  actBid:(w,b,a,h)=>`<b>${w}</b> ne ${b} board par Rs ${a} ki bid lagai (${h})`,
+  actWin:(w,h,b,a,link,id)=>`<b>${w}</b> ne <b><a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a></b> ko ${b} board par #1 bana diya — Rs ${a}!`,
+  actBid:(w,b,a,h,link,id)=>`<b>${w}</b> ne ${b} board par Rs ${a} ki bid lagai (<a href="${link}" target="_blank" onclick="countClick('${id}')">${h}</a>)`,
   actEmpty:'Abhi koi activity nahi — pehli bid lagao! 🚀',
   stBoards:'Boards', stPool:'Total Bids', stBidders:'Total Bidders',
   timeAll:'🕰️ All Time', timeToday:'📅 Today',
@@ -721,8 +721,8 @@ function renderHome() {
   const recent = live.filter(b => timeF === 'all' || isToday(b.t)).sort((a, b) => b.t - a.t).slice(0, 8);
   document.getElementById('actFeed').innerHTML = recent.length ? recent.map(b => {
     const isTop = topBid(b.board, 'all') === b.amount && liveBids(b.board, 'all')[0].id === b.id;
-    const txt = isTop ? t('actWin')(b.bidder, b.handle, boardName(b.board), b.amount.toLocaleString())
-                      : t('actBid')(b.bidder, boardName(b.board), b.amount.toLocaleString(), b.handle);
+    const txt = isTop ? t('actWin')(b.bidder, b.handle, boardName(b.board), b.amount.toLocaleString(), b.link, b.id)
+                      : t('actBid')(b.bidder, boardName(b.board), b.amount.toLocaleString(), b.handle, b.link, b.id);
     return `<div class="act"><span class="e">${isTop ? '🏆' : '💰'}</span><span>${txt}<span class="tm">${ago(b.t)}</span></span></div>`;
   }).join('') : `<div class="empty">${t('actEmpty')}</div>`;
   // top 3 per board
