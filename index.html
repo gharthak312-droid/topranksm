@@ -712,7 +712,12 @@ const COUNTRIES = [
   { c:'FI', n:'Finland', f:'🇫🇮' }, { c:'PL', n:'Poland', f:'🇵🇱' }, { c:'GR', n:'Greece', f:'🇬🇷' },
   { c:'PT', n:'Portugal', f:'🇵🇹' },
 ];
-const countryFlag = c => (COUNTRIES.find(x => x.c === c) || {}).f || '🌍';
+const countryFlag = c => {
+  const code = (c || '').toLowerCase();
+  if (!code || code.length !== 2) return '🌍';
+  return `<img src="https://flagcdn.com/w40/${code}.png" alt="${c}" class="flagimg" loading="lazy" onerror="this.outerHTML='🌍'">`;
+};
+const countryFlagE = c => (COUNTRIES.find(x => x.c === c) || {}).f || '';
 const countryName = c => (COUNTRIES.find(x => x.c === c) || {}).n || c || '—';
 const PK_CITIES = ['Karachi','Lahore','Islamabad','Rawalpindi','Faisalabad','Multan','Peshawar','Quetta','Hyderabad','Sialkot','Gujranwala','Sargodha','Bahawalpur','Sukkur','Larkana','Mardan','Swat','Abbottabad','Other'];
 const LOGOS = {
@@ -944,7 +949,7 @@ let cur = 'tiktok', timeF = 'all', curCountry = 'ALL';
 function renderCountryFilter() {
   const used = [...new Set(bids.filter(b => b.status === 'live' && b.country).map(b => b.country))];
   const opts = [`<option value="ALL">🌍 ${t('allCountries')}</option>`].concat(
-    used.map(c => `<option value="${c}" ${c === curCountry ? 'selected' : ''}>${countryFlag(c)} ${countryName(c)}</option>`)
+    used.map(c => `<option value="${c}" ${c === curCountry ? 'selected' : ''}>${countryName(c)}</option>`)
   );
   document.getElementById('countryFilter').innerHTML = opts.join('');
 }
@@ -1143,7 +1148,7 @@ function fanBid() { document.getElementById('bidBoard').value = 'fans'; updBidIn
 // ==================== BID FORM ====================
 function renderBidBoards() {
   document.getElementById('bidBoard').innerHTML = BOARDS.map(b => `<option value="${b.id}">${b.icon} ${b.name}</option>`).join('');
-  document.getElementById('bidCountry').innerHTML = COUNTRIES.map(c => `<option value="${c.c}">${c.f} ${c.n}</option>`).join('');
+  document.getElementById('bidCountry').innerHTML = COUNTRIES.map(c => `<option value="${c.c}">${c.n}</option>`).join('');
   renderCityOptions();
 }
 function renderCityOptions() {
