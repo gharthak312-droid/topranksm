@@ -1334,7 +1334,7 @@ async function removeBid(id) {
   if (!confirm('Ye live bid delete karni hai?')) return;
   bids = bids.filter(x => x.id !== id);
   try { if (supa) await supa.from('bids').delete().eq('id', id); } catch (e) {}
-  save(); renderAdmin(); renderHome(); renderBoard(cur); renderAll(); renderFans(); renderCrossBox(); cloudLoad(true);
+  save(); renderAdmin(); renderHome(); renderBoard(cur); renderAll(); renderFans(); renderCrossBox(); renderCountries(); cloudLoad(true);
 }
 function changePin() {
   const v = document.getElementById('newPin').value.trim();
