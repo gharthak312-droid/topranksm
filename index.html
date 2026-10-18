@@ -198,7 +198,7 @@
   </div>
   <div class="stats">
     <div class="stat"><b id="stBoards">11</b><span data-i18n="stBoards">Boards</span></div>
-    <div class="stat"><b>Rs <span id="stPool">0</span></b><span data-i18n="stPool">Total Bids</span></div>
+    <div class="stat"><b><span id="curSym">Rs</span> <span id="stPool">0</span></b><span data-i18n="stPool">Total Bids</span></div>
     <div class="stat"><b id="stBids">0</b><span data-i18n="stBidders">Total Bidders</span></div>
   </div>
   <div class="card">
@@ -392,7 +392,7 @@ en: {
   heroT:'Claim for <span>#1</span>!',
   heroS:'A separate leaderboard for every social media platform. Highest bidder takes #1. Money = Rank. Simple.',
   heroBtn:'Place a Bid ➜',
-  heroEmpty:(n)=>`🔥 ${n} boards still at only Rs 100 — first come, first served!`,
+  heroEmpty:(n)=>`🔥 ${n} boards still at only ${fmtMoney(MIN_BID)} — first come, first served!`,
   heroCheap:(b,a)=>`🔥 Cheapest #1 right now: ${fmtMoney(a)} on ${b}!`,
   seasonEnds:'Season 1 ends in:', days:'days',
   liveT:'Live Stats', lsOnline:'Online now', lsBig:'Biggest bid', lsTodayV:'Today visitors', lsAllV:'All-time visitors',
@@ -444,7 +444,7 @@ en: {
   ppD:'<h4>What we collect</h4><ul><li>Your handle/ID, profile link, bidder nickname, bid amount and Transaction ID — needed to run the leaderboards.</li><li>Anonymous visit counts (total and daily) for public stats.</li></ul><h4>What we never ask for</h4><ul><li>We never ask for your social media passwords or private account access. Never share them with anyone.</li></ul><h4>How we use data</h4><ul><li>Only to display rankings, verify payments and show site statistics.</li><li>We never sell your data to third parties.</li></ul><h4>Deletion</h4><p>Contact us any time to remove your bidder nickname from public display.</p>',
   tcT:'📄 Terms & Conditions',
   tcD:'<ul><li>All bids are <b>final and non-refundable</b>.</li><li>Minimum bid Rs 100; minimum raise Rs 50 above the current top bid.</li><li>IDs must be real and publicly visible; fake IDs are cancelled without refund.</li><li>Offensive or illegal content is removed without notice.</li><li>Boards reset every Season (3 months); champions enter the Hall of Fame.</li><li>TopRankSM is not affiliated with any social media platform.</li><li>Users must be 18+ or have guardian permission to bid.</li></ul>',
-  empty:'Empty board! Become <b>#1</b> for Rs 100! 👑',
+  empty:()=>`Empty board! Become <b>#1</b> for ${fmtMoney(currency==='USD'?usd2pkr(MIN_BID_USD):MIN_BID)}! 👑`,
   todayRank:'📅 Today Ranking — Top 5', allRank:'🏆 All Time Ranking — Champions',
   sendNums:'Send us your real numbers for Nayapay / Sadapay / Upaisa / Bank — we will update them here.',
   challenge:'⚔️ Challenge!',
@@ -458,7 +458,7 @@ en: {
   challengeToast:(n)=>`⚔️ To beat #1, bid at least ${n}!`,
   shareTxt:(h,a,b)=>`🏆 I just bid ${fmtMoney(a)} on ${h} for the ${b} board on TopRankSM! #TopRankSM`,
   cur1:(t,r)=>`Current #1: <b>${t}</b> — bid at least <b>${r}</b> to outbid`,
-  beFirst:'No bids on this board yet — become <b>#1</b> for Rs 100! 👑',
+  beFirst:()=>`No bids on this board yet — become <b>#1</b> for ${fmtMoney(currency==='USD'?usd2pkr(MIN_BID_USD):MIN_BID)}! 👑`,
 },
 ru: {
   navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 Sab Bidders', navBid:'➕ Bid Lagao', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
@@ -474,7 +474,7 @@ ru: {
   heroT:'Claim for <span>#1</span>!',
   heroS:'Har social media platform ka alag leaderboard. Jo zyada bid kare, wo #1. Paisa = Rank. Simple.',
   heroBtn:'Bid Lagao ➜',
-  heroEmpty:(n)=>`🔥 ${n} boards abhi bhi sirf Rs 100 par — pehle aao, pehle pao!`,
+  heroEmpty:(n)=>`🔥 ${n} boards abhi bhi sirf ${fmtMoney(MIN_BID)} par — pehle aao, pehle pao!`,
   heroCheap:(b,a)=>`🔥 Sab se sasta #1 abhi: ${fmtMoney(a)} — ${b} par!`,
   seasonEnds:'Season 1 khatam hone me:', days:'din',
   liveT:'Live Stats', lsOnline:'Online now', lsBig:'Biggest bid', lsTodayV:'Today visitors', lsAllV:'All-time visitors',
@@ -526,7 +526,7 @@ ru: {
   ppD:'<h4>Kya collect karte hain</h4><ul><li>Tumhara handle/ID, profile link, bidder nickname, bid amount aur Transaction ID — leaderboard chalane ke liye zaroori.</li><li>Gumnaam visit counts (total aur daily) — public stats ke liye.</li></ul><h4>Kya kabhi nahi mangte</h4><ul><li>Hum kabhi tumhare social media passwords ya private account access nahi mangte. Kisi ko kabhi na do.</li></ul><h4>Data ka istemal</h4><ul><li>Sirf ranking dikhane, payment verify karne aur site stats ke liye.</li><li>Hum tumhara data kabhi kisi ko nahi bechte.</li></ul><h4>Deletion</h4><p>Kisi bhi waqt rabta karo — tumhara nickname public display se hata denge.</p>',
   tcT:'📄 Terms & Conditions',
   tcD:'<ul><li>Tamam bids <b>final aur non-refundable</b> hain.</li><li>Min bid Rs 100; min raise current top bid se Rs 50 zyada.</li><li>IDs asli aur publicly visible honi chahiye; fake IDs bina refund cancel.</li><li>Ghalat ya illegal content bina notice hataya jayega.</li><li>Boards har Season (3 mahine) me reset; champions Hall of Fame me.</li><li>TopRankSM ka kisi social media platform se koi talluq nahi.</li><li>Bid karne ke liye 18+ hona ya guardian ki ijazat zaroori hai.</li></ul>',
-  empty:'Khaali board! Rs 100 me <b>#1</b> ban jao! 👑',
+  empty:()=>`Khaali board! ${fmtMoney(currency==='USD'?usd2pkr(MIN_BID_USD):MIN_BID)} me <b>#1</b> ban jao! 👑`,
   todayRank:'📅 Aaj ki Ranking — Top 5', allRank:'🏆 All Time Ranking — Champions',
   sendNums:'Nayapay / Sadapay / Upaisa / Bank ke asal numbers bhejo — yahan update kar dunga.',
   challenge:'⚔️ Challenge!',
@@ -540,7 +540,7 @@ ru: {
   challengeToast:(n)=>`⚔️ #1 ko harane ke liye kam az kam ${n} ki bid lagao!`,
   shareTxt:(h,a,b)=>`🏆 Maine ${h} par ${fmtMoney(a)} ki bid lagai TopRankSM ke ${b} board par! #TopRankSM`,
   cur1:(t,r)=>`Current #1: <b>${t}</b> — outbid karne ke liye kam az kam <b>${r}</b>`,
-  beFirst:'Is board par abhi koi bid nahi — <b>Rs 100</b> me #1 ban jao! 👑',
+  beFirst:()=>`Abhi is board par koi bid nahi — ${fmtMoney(currency==='USD'?usd2pkr(MIN_BID_USD):MIN_BID)} me <b>#1</b> ban jao! 👑`,
 }};
 let lang = 'en';
 function t(k) { return LANG[lang][k]; }
@@ -581,6 +581,8 @@ function onBidCountryChange() {
 function renderCurBtn() { const el = document.getElementById('curBtn'); if (el) el.textContent = currency === 'PKR' ? '💵 USD' : '💷 PKR';
   const al = document.getElementById('amtLabel');
   if (al) al.textContent = currency === 'USD' ? t('fAmtUsd') : t('fAmt');
+  const cs = document.getElementById('curSym');
+  if (cs) cs.textContent = currency === 'USD' ? '$' : 'Rs';
 }
 // Auto-detect country via IP (PK -> PKR, else USD)
 fetch('https://ipapi.co/json/').then(r => r.json()).then(d => {
@@ -745,12 +747,12 @@ function ago(ts) {
 function renderHome() {
   const live = bids.filter(b => b.status === 'live');
   const pool = live.reduce((s, b) => s + b.amount, 0);
-  document.getElementById('stPool').textContent = pool.toLocaleString();
+  document.getElementById('stPool').textContent = currency === 'USD' ? pkr2usd(pool).toFixed(2) : pool.toLocaleString();
   document.getElementById('stBids').textContent = live.length;
   document.getElementById('visToday').textContent = visits.today.toLocaleString();
   document.getElementById('visAll').textContent = visits.total.toLocaleString();
   document.getElementById('onlineN').textContent = onlineN;
-  document.getElementById('bigBid').textContent = 'Rs ' + (live.length ? Math.max(...live.map(b => b.amount)).toLocaleString() : 0);
+  document.getElementById('bigBid').textContent = fmtMoney(live.length ? Math.max(...live.map(b => b.amount)) : 0);
   // hero live line — jhoot nahi, urgency!
   const emptyBoards = BOARDS.filter(bd => topBid(bd.id, 'all') === 0);
   let heroMsg;
@@ -779,11 +781,11 @@ function renderHome() {
     html += l.map((b, i) => `
       <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
         <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
+        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${countryFlag(b.country)} ${t('seeDetails')}</a></div></div>
         <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
       </div>`).join('') + `</div>`;
   });
-  document.getElementById('topThrees').innerHTML = html || `<div class="empty">${t('empty')}</div>`;
+  document.getElementById('topThrees').innerHTML = html || `<div class="empty">${t('empty')()}</div>`;
 }
 
 // ==================== BOARDS ====================
@@ -810,11 +812,11 @@ function crossBoxHTML() {
   if (timeF === 'all') {
     const t5 = bids.filter(b => b.status === 'live' && isToday(b.t)).sort((a, b) => b.amount - a.amount).slice(0, 5);
     return `<div class="card crossbox"><h3>${t('todayRank')}</h3>` +
-      (t5.length ? t5.map((b, i) => row(i + 1, b)).join('') : `<div class="empty">${t('empty')}</div>`) + `</div>`;
+      (t5.length ? t5.map((b, i) => row(i + 1, b)).join('') : `<div class="empty">${t('empty')()}</div>`) + `</div>`;
   }
   const champs = BOARDS.map(bd => ({ bd, top: liveBids(bd.id, 'all')[0] })).filter(x => x.top).sort((a, b) => b.top.amount - a.top.amount).slice(0, 10);
   return `<div class="card crossbox"><h3>${t('allRank')}</h3>` +
-    (champs.length ? champs.map((c, i) => row(i + 1, c.top)).join('') : `<div class="empty">${t('empty')}</div>`) + `</div>`;
+    (champs.length ? champs.map((c, i) => row(i + 1, c.top)).join('') : `<div class="empty">${t('empty')()}</div>`) + `</div>`;
 }
 function renderCrossBox() {
   const html = crossBoxHTML();
@@ -826,7 +828,7 @@ function renderPills() {
 }
 function setBoard(id) { cur = id; renderPills(); renderBoard(id); }
 function rankRows(list, boardId, share) {
-  if (!list.length) return `<div class="empty">${t('empty')}</div>`;
+  if (!list.length) return `<div class="empty">${t('empty')()}</div>`;
   return list.map((b, i) => {
     const btns = [];
     if (i === 1) btns.push(`<button onclick="challenge('${boardId}')">${t('challenge')}</button>`);
@@ -834,7 +836,7 @@ function rankRows(list, boardId, share) {
     return `
     <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
       <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${t('seeDetails')}</a></div></div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${countryFlag(b.country)} ${t('seeDetails')}</a></div></div>
       <div class="rbid"><b>${fmtMoney(b.amount)}</b>
       ${btns.length ? `<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px">${btns.join('')}</div>` : ''}</div>
     </div>`;
@@ -908,7 +910,7 @@ function renderAll() {
     html += `<div class="bsec"><div class="bsec-t">${bicon(bd)} ${bd.name} <span style="color:var(--mut);font-weight:400;font-size:12px">(${l.length})</span></div>` +
       rankRows(l, bd.id, true) + `</div>`;
   });
-  document.getElementById('allBidList').innerHTML = html || `<div class="empty">${t('empty')}</div>`;
+  document.getElementById('allBidList').innerHTML = html || `<div class="empty">${t('empty')()}</div>`;
 }
 function renderBoard(id) {
   const bd = BOARDS.find(b => b.id === id);
@@ -946,7 +948,7 @@ function updBidInfo() {
   const bd = document.getElementById('bidBoard').value;
   const tb = topBid(bd, 'all');
   const raise = currency === 'USD' ? usd2pkr(MIN_RAISE_USD) : MIN_RAISE;
-  document.getElementById('bidInfo').innerHTML = tb === 0 ? t('beFirst') : t('cur1')(fmtMoney(tb), fmtMoney(tb + raise));
+  document.getElementById('bidInfo').innerHTML = tb === 0 ? t('beFirst')() : t('cur1')(fmtMoney(tb), fmtMoney(tb + raise));
   document.getElementById('bidAmt').value = tb === 0 ? (currency === 'USD' ? MIN_BID_USD : MIN_BID) : (currency === 'USD' ? pkr2usd(tb + raise).toFixed(2) : tb + raise);
 }
 document.getElementById('bidBoard').onchange = updBidInfo;
