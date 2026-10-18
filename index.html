@@ -586,7 +586,7 @@ let currency = localStorage.getItem('trs_cur') || 'PKR';
 const pkr2usd = p => (p / USD_RATE);
 const usd2pkr = u => Math.round(u * USD_RATE);
 const fmtMoney = pkr => currency === 'USD' ? '$' + pkr2usd(pkr).toFixed(2) : 'Rs ' + pkr.toLocaleString();
-function setCurrency(c) { currency = c; localStorage.setItem('trs_cur', c); renderCurBtn(); renderPayments(); updBidInfo(); renderBoard(cur); renderHome(); }
+function setCurrency(c) { currency = c; localStorage.setItem('trs_cur', c); renderCurBtn(); renderPayments(); updBidInfo(); renderBoard(cur); renderHome(); renderCrossBox(); renderAll(); const cp = document.getElementById('pg-countries'); if (cp && cp.classList.contains('active')) renderCountries(); }
 function onBidCountryChange() {
   const c = document.getElementById('bidCountry').value;
   setCurrency(c === 'PK' ? 'PKR' : 'USD');
