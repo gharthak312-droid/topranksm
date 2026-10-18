@@ -406,7 +406,7 @@ en: {
   howT:'How does it work? ❓',
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start bidding from <b>Rs 100</b><br>4️⃣ Highest bidder takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
   bidT:'➕ Place a Bid', fBoard:'Choose board', fHandle:'ID / Handle (e.g. @username)', fLink:'Profile link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Send USDT via TRC20 network only. Put the transaction hash as TID.',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Bid ✅',
   fShot:'Payment screenshot (optional — faster verification)',
@@ -488,7 +488,7 @@ ru: {
   howT:'Kaise kaam karta hai? ❓',
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ <b>Rs 100</b> se bid shuru karo<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
   bidT:'➕ Bid Lagao', fBoard:'Board chunein', fHandle:'ID / Handle (jese @username)', fLink:'Profile ka link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Sirf TRC20 network se USDT bhejo. Transaction hash ko TID me likho.',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Bid Confirm Karo ✅',
   fShot:'Payment ka screenshot (optional — verification tez hogi)',
@@ -934,7 +934,7 @@ function renderBidBoards() {
 function renderPayments() {
   if (currency === 'USD') {
     document.getElementById('payMethods').innerHTML =
-      `<div class="pay-row"><div><div class="pn">💰 USDT (TRC20)</div><div class="pname">Send exact USD amount as USDT</div></div><div class="pv" style="font-size:11px;word-break:break-all">${USDT_ADDRESS}</div></div>` +
+      `<div class="pay-row"><div><div class="pn">💰 USDT (TRC20)</div><div class="pname">Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.</div></div><div class="pv" style="font-size:11px;word-break:break-all">${USDT_ADDRESS}</div></div>` +
       `<p class="note">⚠️ ${t('usdtWarn')}</p>`;
     return;
   }
