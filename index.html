@@ -547,6 +547,7 @@ function applyLang() {
   });
   document.getElementById('langBtn').textContent = lang === 'ru' ? 'EN' : 'UR';
   renderRules(); renderFaq(); renderDocs(); renderHome(); renderBoard(cur); renderFans(); renderAll();
+  tick(); // refresh countdown unit (days/din) immediately on language switch
 }
 function toggleLang() { lang = lang === 'ru' ? 'en' : 'ru'; store.set('trs_lang2', lang); applyLang(); }
 
