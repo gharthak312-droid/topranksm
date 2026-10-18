@@ -265,6 +265,8 @@
     <input id="bidderName" placeholder="e.g. Ahmed K">
     <label data-i18n="fCountry">Apna country</label>
     <select id="bidCountry" onchange="onBidCountryChange()"></select>
+    <label data-i18n="fCity">Apna city</label>
+    <select id="bidCity"></select>
     <label data-i18n="fPic">Profile photo (optional)</label>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span id="picPrev"></span><input type="file" id="bidPic" accept="image/*" onchange="onPicPick(event)"></div>
     <label data-i18n="fDesc">Short description (optional)</label>
@@ -419,7 +421,7 @@ en: {
   howT:'How does it work? ❓',
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start bidding from <b>Rs 100</b> (Pakistan) / <b>$3</b> (International)<br>4️⃣ Highest bidder takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
   bidT:'➕ Place a Bid', fBoard:'Choose board', fHandle:'ID / Handle (e.g. @username)', fLink:'Profile link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Bid ✅',
   fShot:'Payment screenshot (optional — faster verification)',
@@ -501,7 +503,7 @@ ru: {
   howT:'Kaise kaam karta hai? ❓',
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ <b>Rs 100</b> (Pakistan) / <b>$3</b> (International) se bid shuru karo<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
   bidT:'➕ Bid Lagao', fBoard:'Board chunein', fHandle:'ID / Handle (jese @username)', fLink:'Profile ka link',
-  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.',
+  fAmt:'Bid amount (Rs) — min Rs 100', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $3', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Bid Confirm Karo ✅',
   fShot:'Payment ka screenshot (optional — verification tez hogi)',
@@ -589,6 +591,7 @@ const fmtMoney = pkr => currency === 'USD' ? '$' + pkr2usd(pkr).toFixed(2) : 'Rs
 function setCurrency(c) { currency = c; localStorage.setItem('trs_cur', c); renderCurBtn(); renderPayments(); updBidInfo(); renderBoard(cur); renderHome(); renderCrossBox(); renderAll(); const cp = document.getElementById('pg-countries'); if (cp && cp.classList.contains('active')) renderCountries(); }
 function onBidCountryChange() {
   const c = document.getElementById('bidCountry').value;
+  renderCityOptions();
   setCurrency(c === 'PK' ? 'PKR' : 'USD');
 }
 function renderCurBtn() { const el = document.getElementById('curBtn'); if (el) el.textContent = currency === 'PKR' ? '💵 USD' : '💷 PKR';
@@ -691,6 +694,7 @@ const COUNTRIES = [
 ];
 const countryFlag = c => (COUNTRIES.find(x => x.c === c) || {}).f || '🌍';
 const countryName = c => (COUNTRIES.find(x => x.c === c) || {}).n || c || '—';
+const PK_CITIES = ['Karachi','Lahore','Islamabad','Rawalpindi','Faisalabad','Multan','Peshawar','Quetta','Hyderabad','Sialkot','Gujranwala','Sargodha','Bahawalpur','Sukkur','Larkana','Mardan','Swat','Abbottabad','Other'];
 const LOGOS = {
   tiktok: '<svg fill="#000000" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>TikTok</title><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>',
   facebook: '<svg fill="#0866FF" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Facebook</title><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg>',
@@ -853,7 +857,7 @@ function renderHome() {
     html += l.map((b, i) => `
       <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
         <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${countryFlag(b.country)} ${t('seeDetails')}</a></div></div>
+        ${avatar(b, 32)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)}${b.city ? ' 📍' + b.city : ''} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${countryFlag(b.country)} ${t('seeDetails')}</a></div></div>
         <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
       </div>`).join('') + `</div>`;
   });
@@ -908,7 +912,7 @@ function rankRows(list, boardId, share) {
     return `
     <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
       <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
-      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${countryFlag(b.country)} ${t('seeDetails')}</a></div></div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>${b.desc ? `<div class="bd">${b.desc}</div>` : ''}<div class="m">${countryFlag(b.country)}${b.city ? ' 📍' + b.city : ''} by ${b.bidder} • <a href="${b.link}" target="_blank" onclick="countClick('${b.id}')">profile ↗</a> • 👆 <span class="clkc" data-bid="${b.id}">${b.clicks||0}</span> ${t('clicks')} • <a href="javascript:void(0)" onclick="event.stopPropagation();showDetail('${b.id}')">${countryFlag(b.country)} ${t('seeDetails')}</a></div></div>
       <div class="rbid"><b>${fmtMoney(b.amount)}</b>
       ${btns.length ? `<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:6px">${btns.join('')}</div>` : ''}</div>
     </div>`;
@@ -996,18 +1000,33 @@ function renderCountries() {
       <div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
       <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
     </div>`).join('') : `<div class="empty">${t('empty')()}</div>`;
-  // All bidders grouped by country
+  // All bidders grouped by country, then by city
   const byCountry = {};
   live.forEach(b => { const c = b.country || 'PK'; (byCountry[c] = byCountry[c] || []).push(b); });
   const sorted = Object.keys(byCountry).sort((a, b) => byCountry[b].length - byCountry[a].length);
-  document.getElementById('ctAll').innerHTML = sorted.length ? sorted.map(c => `
-    <div class="bsec"><div class="bsec-t">${countryFlag(c)} ${countryName(c)} <span style="color:var(--mut);font-weight:400;font-size:12px">(${byCountry[c].length})</span></div>` +
-    byCountry[c].sort((a, b) => b.amount - a.amount).map((b, i) => `
+  document.getElementById('ctAll').innerHTML = sorted.length ? sorted.map(c => {
+    let cityHtml = '';
+    if (c === 'PK') {
+      const byCity = {};
+      byCountry[c].forEach(b => { const ct = b.city || 'Other'; (byCity[ct] = byCity[ct] || []).push(b); });
+      cityHtml = Object.keys(byCity).sort((a, b) => byCity[b].length - byCity[a].length).map(ct =>
+        `<div style="margin:8px 0 4px;font-weight:700">📍 ${ct} <span style="color:var(--mut);font-weight:400;font-size:12px">(${byCity[ct].length})</span></div>` +
+        byCity[ct].sort((a, b) => b.amount - a.amount).map((b, i) => `
+        <div class="rank-row" onclick="rowClick('${b.id}', event)">
+          <div class="rnum">#${i + 1}</div>
+          ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div><div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
+          <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
+        </div>`).join('')
+      ).join('');
+    }
+    return `<div class="bsec"><div class="bsec-t">${countryFlag(c)} ${countryName(c)} <span style="color:var(--mut);font-weight:400;font-size:12px">(${byCountry[c].length})</span></div>` +
+    (c === 'PK' ? cityHtml : byCountry[c].sort((a, b) => b.amount - a.amount).map((b, i) => `
     <div class="rank-row" onclick="rowClick('${b.id}', event)">
       <div class="rnum">#${i + 1}</div>
       ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div><div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
       <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
-    </div>`).join('') + `</div>`).join('') : `<div class="empty">${t('empty')()}</div>`;
+    </div>`).join('')) + `</div>`;
+  }).join('') : `<div class="empty">${t('empty')()}</div>`;
 }
 function renderBoard(id) {
   const bd = BOARDS.find(b => b.id === id);
@@ -1029,6 +1048,18 @@ function fanBid() { document.getElementById('bidBoard').value = 'fans'; updBidIn
 function renderBidBoards() {
   document.getElementById('bidBoard').innerHTML = BOARDS.map(b => `<option value="${b.id}">${b.icon} ${b.name}</option>`).join('');
   document.getElementById('bidCountry').innerHTML = COUNTRIES.map(c => `<option value="${c.c}">${c.f} ${c.n}</option>`).join('');
+  renderCityOptions();
+}
+function renderCityOptions() {
+  const cc = document.getElementById('bidCountry').value;
+  const cs = document.getElementById('bidCity');
+  if (cc === 'PK') {
+    cs.innerHTML = PK_CITIES.map(c => `<option value="${c}">${c}</option>`).join('');
+    cs.style.display = '';
+  } else {
+    cs.innerHTML = `<option value="">—</option>`;
+    cs.style.display = 'none';
+  }
 }
 function renderPayments() {
   if (currency === 'USD') {
@@ -1084,6 +1115,7 @@ function placeBid() {
   const tid = document.getElementById('bidTid').value.trim();
   const desc = document.getElementById('bidDesc').value.trim();
   const country = document.getElementById('bidCountry').value || 'PK';
+  const city = document.getElementById('bidCity').value || '';
   if (!handle) return toast(t('needHandle'));
   if (!link.startsWith('http')) return toast(t('needLink'));
   if (!bidPic) return toast(t('needPic'));
@@ -1093,7 +1125,7 @@ function placeBid() {
     : (tb === 0 ? MIN_BID : tb + MIN_RAISE);
   if (amount < minNeed) return toast(t('needMin')(fmtMoney(minNeed)));
   if (tid.length < 5) return toast(t('needTid'));
-  const b = { id: 'TR' + Date.now().toString().slice(-6), board, handle, link, amount, bidder, t: Date.now(), status: 'pending', tid, shot: pendingShot, pic: bidPic, desc, country };
+  const b = { id: 'TR' + Date.now().toString().slice(-6), board, handle, link, amount, bidder, t: Date.now(), status: 'pending', tid, shot: pendingShot, pic: bidPic, desc, country, city };
   bids.unshift(b); save();
   document.getElementById('bidHandle').value = ''; document.getElementById('bidLink').value = '';
   document.getElementById('bidTid').value = ''; document.getElementById('bidderName').value = '';
