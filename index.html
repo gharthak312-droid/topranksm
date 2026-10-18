@@ -984,7 +984,7 @@ function renderCountries() {
     <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
       <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
       ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>
-      <div class="m" style="font-weight:700;color:var(--gold)">${countryFlag(b.country)} ${countryName(b.country)}</div>
+      <div class="m" style="font-weight:700;color:var(--gold)"><span class="cflag">${countryFlag(b.country)}</span>${countryName(b.country)}</div>
       <div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
       <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
     </div>`).join('') : `<div class="empty">${t('empty')()}</div>`;
@@ -1175,7 +1175,7 @@ async function renderHof() {
       <div class="rank-row">
         <div class="rnum">${c.rank === 1 ? '👑' : '#' + c.rank}</div>
         ${avatar(c)}<div class="rinfo"><div class="h">${c.handle}</div>
-        <div class="m" style="font-weight:700;color:var(--gold)">${countryFlag(c.country)} ${countryName(c.country)}</div>
+        <div class="m" style="font-weight:700;color:var(--gold)"><span class="cflag">${countryFlag(c.country)}</span>${countryName(c.country)}</div>
         <div class="m">by ${c.bidder || '—'} • ${boardName(c.board)}</div></div>
         <div class="rbid"><b>${fmtMoney(c.amount)}</b></div>
       </div>`;
