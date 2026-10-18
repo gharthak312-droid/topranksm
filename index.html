@@ -819,7 +819,12 @@ async function trackVisit() {
 trackVisit();
 
 let onlineN = 0;
-const SESSION_ID = 'S' + Date.now().toString(36) + Math.floor(Math.random()*99999);
+// Persistent session ID — refresh par naya session nahi banta!
+let SESSION_ID = store.get('trs_session', null);
+if (!SESSION_ID) {
+  SESSION_ID = 'S' + Date.now().toString(36) + Math.floor(Math.random()*99999);
+  store.set('trs_session', SESSION_ID);
+}
 async function presenceHeartbeat() {
   try {
     const now = new Date().toISOString();
