@@ -752,7 +752,7 @@ function setTimeF(f) {
 function crossBoxHTML() {
   const row = (i, b) => {
     const bd = BOARDS.find(x => x.id === b.board) || {};
-    return `<div class="xrow"><span class="xrank">${i}</span><b>${b.handle}</b><span class="xboard">${bd.name || ''}</span><span class="xbid">Rs ${b.amount.toLocaleString()}</span></div>`;
+    return `<div class="xrow" onclick="rowClick('${b.id}', event)" style="cursor:pointer" title="Profile kholo"><span class="xrank">${i}</span><b>${b.handle}</b><span class="xboard">${bd.name || ''}</span><span class="xbid">Rs ${b.amount.toLocaleString()}</span></div>`;
   };
   if (timeF === 'all') {
     const t5 = bids.filter(b => b.status === 'live' && isToday(b.t)).sort((a, b) => b.amount - a.amount).slice(0, 5);
