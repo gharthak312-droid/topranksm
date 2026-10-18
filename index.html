@@ -163,6 +163,7 @@
   <button class="active" data-p="home" data-i18n="navHome">🏠 Home</button>
   <button data-p="boards" data-i18n="navBoards">🏆 Boards</button>
   <button data-p="allbidders" data-i18n="navAll">👥 All Bidders</button>
+  <button data-p="countries" data-i18n="navCountries">🌍 Countries</button>
   <button data-p="bid" data-i18n="navBid">➕ Bid Lagao</button>
   <button data-p="fans" data-i18n="navFans">⭐ Fan Board</button>
   <button data-p="hof" data-i18n="navHof">🏅 Hall of Fame</button>
@@ -232,6 +233,18 @@
     <h3 data-i18n="allT">👥 Sab Bidders — Season 1</h3>
     <p class="note" data-i18n="allD" style="margin-top:0;margin-bottom:12px">Har board ka har bidder — har social media alag alag.</p>
     <div id="allBidList"></div>
+  </div>
+</div>
+
+<!-- COUNTRIES -->
+<div class="page" id="pg-countries">
+  <div class="card">
+    <h3 data-i18n="ctTopT">🏆 Top 3 Bidders — Duniya Bhar Se</h3>
+    <div id="ctTop3"></div>
+  </div>
+  <div class="card">
+    <h3 data-i18n="ctAllT">🌍 Country-wise Bidders</h3>
+    <div id="ctAll"></div>
   </div>
 </div>
 
@@ -379,7 +392,7 @@
 // ==================== I18N ====================
 const LANG = {
 en: {
-  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 All Bidders', navBid:'➕ Place Bid', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
+  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 All Bidders', navCountries:'🌍 Countries', ctTopT:'🏆 Top 3 Bidders — Worldwide', ctAllT:'🌍 Country-wise Bidders', navBid:'➕ Place Bid', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
   season:'Season 1',
   allT:'👥 All Bidders — Season 1',
   allD:'Every bidder on every board, grouped by platform.',
@@ -461,7 +474,7 @@ en: {
   beFirst:()=>`No bids on this board yet — become <b>#1</b> for ${fmtMoney(currency==='USD'?usd2pkr(MIN_BID_USD):MIN_BID)}! 👑`,
 },
 ru: {
-  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 Sab Bidders', navBid:'➕ Bid Lagao', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
+  navHome:'🏠 Home', navBoards:'🏆 Boards', navAll:'👥 Sab Bidders', navCountries:'🌍 Countries', ctTopT:'🏆 Top 3 Bidders — Duniya Bhar Se', ctAllT:'🌍 Country-wise Bidders', navBid:'➕ Bid Lagao', navFans:'⭐ Fan Board', navHof:'🏅 Hall of Fame', navRules:'📜 Rules',
   season:'Season 1',
   allT:'👥 Sab Bidders — Season 1',
   allD:'Har board ka har bidder — har social media alag alag.',
@@ -723,7 +736,7 @@ let onlineN = 14 + Math.floor(Math.random() * 18);
 
 // ==================== HELPERS ====================
 function toast(m) { const tt = document.getElementById('toast'); tt.textContent = m; tt.style.display = 'block'; setTimeout(() => tt.style.display = 'none', 2500); }
-function go(p) { document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.p === p)); document.querySelectorAll('.page').forEach(x => x.classList.remove('active')); document.getElementById('pg-' + p).classList.add('active'); if (p === 'boards') renderBoard(cur); if (p === 'allbidders') renderAll(); if (p === 'fans') renderFans(); if (p === 'hof') renderHof(); if (p === 'home') renderHome(); window.scrollTo(0, 0); }
+function go(p) { document.querySelectorAll('nav button').forEach(b => b.classList.toggle('active', b.dataset.p === p)); document.querySelectorAll('.page').forEach(x => x.classList.remove('active')); document.getElementById('pg-' + p).classList.add('active'); if (p === 'boards') renderBoard(cur); if (p === 'allbidders') renderAll(); if (p === 'countries') renderCountries(); if (p === 'fans') renderFans(); if (p === 'hof') renderHof(); if (p === 'home') renderHome(); window.scrollTo(0, 0); }
 document.querySelectorAll('nav button').forEach(b => b.onclick = () => go(b.dataset.p));
 function isToday(ts) { return new Date(ts).toDateString() === new Date().toDateString(); }
 function liveBids(board, tf, cf) {
@@ -911,6 +924,31 @@ function renderAll() {
       rankRows(l, bd.id, true) + `</div>`;
   });
   document.getElementById('allBidList').innerHTML = html || `<div class="empty">${t('empty')()}</div>`;
+}
+function renderCountries() {
+  const live = bids.filter(b => b.status === 'live').sort((a, b) => b.amount - a.amount || a.t - b.t);
+  // Top 3 box
+  const top3 = live.slice(0, 3);
+  document.getElementById('ctTop3').innerHTML = top3.length ? top3.map((b, i) => `
+    <div class="rank-row ${i === 0 ? 'top1' : ''}" onclick="rowClick('${b.id}', event)">
+      <div class="rnum">${i === 0 ? '#1' : '#' + (i + 1)}</div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div>
+      <div class="m" style="font-weight:700;color:var(--gold)">${countryFlag(b.country)} ${countryName(b.country)}</div>
+      <div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
+      <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
+    </div>`).join('') : `<div class="empty">${t('empty')()}</div>`;
+  // All bidders grouped by country
+  const byCountry = {};
+  live.forEach(b => { const c = b.country || 'PK'; (byCountry[c] = byCountry[c] || []).push(b); });
+  const sorted = Object.keys(byCountry).sort((a, b) => byCountry[b].length - byCountry[a].length);
+  document.getElementById('ctAll').innerHTML = sorted.length ? sorted.map(c => `
+    <div class="bsec"><div class="bsec-t">${countryFlag(c)} ${countryName(c)} <span style="color:var(--mut);font-weight:400;font-size:12px">(${byCountry[c].length})</span></div>` +
+    byCountry[c].sort((a, b) => b.amount - a.amount).map((b, i) => `
+    <div class="rank-row" onclick="rowClick('${b.id}', event)">
+      <div class="rnum">#${i + 1}</div>
+      ${avatar(b)}<div class="rinfo"><div class="h">${b.handle}</div><div class="m">by ${b.bidder} • ${boardName(b.board)}</div></div>
+      <div class="rbid"><b>${fmtMoney(b.amount)}</b></div>
+    </div>`).join('') + `</div>`).join('') : `<div class="empty">${t('empty')()}</div>`;
 }
 function renderBoard(id) {
   const bd = BOARDS.find(b => b.id === id);
