@@ -106,7 +106,7 @@
         <div class="m" id="stBoards" style="margin-top:6px">—</div>
         <div class="m" id="stSeason" style="margin-top:6px">—</div>
         <p class="note">Visitors = daily unique. Refresh se count nahi barhta.</p>
-        <button class="btn ghost" onclick="loadStats()">🔄 Refresh stats</button>
+        <button class="btn ghost" id="refreshBtn" onclick="loadStats()">🔄 Refresh stats</button>
       </div>
     </div>
 
@@ -361,6 +361,8 @@ async function removeBid(id) {
 
 async function loadStats() {
   if (!supa) return;
+  const rb = document.getElementById('refreshBtn');
+  if (rb) rb.textContent = '⏳ Loading…';
   await loadBids();
   try {
     const { count: total } = await supa.from('visits').select('id', { count: 'exact', head: true });
@@ -390,6 +392,8 @@ async function loadStats() {
     const days = se ? Math.max(0, Math.ceil((new Date(se).getTime() - Date.now()) / 864e5)) : '—';
     document.getElementById('stSeason').innerHTML = `🗓️ Season <b>${esc(sn)}</b> • ends <b>${se ? new Date(se).toLocaleDateString('en-GB') : '—'}</b> • <b>${days}</b> din baqi`;
   } catch (e) {}
+  if (rb) rb.textContent = '🔄 Refresh stats';
+  toast('✅ Stats refresh ho gaye!');
 }
 
 function changePin() {
