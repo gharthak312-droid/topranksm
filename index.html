@@ -57,6 +57,7 @@
   .hero h1 { font-size:34px; margin-bottom:10px; line-height:1.25; letter-spacing:-.8px; font-weight:800; }
   .hero h1 span { background:linear-gradient(90deg,var(--gold),var(--gold2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
   .hero p { color:var(--mut); font-size:14.5px; margin-bottom:20px; line-height:1.6; }
+  .topbid-badge { display:inline-block; background:rgba(245,179,1,.12); border:1px solid var(--gold); color:var(--gold); font-weight:800; font-size:15px; padding:5px 14px; border-radius:999px; margin-left:10px; vertical-align:middle; white-space:nowrap; }
   .cta { position:relative; overflow:hidden; display:inline-block; background:linear-gradient(135deg,var(--gold2),var(--gold)); color:#fff; border:none; padding:17px 40px; border-radius:32px; font-size:17px; font-weight:800; cursor:pointer; box-shadow:0 8px 26px rgba(184,134,11,.4); transition:transform .15s; letter-spacing:.2px; }
   .cta:active { transform:scale(.96); }
   .cta::after { content:''; position:absolute; top:0; left:-70%; width:45%; height:100%; background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent); transform:skewX(-20deg); animation:shine 2.8s infinite; }
@@ -177,7 +178,7 @@
     <button id="hpToday" onclick="setTimeF('today')" data-i18n="timeToday">📅 Today</button>
   </div>
   <div class="hero">
-    <h1 data-i18n="heroT">Claim for <span>#1</span>!</h1>
+    <div style="margin-bottom:10px"><h1 data-i18n="heroT" style="display:inline">Claim for <span>#1</span>!</h1> <span id="topBidBadge" class="topbid-badge">Rs 0</span></div>
     <p data-i18n="heroS">Har social media platform ka alag leaderboard. Jo zyada bid kare, wo #1. Paisa = Rank. Simple.</p>
     <div id="heroLive" style="font-weight:800; color:var(--gold); margin-bottom:16px; font-size:15px;"></div>
     <button class="cta" onclick="go('bid')" data-i18n="heroBtn">Bid Lagao ➜</button>
@@ -906,6 +907,7 @@ function renderHome() {
   document.getElementById('stBids').textContent = live.length;
   document.getElementById('onlineN').textContent = onlineN;
   document.getElementById('bigBid').textContent = fmtMoney(live.length ? Math.max(...live.map(b => b.amount)) : 0);
+  document.getElementById('topBidBadge').textContent = fmtMoney(live.length ? Math.max(...live.map(b => b.amount)) : 0);
   // hero live line — jhoot nahi, urgency!
   const emptyBoards = BOARDS.filter(bd => topBid(bd.id, 'all') === 0);
   let heroMsg;
