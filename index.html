@@ -361,40 +361,11 @@
   </div>
 </div>
 
-<!-- ADMIN -->
-<div class="page" id="pg-admin">
-  <div class="card" id="adminLock">
-    <h3>🔐 Admin Login</h3>
-    <label>PIN</label>
-    <input id="adminPin" type="password" inputmode="numeric" maxlength="8" placeholder="****">
-    <button class="btn" onclick="adminLogin()">Login</button>
-    <p class="note">Default PIN: 1234 (andar ja kar change kar lena)</p>
-  </div>
-  <div id="adminPanel" style="display:none">
-    <div class="card">
-      <h3>⏳ Pending Bids (<span id="pendCount">0</span>)</h3>
-      <p class="note">Pehle apne Easypaisa/Nayapay app me TID verify karo, phir ✅ dabao — bid foran live ho jayegi!</p>
-      <div id="pendList"></div>
-    </div>
-    <div class="card">
-      <h3>✅ Live Bids</h3>
-      <div id="liveList"></div>
-    </div>
-    <div class="card">
-      <h3>🔑 PIN Change</h3>
-      <label>New PIN</label>
-      <input id="newPin" type="password" inputmode="numeric" maxlength="8" placeholder="4+ digits">
-      <button class="btn" onclick="changePin()">PIN Update Karo</button>
-    </div>
-  </div>
-</div>
-
 <footer>
   <button onclick="go('about')" data-i18n="ftAbout">About</button> •
   <button onclick="go('faq')" data-i18n="ftFaq">FAQs</button> •
   <button onclick="go('privacy')" data-i18n="ftPrivacy">Privacy Policy</button> •
-  <button onclick="go('terms')" data-i18n="ftTerms">Terms & Conditions</button> •
-  <button onclick="go('admin')">🔐 Admin</button>
+  <button onclick="go('terms')" data-i18n="ftTerms">Terms & Conditions</button>
   <div style="margin-top:8px">© 2026 TopRankSM</div>
 </footer>
 
@@ -1289,60 +1260,6 @@ function placeBid() {
   const waText = encodeURIComponent('🔔 *NAYI BID* — TopRankSM\n\nBoard: ' + boardName(board) + '\nHandle: ' + handle + '\nAmount: Rs ' + amount.toLocaleString() + '\nBidder: ' + bidder + '\nTID: ' + tid + '\nTime: ' + new Date().toLocaleString());
   document.getElementById('waNotify').innerHTML = `<a class="btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px" href="https://wa.me/923352710980?text=${waText}" target="_blank">📲 Admin ko WhatsApp par bhejo</a>`;
   toast(t('bidPending'));
-}
-
-// ==================== ADMIN ====================
-function adminLogin() {
-  if (document.getElementById('adminPin').value === store.get('trs_pin', '1234')) {
-    document.getElementById('adminLock').style.display = 'none';
-    document.getElementById('adminPanel').style.display = 'block';
-    document.getElementById('adminPin').value = '';
-    renderAdmin();
-  } else toast('❌ Ghalat PIN!');
-}
-function renderAdmin() {
-  const pend = bids.filter(b => b.status === 'pending').sort((a, b) => b.t - a.t);
-  document.getElementById('pendCount').textContent = pend.length;
-  document.getElementById('pendList').innerHTML = pend.length ? pend.map(b => `
-    <div class="rank-row">
-      ${avatar(b)}
-      <div class="rinfo"><div class="h">${b.handle}</div>
-        <div class="m">${countryFlag(b.country)} ${boardName(b.board)} • <b>Rs ${b.amount.toLocaleString()}</b> • by ${b.bidder}</div>
-        <div class="m">TID: <b style="color:var(--gold)">${b.tid || '—'}</b> • ${ago(b.t)}</div>
-        ${b.desc ? `<div class="bd">${b.desc}</div>` : ''}
-        ${b.shot ? `<img src="${b.shot}" style="width:100%;border-radius:10px;margin-top:6px;border:1px solid var(--line)">` : '<div class="m">📷 screenshot nahi bheja</div>'}
-      </div>
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <button class="btn" style="padding:8px 12px" onclick="approveBid('${b.id}')">✅</button>
-        <button class="btn" style="padding:8px 12px;background:#555" onclick="rejectBid('${b.id}')">❌</button>
-      </div>
-    </div>`).join('') : `<div class="empty">Koi pending bid nahi 🎉</div>`;
-  const live = bids.filter(b => b.status === 'live').sort((a, b) => b.amount - a.amount);
-  document.getElementById('liveList').innerHTML = live.length ? live.map(b => `
-    <div class="xrow"><b>${b.handle}</b><span class="xboard">${boardName(b.board)}</span><span class="xbid">${fmtMoney(b.amount)}</span><button onclick="removeBid('${b.id}')" style="background:none;border:none;font-size:16px;cursor:pointer">🗑️</button></div>`).join('') : `<div class="empty">—</div>`;
-}
-function approveBid(id) {
-  const b = bids.find(x => x.id === id);
-  if (!b) return;
-  b.status = 'live'; save(); renderAdmin(); renderHome(); renderBoard(cur); renderAll(); renderFans(); renderCrossBox();
-  toast('✅ Bid live ho gayi!');
-}
-async function rejectBid(id) {
-  bids = bids.filter(x => x.id !== id);
-  try { if (supa) await supa.from('bids').delete().eq('id', id); } catch (e) {}
-  save(); renderAdmin(); toast('🗑️ Bid reject kar di');
-}
-async function removeBid(id) {
-  if (!confirm('Ye live bid delete karni hai?')) return;
-  bids = bids.filter(x => x.id !== id);
-  try { if (supa) await supa.from('bids').delete().eq('id', id); } catch (e) {}
-  save(); renderAdmin(); renderHome(); renderBoard(cur); renderAll(); renderFans(); renderCrossBox(); renderCountries(); cloudLoad(true);
-}
-function changePin() {
-  const v = document.getElementById('newPin').value.trim();
-  if (v.length < 4) return toast('PIN kam se kam 4 digits ka ho!');
-  store.set('trs_pin', v); document.getElementById('newPin').value = '';
-  toast('✅ PIN change ho gaya!');
 }
 
 // ==================== RULES / FAQ / DOCS / HOF ====================
