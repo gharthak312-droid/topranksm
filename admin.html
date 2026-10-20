@@ -7,6 +7,9 @@
 <title>TopRankSM — Admin Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+  .blogo { width:23px; height:23px; border-radius:7px; background:#fff; display:inline-flex; align-items:center; justify-content:center; vertical-align:-6px; box-shadow:0 1px 3px rgba(0,0,0,.18); border:1px solid rgba(0,0,0,.06); }
+  .blogo svg, .blogo img { width:16px; height:16px; display:block; }
+  .blogo-dark { background:#000; }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   :root { --bg:#0c0c0e; --card:#16161a; --card2:#1e1e24; --txt:#f4f4f5; --mut:#9a9aa5; --line:#2a2a32; --gold:#f5b301; --acc:#6ea8ff; --ok:#2ee6a8; --bad:#ff6b6b; }
   body { background:var(--bg); color:var(--txt); font-family:'Segoe UI',Trebuchet MS,sans-serif; min-height:100vh; padding:14px; }
@@ -136,14 +139,26 @@ const store = {
 let allBids = [];
 
 const BOARDS = [
-  { id:'tiktok', name:'TikTok', icon:'🎵' }, { id:'facebook', name:'Facebook', icon:'📘' },
-  { id:'instagram', name:'Instagram', icon:'📸' }, { id:'youtube', name:'YouTube', icon:'▶️' },
-  { id:'twitter', name:'Twitter / X', icon:'🐦' }, { id:'snapchat', name:'Snapchat', icon:'👻' },
-  { id:'linkedin', name:'LinkedIn', icon:'💼' }, { id:'threads', name:'Threads', icon:'🧵' },
-  { id:'websites', name:'Websites', icon:'🌐' }, { id:'apps', name:'Apps', icon:'📱' },
-  { id:'fans', name:'Fan Board', icon:'⭐' },
+  { id:'tiktok', name:'TikTok', icon:'🎵', logo:'tiktok' }, { id:'facebook', name:'Facebook', icon:'📘', logo:'facebook' },
+  { id:'instagram', name:'Instagram', icon:'📸', logo:'instagram' }, { id:'youtube', name:'YouTube', icon:'▶️', logo:'youtube' },
+  { id:'twitter', name:'Twitter / X', icon:'🐦', logo:'x' }, { id:'snapchat', name:'Snapchat', icon:'👻', logo:'snapchat' },
+  { id:'linkedin', name:'LinkedIn', icon:'💼', logo:'linkedin' }, { id:'threads', name:'Threads', icon:'🧵', logo:'threads' },
+  { id:'websites', name:'Websites', icon:'🌐', logo:'websites' }, { id:'apps', name:'Apps', icon:'📱', logo:'apps' },
+  { id:'fans', name:'Fan Board', icon:'⭐', logo:'fans' },
 ];
-const boardName = id => { const b = BOARDS.find(x => x.id === id); return b ? b.icon + ' ' + b.name : id; };
+const LOGO_URLS = { tiktok:'https://cdn.simpleicons.org/tiktok/000000', facebook:'https://cdn.simpleicons.org/facebook/0866FF', instagram:'https://cdn.simpleicons.org/instagram/FF0069', youtube:'https://cdn.simpleicons.org/youtube/FF0000', x:'https://cdn.simpleicons.org/x/000000', snapchat:'https://cdn.simpleicons.org/snapchat/FFFC00', linkedin:'https://cdn.jsdelivr.net/npm/simple-icons@13/icons/linkedin.svg', threads:'https://cdn.simpleicons.org/threads/000000' };
+const GLYPHS = {
+  websites: '<svg viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.9" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.9 5.7 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.7-3.9-9S9.5 5.6 12 3z"/></svg>',
+  apps: '<svg viewBox="0 0 24 24" fill="#7c3aed" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>',
+  fans: '<svg viewBox="0 0 24 24" fill="#f59e0b" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>'
+};
+function bicon(bd) {
+  if (bd.logo && LOGO_URLS[bd.logo]) return `<span class="blogo${bd.logo === 'snapchat' ? ' blogo-dark' : ''}"><img src="${LOGO_URLS[bd.logo]}" alt=""></span>`;
+  if (bd.logo && GLYPHS[bd.logo]) return `<span class="blogo">${GLYPHS[bd.logo]}</span>`;
+  return bd.icon;
+}
+const boardName = id => { const b = BOARDS.find(x => x.id === id); return b ? b.name : id; };
+const boardLabel = id => { const b = BOARDS.find(x => x.id === id); return b ? bicon(b) + ' ' + b.name : id; };
 
 const COUNTRIES = [
   { c:'AF', n:'Afghanistan', f:'🇦🇫' }, { c:'AL', n:'Albania', f:'🇦🇱' }, { c:'DZ', n:'Algeria', f:'🇩🇿' },
@@ -257,7 +272,7 @@ async function loadBids() {
       <div class="row">
         <div class="info">
           <div class="h">${esc(b.handle)}</div>
-          <div class="m">${countryFlag(b.country)} ${esc(countryName(b.country))}${b.city ? ' • 📍 ' + esc(b.city) : ''} • ${boardName(b.board)}</div>
+          <div class="m">${countryFlag(b.country)} ${esc(countryName(b.country))}${b.city ? ' • 📍 ' + esc(b.city) : ''} • ${boardLabel(b.board)}</div>
           <div class="m"><span class="amt">${fmtMoney(b.amount)}</span> • by ${esc(b.bidder)}</div>
           <div class="m">TID: <span class="tid">${esc(b.tid || '—')}</span> • ${ago(b.t)}</div>
           ${b.desc ? `<div class="bd">📝 ${esc(b.desc)}</div>` : ''}
@@ -280,7 +295,7 @@ function renderLive() {
   const byBoard = {};
   live.forEach(b => { (byBoard[b.board] = byBoard[b.board] || []).push(b); });
   document.getElementById('liveList').innerHTML = live.length ? Object.keys(byBoard).map(bd =>
-    `<div class="m" style="margin:10px 0 6px;font-weight:800">${boardName(bd)} (${byBoard[bd].length})</div>` +
+    `<div class="m" style="margin:10px 0 6px;font-weight:800">${boardLabel(bd)} (${byBoard[bd].length})</div>` +
     byBoard[bd].sort((a, b) => b.amount - a.amount).map(b => `
     <div class="row" style="align-items:center">
       <div class="info">
@@ -298,7 +313,7 @@ function renderSeeds() {
     <div class="row" style="align-items:center">
       <div class="info">
         <div class="h">${esc(b.handle)} <span class="m">(${esc(b.bidder)})</span></div>
-        <div class="m">${boardName(b.board)} • <span class="amt">${fmtMoney(b.amount)}</span> • ${b.status === 'live' ? '✅ live' : '⏳ pending'}</div>
+        <div class="m">${boardLabel(b.board)} • <span class="amt">${fmtMoney(b.amount)}</span> • ${b.status === 'live' ? '✅ live' : '⏳ pending'}</div>
       </div>
       <div class="acts"><button class="del" onclick="removeBid('${b.id}')">🗑️</button></div>
     </div>`).join('') : '<div class="empty">Koi seed nahi — sab saaf! 🎉</div>';
@@ -381,9 +396,9 @@ async function loadStats() {
   const tv = live.reduce((s, b) => s + Number(b.amount || 0), 0);
   document.getElementById('stValue').textContent = 'Rs ' + tv.toLocaleString();
   const big = live.slice().sort((a, b) => b.amount - a.amount)[0];
-  document.getElementById('stBig').innerHTML = big ? `👑 Biggest: <b>${esc(big.handle)}</b> — <span class="amt">${fmtMoney(big.amount)}</span> ${boardName(big.board)}` : '—';
+  document.getElementById('stBig').innerHTML = big ? `👑 Biggest: <b>${esc(big.handle)}</b> — <span class="amt">${fmtMoney(big.amount)}</span> ${boardLabel(big.board)}` : '—';
   const bc = {}; live.forEach(b => { bc[b.board] = (bc[b.board] || 0) + 1; });
-  const parts = BOARDS.filter(x => bc[x.id]).map(x => x.icon + bc[x.id]);
+  const parts = BOARDS.filter(x => bc[x.id]).map(x => bicon(x) + bc[x.id]);
   document.getElementById('stBoards').innerHTML = parts.length ? '📋 ' + parts.join(' • ') : '—';
   try {
     const { data } = await supa.from('settings').select('*');
