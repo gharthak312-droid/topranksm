@@ -238,6 +238,10 @@
     </div>
   </div>
   <div id="crossBoxHome" style="margin-bottom:16px"></div>
+  <div class="card" id="webAppsBox">
+    <h2 data-i18n="waT">Websites & Apps</h2>
+    <div id="webAppsBody"></div>
+  </div>
   <div class="card">
     <h2 data-i18n="top3">Har Board ka Top 3 (Live) 🔥</h2>
     <div id="topThrees"></div>
@@ -478,7 +482,7 @@ en: {
   verifyName:'Check the account name (Abdul Wadood) before sending money.',
   bidNote:'⏳ Your bid goes live after payment verification. Bids are <b>non-refundable</b>.',
   fanT:'⭐ Fan Board — The Biggest Battle!', fanD:'Make your favorite creator the <b>#1 fan-favorite</b>! Any platform — TikTok, YouTube, Insta — all on one board.',
-  fanBtn:'Bid for Your Hero',
+  fanBtn:'Bid for Your Hero', waT:'Websites & Apps', waView:'View board →',
   hofT:'🏅 Hall of Fame', hofD:'Champions of every Season — immortal forever!',
   hofEmpty:'🏅 Season 1 is running!<br>Champions will be immortalized here when the Season ends.',
   rulesT:'📜 Rules — read carefully',
@@ -564,7 +568,7 @@ ru: {
   verifyName:'Pese bhejne se pehle account ka naam (Abdul Wadood) zaroor check karo.',
   bidNote:'⏳ Payment verify hone ke baad bid leaderboard par live hogi. Bids <b>non-refundable</b> hain.',
   fanT:'⭐ Fan Board — Sab se bara muqabla!', fanD:'Apne favorite creator ko <b>#1 fan-favorite</b> banao! Kisi bhi platform ka creator — TikTok, YouTube, Insta — sab ek board par.',
-  fanBtn:'Apne Hero ke liye Bid karo',
+  fanBtn:'Apne Hero ke liye Bid karo', waT:'Websites & Apps', waView:'Board dekho →',
   hofT:'🏅 Hall of Fame', hofD:'Har Season ke champions — hamesha ke liye amar!',
   hofEmpty:'🏅 Season 1 chal raha hai!<br>Season khatam hone par champions yahan amar honge.',
   rulesT:'📜 Rules — ghor se parho',
@@ -991,7 +995,20 @@ function ago(ts) {
 }
 
 // ==================== HOME ====================
+function renderWebApps() {
+  const el = document.getElementById('webAppsBody'); if (!el) return;
+  let h = '';
+  ['websites', 'apps'].forEach(id => {
+    const bd = BOARDS.find(b => b.id === id);
+    const list = bids.filter(b => b.status === 'live' && b.board === id).sort((a, b) => b.amount - a.amount || (a.t || 0) - (b.t || 0));
+    h += `<div class="bsec"><div class="bsec-t">${bicon(bd)} ${bd.name}</div>`;
+    h += list.length ? rankRows(list.slice(0, 5), id, false) : `<div class="empty">${t('empty')()}</div>`;
+    h += `<button class="hbtn" style="margin-top:8px" onclick="goBoard('${id}')">${t('waView')}</button></div>`;
+  });
+  el.innerHTML = h;
+}
 function renderHome() {
+  renderWebApps();
   const live = bids.filter(b => b.status === 'live');
   const pool = live.reduce((s, b) => s + b.amount, 0);
   document.getElementById('stPool').textContent = currency === 'USD' ? pkr2usd(pool).toFixed(2) : pool.toLocaleString();
