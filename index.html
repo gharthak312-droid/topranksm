@@ -633,14 +633,18 @@ function renderCurBtn() { const el = document.getElementById('curBtn'); if (el) 
   const ba = document.getElementById('bidAmt');
   if (ba) ba.min = currency === 'USD' ? MIN_BID_USD : MIN_BID;
 }
-// Auto-detect country via IP (PK -> PKR, else USD)
+// Auto-detect country via IP (PK -> PKR, else USD). Country is also remembered
+// so the card total can show "+ Tax" for every non-dollar country.
+let visitorCC = localStorage.getItem('trs_cc') || '';
+const USD_COUNTRIES = ['US','PR','GU','VI','AS','MP','EC','SV','PA','TL','FM','MH','PW','TC','VG','BQ'];
+function noteVisitorCC(cc) { if (!cc) return; visitorCC = cc; try { localStorage.setItem('trs_cc', cc); } catch (e) {} }
 function autoCurrency() {
-  if (localStorage.getItem('trs_cur')) return;
+  const hasPref = !!localStorage.getItem('trs_cur');
   fetch('http://ip-api.com/json/?fields=countryCode').then(r => r.json()).then(d => {
-    if (d && d.countryCode) setCurrency(d.countryCode === 'PK' ? 'PKR' : 'USD');
+    if (d && d.countryCode) { noteVisitorCC(d.countryCode); if (!hasPref) setCurrency(d.countryCode === 'PK' ? 'PKR' : 'USD'); else updCardAmt(); }
   }).catch(() => {
     fetch('https://ipapi.co/json/').then(r => r.json()).then(d => {
-      if (d && d.country_code) setCurrency(d.country_code === 'PK' ? 'PKR' : 'USD');
+      if (d && d.country_code) { noteVisitorCC(d.country_code); if (!hasPref) setCurrency(d.country_code === 'PK' ? 'PKR' : 'USD'); else updCardAmt(); }
     }).catch(() => {});
   });
 }
@@ -1256,7 +1260,8 @@ function updCardAmt() {
   if (!el) return;
   const v = parseFloat(document.getElementById('bidAmt').value || 0);
   const pkr = currency === 'USD' ? usd2pkr(v) : v;
-  el.textContent = 'Total: $' + pkr2usd(pkr).toFixed(2) + '  (Rs ' + Math.round(pkr).toLocaleString() + ')' + (currency === 'USD' ? '' : '  + Tax');
+  const showTax = visitorCC ? !USD_COUNTRIES.includes(visitorCC) : (currency !== 'USD');
+  el.textContent = 'Total: $' + pkr2usd(pkr).toFixed(2) + '  (Rs ' + Math.round(pkr).toLocaleString() + ')' + (showTax ? '  + Tax' : '');
 }
 document.getElementById('bidAmt').addEventListener('input', updCardAmt);
 function updBidInfo() {
