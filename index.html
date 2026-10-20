@@ -149,6 +149,10 @@
   .countdown { text-align:center; background:var(--card); border:1.5px dashed var(--goldline); border-radius:14px; padding:12px; margin-bottom:16px; font-size:14px; }
   .countdown b { color:var(--gold); font-size:17px; }
   .pay-row { display:flex; justify-content:space-between; align-items:center; background:var(--card2); border-radius:12px; padding:12px 14px; margin:8px 0; border:1px solid var(--line); }
+  .paytabs { display:flex; gap:8px; margin:6px 0 12px; }
+  .paytab { flex:1; padding:12px; border-radius:12px; border:1px solid var(--line); background:var(--card2); color:inherit; font-weight:800; font-size:15px; cursor:pointer; font-family:inherit; }
+  .paytab.active { border-color:var(--gold); background:rgba(245,179,1,.14); }
+  #cardAmt { font-size:16px; font-weight:800; color:var(--gold); margin:4px 0 10px; }
   .pay-row .pn { font-weight:700; font-size:14px; }
   .pay-row .pv { color:var(--gold); font-weight:800; letter-spacing:1px; font-size:15px; }
   .pay-row .pv { text-align:right; }
@@ -310,6 +314,16 @@
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span id="picPrev"></span><input type="file" id="bidPic" accept="image/*" onchange="onPicPick(event)"></div>
     <label data-i18n="fDesc">Short description (optional)</label>
     <input id="bidDesc" maxlength="80" placeholder="e.g. Quetta ka best singer">
+    <label data-i18n="fPayM">Payment ka tareeqa:</label>
+    <div class="paytabs">
+      <button type="button" class="paytab active" id="tabCard" onclick="setPayMethod('card')" data-i18n="payCard">💳 Card</button>
+      <button type="button" class="paytab" id="tabManual" onclick="setPayMethod('manual')" data-i18n="payManual">🏦 Manual</button>
+    </div>
+    <div id="cardBox">
+      <p class="note" data-i18n="cardNote" style="margin-top:0">Card se payment karo (Visa / Mastercard / Apple Pay) — payment kamyab hote hi bid <b>KHUD live</b> ho jayegi. Approval ka intezar nahi!</p>
+      <div id="cardAmt"></div>
+    </div>
+    <div id="manualBox" style="display:none">
     <label data-i18n="fPay">Payment bhejo (koi ek):</label>
     <div id="payMethods"></div>
     <label data-i18n="fTid">Transaction ID (TID)</label>
@@ -317,6 +331,7 @@
     <label data-i18n="fShot">Payment ka screenshot</label>
     <input type="file" id="bidShot" accept="image/*">
     <img id="shotPrev" alt="screenshot preview">
+    </div>
     <button class="btn" onclick="placeBid()" data-i18n="bidBtn">Bid Confirm Karo ✅</button>
     <div id="waNotify"></div>
     <p class="note" data-i18n="bidNote">⏳ Payment verify hone ke baad bid leaderboard par live hogi. Bids <b>non-refundable</b> hain.</p>
@@ -434,6 +449,9 @@ en: {
   fAmt:'Bid amount (Rs) — min Rs 280', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $1', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Bid ✅',
+  fPayM:'Payment method:', payCard:'💳 Card', payManual:'🏦 Manual',
+  cardNote:'Pay by card (Visa / Mastercard / Apple Pay) — your bid goes <b>LIVE automatically</b> as soon as the payment succeeds. No approval wait!',
+  cardSoon:'⚠️ Card payment is not available right now — please use the Manual option.', cardWait:'⏳ Opening secure card payment…',
   fShot:'Payment screenshot (optional — faster verification)',
   verifyName:'Check the account name (Abdul Wadood) before sending money.',
   bidNote:'⏳ Your bid goes live after payment verification. Bids are <b>non-refundable</b>.',
@@ -516,6 +534,9 @@ ru: {
   fAmt:'Bid amount (Rs) — min Rs 280', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $1', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Bid Confirm Karo ✅',
+  fPayM:'Payment ka tareeqa:', payCard:'💳 Card', payManual:'🏦 Manual',
+  cardNote:'Card se payment karo (Visa / Mastercard / Apple Pay) — payment kamyab hote hi bid <b>KHUD live</b> ho jayegi. Approval ka intezar nahi!',
+  cardSoon:'⚠️ Card payment filhal available nahi — Manual wala option istemal karo.', cardWait:'⏳ Mehfooz card payment khul raha hai…',
   fShot:'Payment ka screenshot (optional — verification tez hogi)',
   verifyName:'Pese bhejne se pehle account ka naam (Abdul Wadood) zaroor check karo.',
   bidNote:'⏳ Payment verify hone ke baad bid leaderboard par live hogi. Bids <b>non-refundable</b> hain.',
@@ -1221,12 +1242,30 @@ function renderPayments() {
     `<div class="pay-row"><div><div class="pn">${p.name}</div><div class="pname">${p.title}</div></div><div class="pv">${p.num}<span class="accl">Account No.</span></div></div>`).join('') +
     `<p class="note">⚠️ ${t('verifyName')}</p>`;
 }
+let payMethod = 'card';
+function setPayMethod(m) {
+  payMethod = m;
+  document.getElementById('tabCard').classList.toggle('active', m === 'card');
+  document.getElementById('tabManual').classList.toggle('active', m === 'manual');
+  document.getElementById('cardBox').style.display = m === 'card' ? '' : 'none';
+  document.getElementById('manualBox').style.display = m === 'manual' ? '' : 'none';
+  if (m === 'card') updCardAmt();
+}
+function updCardAmt() {
+  const el = document.getElementById('cardAmt');
+  if (!el) return;
+  const v = parseFloat(document.getElementById('bidAmt').value || 0);
+  const pkr = currency === 'USD' ? usd2pkr(v) : v;
+  el.textContent = 'Total: $' + pkr2usd(pkr).toFixed(2) + '  (Rs ' + Math.round(pkr).toLocaleString() + ')';
+}
+document.getElementById('bidAmt').addEventListener('input', updCardAmt);
 function updBidInfo() {
   const bd = document.getElementById('bidBoard').value;
   const tb = topBid(bd, 'all');
   const raise = currency === 'USD' ? usd2pkr(MIN_RAISE_USD) : MIN_RAISE;
   document.getElementById('bidInfo').innerHTML = tb === 0 ? t('beFirst')() : t('cur1')(fmtMoney(tb), fmtMoney(tb + raise));
   document.getElementById('bidAmt').value = tb === 0 ? (currency === 'USD' ? MIN_BID_USD : MIN_BID) : (currency === 'USD' ? pkr2usd(tb + raise).toFixed(2) : tb + raise);
+  updCardAmt();
 }
 document.getElementById('bidBoard').onchange = updBidInfo;
 
@@ -1254,7 +1293,46 @@ function avatar(b, px) {
   const ch = ((b.handle || '?').replace('@', '').charAt(0) || '?').toUpperCase();
   return `<span class="ava-fb" style="width:${s}px;height:${s}px;font-size:${Math.round(s / 2.2)}px">${ch}</span>`;
 }
+let cardBusy = false;
+async function placeBidCard() {
+  if (cardBusy) return;
+  const board = document.getElementById('bidBoard').value;
+  const handle = document.getElementById('bidHandle').value.trim();
+  const link = document.getElementById('bidLink').value.trim();
+  const rawAmt = parseFloat(document.getElementById('bidAmt').value || 0);
+  const amount = currency === 'USD' ? usd2pkr(rawAmt) : parseInt(rawAmt);
+  const bidder = document.getElementById('bidderName').value.trim() || 'Anonymous';
+  const desc = document.getElementById('bidDesc').value.trim();
+  const country = document.getElementById('bidCountry').value || 'PK';
+  const city = country === 'PK' ? (document.getElementById('bidCity').value || '') : (document.getElementById('bidCityTxt').value.trim() || '');
+  if (!handle) return toast(t('needHandle'));
+  if (!link.startsWith('http')) return toast(t('needLink'));
+  if (!bidPic) return toast(t('needPic'));
+  const tb = topBid(board, 'all');
+  const minNeed = currency === 'USD'
+    ? (tb === 0 ? usd2pkr(MIN_BID_USD) : tb + usd2pkr(MIN_RAISE_USD))
+    : (tb === 0 ? MIN_BID : tb + MIN_RAISE);
+  if (amount < minNeed) return toast(t('needMin')(fmtMoney(minNeed)));
+  const b = { id: 'TR' + Date.now().toString().slice(-6), board, handle, link, amount, bidder, t: Date.now(), status: 'pending', tid: 'WHOP', shot: null, pic: bidPic, desc, country, city };
+  cardBusy = true;
+  toast(t('cardWait'));
+  try {
+    bids.unshift(b); save();
+    if (supa) await supa.from('bids').upsert(b);
+    const r = await fetch(SUPABASE_URL + '/functions/v1/quick-endpoint', { method: 'POST', headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ bid_id: b.id }) });
+    const j = await r.json();
+    if (!r.ok || !j.purchase_url) throw new Error(j.error || 'checkout failed');
+    location.href = j.purchase_url;
+  } catch (e) {
+    cardBusy = false;
+    if (supa) { try { await supa.from('bids').delete().eq('id', b.id); } catch (e2) {} }
+    const i = bids.indexOf(b); if (i >= 0) { bids.splice(i, 1); save(); }
+    toast(t('cardSoon'));
+    setPayMethod('manual');
+  }
+}
 function placeBid() {
+  if (payMethod === 'card') { placeBidCard(); return; }
   const board = document.getElementById('bidBoard').value;
   const handle = document.getElementById('bidHandle').value.trim();
   const link = document.getElementById('bidLink').value.trim();
