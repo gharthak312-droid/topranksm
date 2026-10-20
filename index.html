@@ -1256,7 +1256,7 @@ function updCardAmt() {
   if (!el) return;
   const v = parseFloat(document.getElementById('bidAmt').value || 0);
   const pkr = currency === 'USD' ? usd2pkr(v) : v;
-  el.textContent = 'Total: $' + pkr2usd(pkr).toFixed(2) + '  (Rs ' + Math.round(pkr).toLocaleString() + ')';
+  el.textContent = 'Total: $' + pkr2usd(pkr).toFixed(2) + '  (Rs ' + Math.round(pkr).toLocaleString() + ')' + (currency === 'USD' ? '' : '  + Tax');
 }
 document.getElementById('bidAmt').addEventListener('input', updCardAmt);
 function updBidInfo() {
