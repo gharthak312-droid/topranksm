@@ -446,7 +446,7 @@ en: {
   howT:'How does it work? ❓',
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start bidding from just <b>$1</b> (≈Rs 280) — same for everyone<br>4️⃣ Highest bidder takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
   bidT:'➕ Place a Bid', fBoard:'Choose board', fHandle:'ID / Handle (e.g. @username)', fLink:'Profile link',
-  fAmt:'Bid amount (Rs) — min Rs 280', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', selCountry:'Select your country', needCountry:'⚠️ Please select your country!', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $1', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
+  fAmt:'Bid amount (Rs) — min Rs 280', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', selCountry:'Select your country', needCountry:'⚠️ Please select your country!', needBoard:'⚠️ Please select your board!', allCountries:'All Countries', fAmtUsd:'Bid amount ($) — min $1', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Bid ✅',
   fPayM:'Payment method:', payCard:'💳 Card', payManual:'🏦 Manual',
@@ -531,7 +531,7 @@ ru: {
   howT:'Kaise kaam karta hai? ❓',
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ Sirf <b>$1</b> (≈Rs 280) se bid shuru karo — sab ke liye same<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
   bidT:'➕ Bid Lagao', fBoard:'Board chunein', fHandle:'ID / Handle (jese @username)', fLink:'Profile ka link',
-  fAmt:'Bid amount (Rs) — min Rs 280', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', selCountry:'Apna country chunein', needCountry:'⚠️ Pehle apna country chuno!', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $1', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
+  fAmt:'Bid amount (Rs) — min Rs 280', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', selCountry:'Apna country chunein', needCountry:'⚠️ Pehle apna country chuno!', needBoard:'⚠️ Pehle apna board chuno!', allCountries:'Tamam Countries', fAmtUsd:'Bid amount ($) — min $1', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Bid Confirm Karo ✅',
   fPayM:'Payment ka tareeqa:', payCard:'💳 Card', payManual:'🏦 Manual',
@@ -1220,7 +1220,7 @@ function fanBid() { document.getElementById('bidBoard').value = 'fans'; updBidIn
 
 // ==================== BID FORM ====================
 function renderBidBoards() {
-  document.getElementById('bidBoard').innerHTML = BOARDS.map(b => `<option value="${b.id}">${b.icon} ${b.name}</option>`).join('');
+  document.getElementById('bidBoard').innerHTML = `<option value="" disabled selected>Select your board from the 11 boards</option>` + BOARDS.map(b => `<option value="${b.id}">${b.icon} ${b.name}</option>`).join('');
   document.getElementById('bidCountry').innerHTML = `<option value="" disabled selected>${t('selCountry')}</option>` + COUNTRIES.map(c => `<option value="${c.c}">${c.n}</option>`).join('');
   renderCityOptions();
 }
@@ -1302,6 +1302,7 @@ let cardBusy = false;
 async function placeBidCard() {
   if (cardBusy) return;
   const board = document.getElementById('bidBoard').value;
+  if (!board) return toast(t('needBoard'));
   const handle = document.getElementById('bidHandle').value.trim();
   const link = document.getElementById('bidLink').value.trim();
   const rawAmt = parseFloat(document.getElementById('bidAmt').value || 0);
@@ -1340,6 +1341,7 @@ async function placeBidCard() {
 function placeBid() {
   if (payMethod === 'card') { placeBidCard(); return; }
   const board = document.getElementById('bidBoard').value;
+  if (!board) return toast(t('needBoard'));
   const handle = document.getElementById('bidHandle').value.trim();
   const link = document.getElementById('bidLink').value.trim();
   const rawAmt = parseFloat(document.getElementById('bidAmt').value || 0);
