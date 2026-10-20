@@ -101,6 +101,14 @@
   .board-picker { display:grid; grid-template-columns:repeat(auto-fill,minmax(108px,1fr)); gap:8px; margin:4px 0 10px; }
   .bchip { display:flex; align-items:center; gap:7px; padding:9px 10px; border:1px solid var(--line); border-radius:11px; background:var(--card2); color:inherit; font-weight:700; font-size:13.5px; cursor:pointer; font-family:inherit; text-align:left; }
   .bchip.sel { border-color:var(--gold); background:rgba(245,179,1,.14); }
+  button { transition:background .15s ease, color .15s ease, transform .15s ease, filter .15s ease, border-color .15s ease, box-shadow .15s ease; }
+  .cta:hover { transform:translateY(-2px); filter:brightness(1.07); box-shadow:0 12px 32px rgba(168,124,10,.45); }
+  .btn:hover { transform:translateY(-1px); filter:brightness(1.07); }
+  nav button:hover, .bpills button:hover, .tpills button:hover { background:var(--deep); color:var(--txt); }
+  nav button.active:hover, .bpills button.active:hover, .tpills button.active:hover { background:var(--txt); color:var(--bg); filter:brightness(1.2); }
+  .hbtn:hover { background:var(--deep); transform:translateY(-1px); }
+  .bchip:hover { border-color:var(--gold); transform:translateY(-1px); }
+  .paytab:hover { border-color:var(--gold); color:var(--txt); transform:translateY(-1px); }
   @keyframes pl { 0%,100%{opacity:1} 50%{opacity:.3} }
   .act { display:flex; gap:10px; padding:11px 2px; border-bottom:1px solid var(--line); font-size:13.5px; line-height:1.55; }
   .act:last-child { border-bottom:none; }
