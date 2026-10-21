@@ -356,7 +356,7 @@
     <div id="payMethods"></div>
     <label data-i18n="fTid">Transaction ID (TID) <span class="req">*</span></label>
     <input id="bidTid" placeholder="e.g. 12345678901">
-    <label data-i18n="fShot">Payment ka screenshot</label>
+    <label data-i18n="fShot">Payment ka screenshot <span class="req">*</span></label>
     <input type="file" id="bidShot" accept="image/*">
     <img id="shotPrev" alt="screenshot preview">
     <button class="btn" id="confirmBtn" onclick="placeBid()" data-i18n="bidBtn">Claim Confirm Karo ✅</button>
@@ -482,7 +482,7 @@ en: {
   manualHint:'If payment is not working through checkout, you can also pay via Manual Payment:',
   cardNote:'Pay by card (Visa / Mastercard / Apple Pay) — your claim goes <b>LIVE automatically</b> as soon as the payment succeeds.',
   cardSoon:'⚠️ Card payment is not available right now — please use the Manual option.', cardWait:'⏳ Opening secure card payment…',
-  fShot:'Payment screenshot (optional — faster verification)',
+  fShot:'Payment screenshot <span class="req">*</span>',
   verifyName:'Check the account name (Abdul Wadood) before sending money.',
   bidNote:'⏳ Your claim goes live after payment verification. Claims are <b>non-refundable</b>.',
   fanT:'⭐ Fan Board — The Biggest Battle!', fanD:'Make your favorite creator the <b>#1 fan-favorite</b>! Any platform — TikTok, YouTube, Insta — all on one board.',
@@ -525,6 +525,7 @@ en: {
   needHandle:'⚠️ Enter the ID / Handle!',
   needTid:'⚠️ Enter a valid Transaction ID!',
   needPic:'⚠️ Profile photo lagana lazmi hai! 📷',
+  needShot:'⚠️ Attach the payment screenshot! 🧾',
   bidPending:'⏳ Claim pending me chali gayi! Payment verify hone ke baad leaderboard par live hogi.',
   bidLive:'✅ Claim is live! Share text copied — send it to friends! 📣',
   challengeToast:(n)=>`🔥 The throne is yours for ${n} — take it!`,
@@ -567,7 +568,7 @@ ru: {
   manualHint:'Agar checkout se payment nahi ho raha, to aap Manual Payment se bhi kar sakte hain:',
   cardNote:'Card se payment karo (Visa / Mastercard / Apple Pay) — payment kamyab hote hi claim <b>KHUD live</b> ho jayegi.',
   cardSoon:'⚠️ Card payment filhal available nahi — Manual wala option istemal karo.', cardWait:'⏳ Mehfooz card payment khul raha hai…',
-  fShot:'Payment ka screenshot (optional — verification tez hogi)',
+  fShot:'Payment ka screenshot <span class="req">*</span>',
   verifyName:'Pese bhejne se pehle account ka naam (Abdul Wadood) zaroor check karo.',
   bidNote:'⏳ Payment verify hone ke baad claim leaderboard par live hogi. Claims <b>non-refundable</b> hain.',
   fanT:'⭐ Fan Board — Sab se bara muqabla!', fanD:'Apne favorite creator ko <b>#1 fan-favorite</b> banao! Kisi bhi platform ka creator — TikTok, YouTube, Insta — sab ek board par.',
@@ -610,6 +611,7 @@ ru: {
   needHandle:'⚠️ ID / Handle likho!',
   needTid:'⚠️ Sahi Transaction ID do!',
   needPic:'⚠️ Profile photo lagana lazmi hai! 📷',
+  needShot:'⚠️ Payment ka screenshot lagana lazmi hai! 🧾',
   bidPending:'⏳ Claim pending me chali gayi! Payment verify hone ke baad leaderboard par live hogi.',
   bidLive:'✅ Claim live! Share text copy ho gaya — doston ko bhejo! 📣',
   challengeToast:(n)=>`🔥 Takht tumhara sirf ${n} me — cheen lo!`,
@@ -645,7 +647,7 @@ function applyLang() {
   const fb = document.querySelector('[data-i18n="fanBtn"]'); if (fb) fb.innerHTML = IC.star + '<span>' + fb.innerHTML + '</span>';
   document.getElementById('langBtn').textContent = lang === 'ru' ? 'EN' : 'UR';
   renderRules(); renderFaq(); renderDocs(); renderHome(); renderBoard(cur); renderFans(); renderAll();
-  renderCurBtn(); updBidInfo();
+  renderCurBtn(); updBidInfo(); renderPayments();
   tick(); // refresh countdown unit (days/din) immediately on language switch
 }
 function toggleLang() { lang = lang === 'ru' ? 'en' : 'ru'; store.set('trs_lang2', lang); applyLang(); }
@@ -1467,6 +1469,7 @@ function placeBid() {
     : (tb === 0 ? MIN_BID : tb + MIN_RAISE);
   if (amount < minNeed) return toast(t('needMin')(fmtMoney(minNeed)));
   if (tid.length < 5) return toast(t('needTid'));
+  if (!pendingShot) return toast(t('needShot'));
   const b = { id: 'TR' + Date.now().toString().slice(-6), board, handle, link, amount, bidder, t: Date.now(), status: 'pending', tid, shot: pendingShot, pic: bidPic, desc, country, city };
   bids.unshift(b); save();
   document.getElementById('bidHandle').value = ''; document.getElementById('bidLink').value = '';
