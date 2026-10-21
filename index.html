@@ -342,7 +342,7 @@
     <label data-i18n="fPic">Profile photo <span class="req">*</span></label>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span id="picPrev"></span><input type="file" id="bidPic" accept="image/*" onchange="onPicPick(event)"></div>
     <label data-i18n="fDesc">Short description (optional)</label>
-    <input id="bidDesc" maxlength="80" placeholder="e.g. Quetta ka best singer">
+    <input id="bidDesc" maxlength="80" placeholder="e.g. Famous singer and performer">
     <label data-i18n="fPayM">Payment ka tareeqa:</label>
     <div id="cardBox">
       <p class="note" data-i18n="cardNote" style="margin-top:0">Card se payment karo (Visa / Mastercard / Apple Pay) — payment kamyab hote hi claim <b>KHUD live</b> ho jayegi.</p>
@@ -476,7 +476,7 @@ en: {
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start claiming from just <b>$1</b> (≈Rs 280) — same for everyone<br>4️⃣ Highest challenger takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
   bidT:'➕ Place a Claim', fBoard:'Choose board <span class="req">*</span>', fHandle:'ID / Handle (e.g. @username) <span class="req">*</span>', fLink:'Profile link <span class="req">*</span>',
   fAmt:'Claim amount (Rs) — min Rs 280', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country <span class="req">*</span>', fCity:'Your city', selCountry:'Select your country', needCountry:'⚠️ Please select your country!', needBoard:'⚠️ Please select your board!', restrictedMsg:'⛔ Restricted — claims are not allowed for adult, gambling, weapons or scam/Ponzi websites and apps.', allCountries:'All Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
-  fPic:'Profile photo <span class="req">*</span>', fDesc:'Short description (optional)',
+  fPic:'Profile photo <span class="req">*</span>', fDesc:'Short description (optional)', fDescPh:'e.g. Famous singer and performer',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID) <span class="req">*</span>', bidBtn:'Confirm Claim ✅',
   fPayM:'Payment method:', payCard:'💳 Card', payManual:'🏦 Manual Payment', checkoutBtn:'💳 Checkout',
   manualHint:'If payment is not working through checkout, you can also pay via Manual Payment:',
@@ -561,7 +561,7 @@ ru: {
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ Sirf <b>$1</b> (≈Rs 280) se claim shuru karo — sab ke liye same<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
   bidT:'➕ Claim Lagao', fBoard:'Board chunein <span class="req">*</span>', fHandle:'ID / Handle (jese @username) <span class="req">*</span>', fLink:'Profile ka link <span class="req">*</span>',
   fAmt:'Claim amount (Rs) — min Rs 280', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country <span class="req">*</span>', fCity:'Apna city', selCountry:'Apna country chunein', needCountry:'⚠️ Pehle apna country chuno!', needBoard:'⚠️ Pehle apna board chuno!', restrictedMsg:'⛔ Restricted — adult, gambling, hathiyaron ya scam/Ponzi wali websites aur apps par claim nahi lag sakta.', allCountries:'Tamam Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
-  fPic:'Profile photo <span class="req">*</span>', fDesc:'Choti si description (optional)',
+  fPic:'Profile photo <span class="req">*</span>', fDesc:'Choti si description (optional)', fDescPh:'e.g. Mashhoor singer aur performer',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID) <span class="req">*</span>', bidBtn:'Claim Confirm Karo ✅',
   fPayM:'Payment ka tareeqa:', payCard:'💳 Card', payManual:'🏦 Manual Payment', checkoutBtn:'💳 Checkout',
   manualHint:'Agar checkout se payment nahi ho raha, to aap Manual Payment se bhi kar sakte hain:',
@@ -640,6 +640,7 @@ function applyLang() {
     const v = LANG[lang][el.dataset.i18n];
     if (typeof v === 'string') el.innerHTML = v;
   });
+  const bdPh = document.getElementById('bidDesc'); if (bdPh) bdPh.placeholder = t('fDescPh');
   document.querySelectorAll('nav button').forEach(b => { const ic = NAV_ICONS[b.dataset.p]; if (ic) b.innerHTML = ic + '<span>' + b.innerHTML + '</span>'; });
   const fb = document.querySelector('[data-i18n="fanBtn"]'); if (fb) fb.innerHTML = IC.star + '<span>' + fb.innerHTML + '</span>';
   document.getElementById('langBtn').textContent = lang === 'ru' ? 'EN' : 'UR';
