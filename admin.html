@@ -370,7 +370,7 @@ function applyAdminLang() {
   document.querySelectorAll('[data-i18n-ph]').forEach(el => { const v = ALANG[alang][el.dataset.i18nPh]; if (typeof v === 'string') el.placeholder = v; });
   const lbl = alang === 'en' ? 'UR' : 'EN';
   ['langBtnA', 'langBtnD'].forEach(id => { const b = document.getElementById(id); if (b) b.textContent = lbl; });
-  if (authUser && document.getElementById('dash').style.display !== 'none') { renderLive(); renderSeeds(); renderBlocked(); renderHomeLatest(); loadSeason(); }
+  if (authUser && document.getElementById('dash').style.display !== 'none') { renderLive(); renderSeeds(); renderBlocked(); renderHomeLatest(); loadSeason(); updateTotals(); }
 }
 function toggleAdminLang() { alang = alang === 'en' ? 'ru' : 'en'; store.set('trs_admin_lang', alang); applyAdminLang(); }
 
@@ -389,6 +389,8 @@ let authUser = null;
 let aCur = store.get('trs_admin_cur', 'USD'); if (aCur !== 'PKR') aCur = 'USD';
 function updCurBtn() { const b = document.getElementById('curBtn'); if (b) b.textContent = aCur === 'USD' ? 'Rs' : '$'; }
 function toggleCur() { aCur = aCur === 'USD' ? 'PKR' : 'USD'; store.set('trs_admin_cur', aCur); updCurBtn(); if (authUser) { loadBids(); loadStats(); } }
+function fmtTotalValue(n) { n = Number(n) || 0; if (alang === 'ru') return 'Rs ' + n.toLocaleString(); const u = n / 280; return '$' + (u % 1 === 0 ? u.toFixed(0) : u.toFixed(2)); }
+function updateTotals() { const tv = allBids.filter(b => b.status === 'live').reduce((s, b) => s + Number(b.amount || 0), 0); const a = document.getElementById('stValue'), b2 = document.getElementById('hValue'); if (a) a.textContent = fmtTotalValue(tv); if (b2) b2.textContent = fmtTotalValue(tv); }
 
 const BOARDS = [
   { id:'tiktok', name:'TikTok', icon:'🎵', logo:'tiktok' }, { id:'facebook', name:'Facebook', icon:'📘', logo:'facebook' },
@@ -842,7 +844,7 @@ async function loadStats() {
   document.getElementById('stLive').textContent = live.length;
   document.getElementById('stPend').textContent = pend.length;
   const tv = live.reduce((s, b) => s + Number(b.amount || 0), 0);
-  document.getElementById('stValue').textContent = fmtMoney(tv);
+  document.getElementById('stValue').textContent = fmtTotalValue(tv);
   const big = live.slice().sort((a, b) => b.amount - a.amount)[0];
   const bigTxt = big ? `👑 Biggest: <b>${esc(big.handle)}</b> — <span class="amt">${fmtMoney(big.amount)}</span> ${boardLabel(big.board)}` : '—';
   document.getElementById('stBig').innerHTML = bigTxt;
@@ -854,7 +856,7 @@ async function loadStats() {
   document.getElementById('hPend').textContent = pend.length;
   document.getElementById('hToday').textContent = todayClaims;
   document.getElementById('hLive').textContent = live.length;
-  document.getElementById('hValue').textContent = fmtMoney(tv);
+  document.getElementById('hValue').textContent = fmtTotalValue(tv);
   document.getElementById('hOnline').textContent = online == null ? '—' : online;
   document.getElementById('hVis').textContent = todayV == null ? '—' : todayV;
   document.getElementById('hBig').innerHTML = bigTxt;
