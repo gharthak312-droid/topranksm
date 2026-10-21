@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Boards — TopRankSM</title>
-<meta name="description" content="All 11 TopRankSM leaderboards: TikTok, Facebook, Instagram, YouTube, X, Snapchat, LinkedIn, Threads, Websites, Apps and the Fan Board — with live bid counts.">
+<meta name="description" content="All 11 TopRankSM leaderboards: TikTok, Facebook, Instagram, YouTube, X, Snapchat, LinkedIn, Threads, Websites, Apps and the Fan Board — with live claim counts.">
 <link rel="canonical" href="https://topranksm.com/boards.html">
 <meta property="og:title" content="Boards — TopRankSM">
-<meta property="og:description" content="All 11 TopRankSM leaderboards: TikTok, Facebook, Instagram, YouTube, X, Snapchat, LinkedIn, Threads, Websites, Apps and the Fan Board — with live bid counts.">
+<meta property="og:description" content="All 11 TopRankSM leaderboards: TikTok, Facebook, Instagram, YouTube, X, Snapchat, LinkedIn, Threads, Websites, Apps and the Fan Board — with live claim counts.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://topranksm.com/boards.html">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -59,8 +59,8 @@ footer{max-width:820px;margin:0 auto;padding:18px 20px 34px;border-top:1px solid
 
 <h1>Boards — <span>TopRankSM</span></h1>
 <p class="sub">11 public leaderboards. One for every platform — plus Websites, Apps and the cross-platform Fan Board. The counts below are live.</p>
-<div class="grid"><div class="bcard"><h3>TikTok</h3><p>Short-video creators and viral stars.</p><div class="cnt" id="cnt-tiktok">… live bids</div></div><div class="bcard"><h3>Facebook</h3><p>Pages, profiles and public figures.</p><div class="cnt" id="cnt-facebook">… live bids</div></div><div class="bcard"><h3>Instagram</h3><p>Creators, influencers and brands.</p><div class="cnt" id="cnt-instagram">… live bids</div></div><div class="bcard"><h3>YouTube</h3><p>Channels and video creators.</p><div class="cnt" id="cnt-youtube">… live bids</div></div><div class="bcard"><h3>X</h3><p>Posts, profiles and public voices.</p><div class="cnt" id="cnt-twitter">… live bids</div></div><div class="bcard"><h3>Snapchat</h3><p>Snap stars and creators.</p><div class="cnt" id="cnt-snapchat">… live bids</div></div><div class="bcard"><h3>LinkedIn</h3><p>Professionals and companies.</p><div class="cnt" id="cnt-linkedin">… live bids</div></div><div class="bcard"><h3>Threads</h3><p>Threads profiles and creators.</p><div class="cnt" id="cnt-threads">… live bids</div></div><div class="bcard"><h3>Websites</h3><p>Any website that wants the top spot.</p><div class="cnt" id="cnt-websites">… live bids</div></div><div class="bcard"><h3>Apps</h3><p>Mobile apps and games.</p><div class="cnt" id="cnt-apps">… live bids</div></div><div class="bcard"><h3>Fan Board</h3><p>One board for everyone — the biggest bid overall wins.</p><div class="cnt" id="cnt-fans">… live bids</div></div></div>
-<a class="btn" href="index.html">Bid on a board</a>
+<div class="grid"><div class="bcard"><h3>TikTok</h3><p>Short-video creators and viral stars.</p><div class="cnt" id="cnt-tiktok">… live claims</div></div><div class="bcard"><h3>Facebook</h3><p>Pages, profiles and public figures.</p><div class="cnt" id="cnt-facebook">… live claims</div></div><div class="bcard"><h3>Instagram</h3><p>Creators, influencers and brands.</p><div class="cnt" id="cnt-instagram">… live claims</div></div><div class="bcard"><h3>YouTube</h3><p>Channels and video creators.</p><div class="cnt" id="cnt-youtube">… live claims</div></div><div class="bcard"><h3>X</h3><p>Posts, profiles and public voices.</p><div class="cnt" id="cnt-twitter">… live claims</div></div><div class="bcard"><h3>Snapchat</h3><p>Snap stars and creators.</p><div class="cnt" id="cnt-snapchat">… live claims</div></div><div class="bcard"><h3>LinkedIn</h3><p>Professionals and companies.</p><div class="cnt" id="cnt-linkedin">… live claims</div></div><div class="bcard"><h3>Threads</h3><p>Threads profiles and creators.</p><div class="cnt" id="cnt-threads">… live claims</div></div><div class="bcard"><h3>Websites</h3><p>Any website that wants the top spot.</p><div class="cnt" id="cnt-websites">… live claims</div></div><div class="bcard"><h3>Apps</h3><p>Mobile apps and games.</p><div class="cnt" id="cnt-apps">… live claims</div></div><div class="bcard"><h3>Fan Board</h3><p>One board for everyone — the biggest claim overall wins.</p><div class="cnt" id="cnt-fans">… live claims</div></div></div>
+<a class="btn" href="index.html">Claim on a board</a>
 
 </div>
 <footer>&copy; 2026 TopRankSM &middot; <a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="refunds.html">Refunds</a> &middot; <a href="pricing.html">Pricing</a></footer>
@@ -71,10 +71,10 @@ function usd(p){var v=p/280;return '$'+(p%280===0? String(v) : v.toFixed(2))}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function row(i,b,boardLine){return '<div class="row"><div class="rk">#'+(i+1)+'</div><div><div class="h">'+esc(b.handle||'')+'</div><div class="m">'+boardLine+'</div></div><div class="amt">'+usd(b.amount||0)+'</div></div>'}
 
-api('bids?select=board&status=eq.live&limit=2000').then(function(rows){
+api('claims?select=board&status=eq.live&limit=2000').then(function(rows){
   var c={}; (rows||[]).forEach(function(r){c[r.board]=(c[r.board]||0)+1});
-  Object.keys(c).forEach(function(k){var el=document.getElementById('cnt-'+k); if(el) el.textContent=c[k]+' live bids';});
-  ["tiktok", "facebook", "instagram", "youtube", "twitter", "snapchat", "linkedin", "threads", "websites", "apps", "fans"].forEach(function(id){var el=document.getElementById('cnt-'+id); if(el && el.textContent.indexOf('live')<0) el.textContent='0 live bids';});
+  Object.keys(c).forEach(function(k){var el=document.getElementById('cnt-'+k); if(el) el.textContent=c[k]+' live claims';});
+  ["tiktok", "facebook", "instagram", "youtube", "twitter", "snapchat", "linkedin", "threads", "websites", "apps", "fans"].forEach(function(id){var el=document.getElementById('cnt-'+id); if(el && el.textContent.indexOf('live')<0) el.textContent='0 live claims';});
 }).catch(function(){});
 </script>
 </body>

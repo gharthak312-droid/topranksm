@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Today — TopRankSM</title>
-<meta name="description" content="Today's bids and all live bidders on TopRankSM — the public leaderboard where anyone can claim #1 from $1.">
+<meta name="description" content="Today's claims and all live challengers on TopRankSM — the public leaderboard where anyone can claim #1 from $1.">
 <link rel="canonical" href="https://topranksm.com/today.html">
 <meta property="og:title" content="Today — TopRankSM">
-<meta property="og:description" content="Today's bids and all live bidders on TopRankSM — the public leaderboard where anyone can claim #1 from $1.">
+<meta property="og:description" content="Today's claims and all live challengers on TopRankSM — the public leaderboard where anyone can claim #1 from $1.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://topranksm.com/today.html">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -58,12 +58,12 @@ footer{max-width:820px;margin:0 auto;padding:18px 20px 34px;border-top:1px solid
 <div class="wrap">
 
 <h1>Today — <span>TopRankSM</span></h1>
-<p class="sub">Fresh bids placed today, and every bidder currently live on the boards.</p>
-<h2>Today's bids</h2>
+<p class="sub">Fresh claims placed today, and every challenger currently live on the boards.</p>
+<h2>Today's claims</h2>
 <div id="todayList"><div class="empty">Loading…</div></div>
-<h2>All Bidders</h2>
+<h2>All Challengers</h2>
 <div id="allList"><div class="empty">Loading…</div></div>
-<a class="btn" href="index.html">Place your bid</a>
+<a class="btn" href="index.html">Place your claim</a>
 
 </div>
 <footer>&copy; 2026 TopRankSM &middot; <a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="refunds.html">Refunds</a> &middot; <a href="pricing.html">Pricing</a></footer>
@@ -76,15 +76,15 @@ function row(i,b,boardLine){return '<div class="row"><div class="rk">#'+(i+1)+'<
 
 var BN={"tiktok": "TikTok", "facebook": "Facebook", "instagram": "Instagram", "youtube": "YouTube", "twitter": "X", "snapchat": "Snapchat", "linkedin": "LinkedIn", "threads": "Threads", "websites": "Websites", "apps": "Apps", "fans": "Fan Board"};
 function line(b){var s=esc(BN[b.board]||b.board||''); if(b.country) s+=' · '+esc(b.country); if(b.city) s+=' · '+esc(b.city); return s}
-api('bids?select=board,handle,link,amount,bidder,country,city,t&status=eq.live&order=amount.desc&limit=500').then(function(rows){
+api('claims?select=board,handle,link,amount,challenger,country,city,t&status=eq.live&order=amount.desc&limit=500').then(function(rows){
   rows=rows||[];
   var all=document.getElementById('allList');
-  all.innerHTML=rows.length? rows.map(function(b,i){return row(i,b,line(b))}).join('') : '<div class="empty">No live bids yet — be the first.</div>';
+  all.innerHTML=rows.length? rows.map(function(b,i){return row(i,b,line(b))}).join('') : '<div class="empty">No live claims yet — be the first.</div>';
   var today=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Karachi'});
   var tb=rows.filter(function(b){ if(!b.t) return false; var d=new Date(b.t); if(isNaN(d)) return false; return d.toLocaleDateString('en-CA',{timeZone:'Asia/Karachi'})===today; });
   var tl=document.getElementById('todayList');
-  tl.innerHTML=tb.length? tb.map(function(b,i){return row(i,b,line(b))}).join('') : '<div class="empty">No bids yet today — the day is young.</div>';
-}).catch(function(){document.getElementById('allList').innerHTML='<div class="empty">Could not load bids right now.</div>';});
+  tl.innerHTML=tb.length? tb.map(function(b,i){return row(i,b,line(b))}).join('') : '<div class="empty">No claims yet today — the day is young.</div>';
+}).catch(function(){document.getElementById('allList').innerHTML='<div class="empty">Could not load claims right now.</div>';});
 </script>
 </body>
 </html>

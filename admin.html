@@ -75,21 +75,21 @@
 
     <div id="pg-pend">
       <div class="card">
-        <p class="note" style="margin-top:0">Pehle apne Easypaisa/Nayapay app me <b>TID verify</b> karo, phir ✅ dabao — bid foran live ho jayegi!</p>
+        <p class="note" style="margin-top:0">Pehle apne Easypaisa/Nayapay app me <b>TID verify</b> karo, phir ✅ dabao — claim foran live ho jayegi!</p>
         <div id="pendList"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
     <div id="pg-live" style="display:none">
       <div class="card">
-        <input id="liveSearch" placeholder="🔍 Search handle / bidder…" oninput="renderLive()" style="margin-bottom:10px">
+        <input id="liveSearch" placeholder="🔍 Search handle / challenger…" oninput="renderLive()" style="margin-bottom:10px">
         <div id="liveList"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
     <div id="pg-seeds" style="display:none">
       <div class="card">
-        <p class="note" style="margin-top:0">🌱 Ye <b>fake seed bids</b> hain (TID = SEED). Asli bids aate jayein to inhe hata do — <b>Jan 2027 (season end) se pehle SAB khatam</b> hone chahiye!</p>
+        <p class="note" style="margin-top:0">🌱 Ye <b>fake seed claims</b> hain (TID = SEED). Asli claims aate jayein to inhe hata do — <b>Jan 2027 (season end) se pehle SAB khatam</b> hone chahiye!</p>
         <button class="btn danger" onclick="removeAllSeeds()">🗑️ Sab Seeds Hatao</button>
         <div id="seedList" style="margin-top:12px"><div class="empty">Loading…</div></div>
       </div>
@@ -101,9 +101,9 @@
           <div class="stat"><div class="n" id="stOnline">—</div><div class="l">🟢 Online now</div></div>
           <div class="stat"><div class="n" id="stToday">—</div><div class="l">📅 Today visitors</div></div>
           <div class="stat"><div class="n" id="stAll">—</div><div class="l">🌍 All-time visitors</div></div>
-          <div class="stat"><div class="n" id="stLive">—</div><div class="l">✅ Live bids</div></div>
+          <div class="stat"><div class="n" id="stLive">—</div><div class="l">✅ Live claims</div></div>
           <div class="stat"><div class="n" id="stPend">—</div><div class="l">⏳ Pending</div></div>
-          <div class="stat"><div class="n" id="stValue">—</div><div class="l">💰 Total bid value</div></div>
+          <div class="stat"><div class="n" id="stValue">—</div><div class="l">💰 Total claim value</div></div>
         </div>
         <div class="m" id="stBig" style="margin-top:10px">—</div>
         <div class="m" id="stBoards" style="margin-top:6px">—</div>
@@ -283,7 +283,7 @@ async function loadBids() {
           <button class="ok" onclick="approveBid('${b.id}')">✅</button>
           <button class="no" onclick="rejectBid('${b.id}')">❌</button>
         </div>
-      </div>`).join('') : '<div class="empty">Koi pending bid nahi 🎉</div>';
+      </div>`).join('') : '<div class="empty">Koi pending claim nahi 🎉</div>';
     renderLive();
     renderSeeds();
   } catch (e) { toast('❌ Load error: ' + e.message); }
@@ -322,7 +322,7 @@ function renderSeeds() {
 async function editBid(id) {
   const b = allBids.find(x => x.id === id);
   if (!b) return;
-  const v = prompt('Nayi bid amount (Rs) — ' + b.handle + ':', b.amount);
+  const v = prompt('Nayi claim amount (Rs) — ' + b.handle + ':', b.amount);
   if (v === null) return;
   const n = Number(String(v).replace(/[^0-9.]/g, ''));
   if (!n || n <= 0) return toast('❌ Sahi amount likho!');
@@ -337,7 +337,7 @@ async function editBid(id) {
 async function removeAllSeeds() {
   const n = allBids.filter(b => b.tid === 'SEED').length;
   if (!n) return toast('Koi seed nahi hai 🎉');
-  if (!confirm(n + ' SEED bids delete karni hain? Ye UNDO nahi hoga!')) return;
+  if (!confirm(n + ' SEED claims delete karni hain? Ye UNDO nahi hoga!')) return;
   if (!confirm('Pakki baat? Sab seeds hamesha ke liye delete!')) return;
   try {
     const { error } = await supa.from('bids').delete().eq('tid', 'SEED');
@@ -351,25 +351,25 @@ async function approveBid(id) {
   try {
     const { error } = await supa.from('bids').update({ status: 'live' }).eq('id', id);
     if (error) throw error;
-    toast('✅ Bid live ho gayi!');
+    toast('✅ Claim live ho gayi!');
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
 async function rejectBid(id) {
-  if (!confirm('Ye pending bid reject/delete karni hai?')) return;
+  if (!confirm('Ye pending claim reject/delete karni hai?')) return;
   try {
     const { error } = await supa.from('bids').delete().eq('id', id);
     if (error) throw error;
-    toast('🗑️ Bid reject kar di');
+    toast('🗑️ Claim reject kar di');
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
 async function removeBid(id) {
-  if (!confirm('Ye LIVE bid delete karni hai? Site se har jagah hat jayegi!')) return;
+  if (!confirm('Ye LIVE claim delete karni hai? Site se har jagah hat jayegi!')) return;
   try {
     const { error } = await supa.from('bids').delete().eq('id', id);
     if (error) throw error;
-    toast('🗑️ Bid delete ho gayi');
+    toast('🗑️ Claim delete ho gayi');
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }

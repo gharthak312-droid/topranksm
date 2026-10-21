@@ -80,9 +80,9 @@ api('hall_of_fame?select=*&order=season.desc,amount.desc&limit=200').then(functi
   if(!rows || !rows.length){ el.innerHTML='<div class="empty">No champions yet — Season 1 is still running. The first names will be crowned here on 18 January 2027.</div>'; return; }
   el.innerHTML=rows.map(function(b,i){return row(i,b,line(b)+' · Season '+(b.season||''))}).join('');
 }).catch(function(){document.getElementById('hofList').innerHTML='<div class="empty">No champions yet — Season 1 is still running.</div>';});
-api('bids?select=board,handle,amount,country&status=eq.live&order=amount.desc&limit=10').then(function(rows){
+api('claims?select=board,handle,amount,country&status=eq.live&order=amount.desc&limit=10').then(function(rows){
   var el=document.getElementById('leadList');
-  el.innerHTML=(rows&&rows.length)? rows.map(function(b,i){return row(i,b,line(b))}).join('') : '<div class="empty">No live bids yet.</div>';
+  el.innerHTML=(rows&&rows.length)? rows.map(function(b,i){return row(i,b,line(b))}).join('') : '<div class="empty">No live claims yet.</div>';
 }).catch(function(){});
 </script>
 </body>
