@@ -162,6 +162,7 @@
   .rbid b { display:inline-block; font-size:14.5px; font-weight:800; color:#f5b301; background:transparent; padding:5px 13px; border-radius:20px; letter-spacing:-.2px; white-space:nowrap; border:1.5px solid #111; }
   .rbid button { margin-top:6px; background:transparent; color:var(--gold); border:1.5px solid var(--gold); padding:6px 13px; border-radius:9px; font-weight:800; font-size:12px; cursor:pointer; }
   label { display:block; font-size:13px; font-weight:600; color:var(--mut); margin:12px 0 5px; }
+  .req { color:#e5484d; font-weight:800; }
   select, input { width:100%; background:var(--card2); border:1px solid var(--line); color:var(--txt); padding:13px; border-radius:12px; font-size:15px; }
   select:focus, input:focus { outline:none; border-color:var(--gold); }
   .btn { width:100%; background:linear-gradient(135deg,var(--gold2),var(--gold)); color:#fff; border:none; padding:15px; border-radius:14px; font-size:16px; font-weight:800; cursor:pointer; margin-top:16px; box-shadow:0 5px 18px rgba(184,134,11,.35); }
@@ -319,26 +320,26 @@
 <div class="page" id="pg-bid">
   <div class="card">
     <h2 data-i18n="bidT">➕ Claim Lagao</h2>
-    <label data-i18n="fBoard">Board chunein</label>
+    <label data-i18n="fBoard">Board chunein <span class="req">*</span></label>
     <select id="bidBoard" style="display:none"></select>
     <div class="note" style="margin:0 0 4px">Select your board from the 11 boards</div>
     <div id="boardPicker" class="board-picker"></div>
-    <label data-i18n="fHandle">ID / Handle (jese @username)</label>
+    <label data-i18n="fHandle">ID / Handle (jese @username) <span class="req">*</span></label>
     <input id="bidHandle" placeholder="@yourhandle">
-    <label data-i18n="fLink">Profile ka link</label>
+    <label data-i18n="fLink">Profile ka link <span class="req">*</span></label>
     <input id="bidLink" placeholder="e.g: https://yourprofile.com">
     <div id="restrictedWarn" data-i18n="restrictedMsg" style="display:none;background:#fdecec;border:1.5px solid #e5484d;color:#b42318;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13.5px;margin:-2px 0 10px">⛔ Restricted — claims are not allowed for adult, gambling, weapons or scam/Ponzi websites and apps.</div>
-    <label id="amtLabel">Claim amount (Rs) — min Rs 280</label>
+    <label id="amtLabel">Claim amount (Rs) — min Rs 280 <span class="req">*</span></label>
     <input id="bidAmt" type="number" min="280" value="280">
     <div class="note" id="bidInfo"></div>
     <label data-i18n="fName">Apna naam / nickname (leaderboard par dikhega)</label>
     <input id="bidderName" placeholder="e.g. Ahmed K">
-    <label data-i18n="fCountry">Apna country</label>
+    <label data-i18n="fCountry">Apna country <span class="req">*</span></label>
     <select id="bidCountry" onchange="onBidCountryChange()"></select>
     <label data-i18n="fCity">Apna city</label>
     <select id="bidCity"></select>
     <input id="bidCityTxt" placeholder="Your city" style="display:none">
-    <label data-i18n="fPic">Profile photo (optional)</label>
+    <label data-i18n="fPic">Profile photo <span class="req">*</span></label>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><span id="picPrev"></span><input type="file" id="bidPic" accept="image/*" onchange="onPicPick(event)"></div>
     <label data-i18n="fDesc">Short description (optional)</label>
     <input id="bidDesc" maxlength="80" placeholder="e.g. Quetta ka best singer">
@@ -353,7 +354,7 @@
     <div id="manualBox" style="display:none">
     <label data-i18n="fPay">Payment bhejo (koi ek):</label>
     <div id="payMethods"></div>
-    <label data-i18n="fTid">Transaction ID (TID)</label>
+    <label data-i18n="fTid">Transaction ID (TID) <span class="req">*</span></label>
     <input id="bidTid" placeholder="e.g. 12345678901">
     <label data-i18n="fShot">Payment ka screenshot</label>
     <input type="file" id="bidShot" accept="image/*">
@@ -473,10 +474,10 @@ en: {
   top3:'Top 3 of Every Board (Live) 🔥',
   howT:'How does it work? ❓',
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start claiming from just <b>$1</b> (≈Rs 280) — same for everyone<br>4️⃣ Highest challenger takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
-  bidT:'➕ Place a Claim', fBoard:'Choose board', fHandle:'ID / Handle (e.g. @username)', fLink:'Profile link',
-  fAmt:'Claim amount (Rs) — min Rs 280', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', selCountry:'Select your country', needCountry:'⚠️ Please select your country!', needBoard:'⚠️ Please select your board!', restrictedMsg:'⛔ Restricted — claims are not allowed for adult, gambling, weapons or scam/Ponzi websites and apps.', allCountries:'All Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
-  fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
-  fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Claim ✅',
+  bidT:'➕ Place a Claim', fBoard:'Choose board <span class="req">*</span>', fHandle:'ID / Handle (e.g. @username) <span class="req">*</span>', fLink:'Profile link <span class="req">*</span>',
+  fAmt:'Claim amount (Rs) — min Rs 280', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country <span class="req">*</span>', fCity:'Your city', selCountry:'Select your country', needCountry:'⚠️ Please select your country!', needBoard:'⚠️ Please select your board!', restrictedMsg:'⛔ Restricted — claims are not allowed for adult, gambling, weapons or scam/Ponzi websites and apps.', allCountries:'All Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
+  fPic:'Profile photo <span class="req">*</span>', fDesc:'Short description (optional)',
+  fPay:'Send payment (any one):', fTid:'Transaction ID (TID) <span class="req">*</span>', bidBtn:'Confirm Claim ✅',
   fPayM:'Payment method:', payCard:'💳 Card', payManual:'🏦 Manual Payment', checkoutBtn:'💳 Checkout',
   manualHint:'If payment is not working through checkout, you can also pay via Manual Payment:',
   cardNote:'Pay by card (Visa / Mastercard / Apple Pay) — your claim goes <b>LIVE automatically</b> as soon as the payment succeeds.',
@@ -558,10 +559,10 @@ ru: {
   top3:'Har Board ka Top 3 (Live) 🔥',
   howT:'Kaise kaam karta hai? ❓',
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ Sirf <b>$1</b> (≈Rs 280) se claim shuru karo — sab ke liye same<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
-  bidT:'➕ Claim Lagao', fBoard:'Board chunein', fHandle:'ID / Handle (jese @username)', fLink:'Profile ka link',
-  fAmt:'Claim amount (Rs) — min Rs 280', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', selCountry:'Apna country chunein', needCountry:'⚠️ Pehle apna country chuno!', needBoard:'⚠️ Pehle apna board chuno!', restrictedMsg:'⛔ Restricted — adult, gambling, hathiyaron ya scam/Ponzi wali websites aur apps par claim nahi lag sakta.', allCountries:'Tamam Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
-  fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
-  fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Claim Confirm Karo ✅',
+  bidT:'➕ Claim Lagao', fBoard:'Board chunein <span class="req">*</span>', fHandle:'ID / Handle (jese @username) <span class="req">*</span>', fLink:'Profile ka link <span class="req">*</span>',
+  fAmt:'Claim amount (Rs) — min Rs 280', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country <span class="req">*</span>', fCity:'Apna city', selCountry:'Apna country chunein', needCountry:'⚠️ Pehle apna country chuno!', needBoard:'⚠️ Pehle apna board chuno!', restrictedMsg:'⛔ Restricted — adult, gambling, hathiyaron ya scam/Ponzi wali websites aur apps par claim nahi lag sakta.', allCountries:'Tamam Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
+  fPic:'Profile photo <span class="req">*</span>', fDesc:'Choti si description (optional)',
+  fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID) <span class="req">*</span>', bidBtn:'Claim Confirm Karo ✅',
   fPayM:'Payment ka tareeqa:', payCard:'💳 Card', payManual:'🏦 Manual Payment', checkoutBtn:'💳 Checkout',
   manualHint:'Agar checkout se payment nahi ho raha, to aap Manual Payment se bhi kar sakte hain:',
   cardNote:'Card se payment karo (Visa / Mastercard / Apple Pay) — payment kamyab hote hi claim <b>KHUD live</b> ho jayegi.',
@@ -643,6 +644,7 @@ function applyLang() {
   const fb = document.querySelector('[data-i18n="fanBtn"]'); if (fb) fb.innerHTML = IC.star + '<span>' + fb.innerHTML + '</span>';
   document.getElementById('langBtn').textContent = lang === 'ru' ? 'EN' : 'UR';
   renderRules(); renderFaq(); renderDocs(); renderHome(); renderBoard(cur); renderFans(); renderAll();
+  renderCurBtn(); updBidInfo();
   tick(); // refresh countdown unit (days/din) immediately on language switch
 }
 function toggleLang() { lang = lang === 'ru' ? 'en' : 'ru'; store.set('trs_lang2', lang); applyLang(); }
@@ -673,7 +675,7 @@ function onBidCountryChange() {
 }
 function renderCurBtn() { const el = document.getElementById('curBtn'); if (el) el.innerHTML = IC.note + (currency === 'PKR' ? ' USD' : ' PKR');
   const al = document.getElementById('amtLabel');
-  if (al) al.textContent = currency === 'USD' ? t('fAmtUsd') : t('fAmt');
+  if (al) al.innerHTML = (currency === 'USD' ? t('fAmtUsd') : t('fAmt')) + ' <span class="req">*</span>';
   const cs = document.getElementById('curSym');
   if (cs) cs.textContent = currency === 'USD' ? '$' : 'Rs';
   const ba = document.getElementById('bidAmt');
