@@ -324,6 +324,7 @@
     <input id="bidHandle" placeholder="@yourhandle">
     <label data-i18n="fLink">Profile ka link</label>
     <input id="bidLink" placeholder="e.g: https://yourprofile.com">
+    <div id="restrictedWarn" data-i18n="restrictedMsg" style="display:none;background:#fdecec;border:1.5px solid #e5484d;color:#b42318;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13.5px;margin:-2px 0 10px">⛔ Restricted — claims are not allowed for adult, gambling, weapons or scam/Ponzi websites and apps.</div>
     <label id="amtLabel">Claim amount (Rs) — min Rs 280</label>
     <input id="bidAmt" type="number" min="280" value="280">
     <div class="note" id="bidInfo"></div>
@@ -342,7 +343,7 @@
     <div id="cardBox">
       <p class="note" data-i18n="cardNote" style="margin-top:0">Card se payment karo (Visa / Mastercard / Apple Pay) — payment kamyab hote hi claim <b>KHUD live</b> ho jayegi.</p>
       <div id="cardAmt" style="text-align:center"></div>
-      <button type="button" class="btn checkout-btn" onclick="placeBidCard()" data-i18n="checkoutBtn">💳 Checkout</button>
+      <button type="button" class="btn checkout-btn" id="checkoutBtn" onclick="placeBidCard()" data-i18n="checkoutBtn">💳 Checkout</button>
     </div>
     <p class="note" data-i18n="manualHint" style="text-align:center;margin:14px 0 8px">Agar checkout se payment nahi ho raha, to aap Manual Payment se bhi kar sakte hain:</p>
     <button type="button" class="paytab" id="tabManual" onclick="toggleManual()" data-i18n="payManual" style="width:100%">🏦 Manual Payment</button>
@@ -354,7 +355,7 @@
     <label data-i18n="fShot">Payment ka screenshot</label>
     <input type="file" id="bidShot" accept="image/*">
     <img id="shotPrev" alt="screenshot preview">
-    <button class="btn" onclick="placeBid()" data-i18n="bidBtn">Claim Confirm Karo ✅</button>
+    <button class="btn" id="confirmBtn" onclick="placeBid()" data-i18n="bidBtn">Claim Confirm Karo ✅</button>
     </div>
     <div id="waNotify"></div>
     <p class="note" data-i18n="bidNote">⏳ Payment verify hone ke baad claim leaderboard par live hogi. Claims <b>non-refundable</b> hain.</p>
@@ -470,7 +471,7 @@ en: {
   howT:'How does it work? ❓',
   howD:'1️⃣ Pick a board (TikTok, Instagram, Facebook...)<br>2️⃣ Enter your ID/handle + profile link<br>3️⃣ Start claiming from just <b>$1</b> (≈Rs 280) — same for everyone<br>4️⃣ Highest challenger takes <b>#1</b> — for the <b>Season</b>!<br>5️⃣ Season resets every 3 months → Champions enter the <b>Hall of Fame</b>',
   bidT:'➕ Place a Claim', fBoard:'Choose board', fHandle:'ID / Handle (e.g. @username)', fLink:'Profile link',
-  fAmt:'Claim amount (Rs) — min Rs 280', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', selCountry:'Select your country', needCountry:'⚠️ Please select your country!', needBoard:'⚠️ Please select your board!', allCountries:'All Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
+  fAmt:'Claim amount (Rs) — min Rs 280', fName:'Your name / nickname (shown on leaderboard)', fCountry:'Your country', fCity:'Your city', selCountry:'Select your country', needCountry:'⚠️ Please select your country!', needBoard:'⚠️ Please select your board!', restrictedMsg:'⛔ Restricted — claims are not allowed for adult, gambling, weapons or scam/Ponzi websites and apps.', allCountries:'All Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Send USDT via TRC20 network only (from any wallet). Put the transaction hash as TID.', usdtFrom:'Send from any wallet — Binance, Trust Wallet, etc.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Short description (optional)',
   fPay:'Send payment (any one):', fTid:'Transaction ID (TID)', bidBtn:'Confirm Claim ✅',
   fPayM:'Payment method:', payCard:'💳 Card', payManual:'🏦 Manual Payment', checkoutBtn:'💳 Checkout',
@@ -493,8 +494,7 @@ en: {
     '<b>Claims are non-refundable.</b> Think before you claim.',
     '<b>Season = 3 months.</b> Season ends → boards reset → champions enter the Hall of Fame.',
     '<b>Fan Board:</b> fans claim for their heroes — all platforms in one place.',
-    '<b>No fake IDs.</b> Claims on fake/non-existent IDs will be cancelled (no refund).'
-  ],
+    '<b>No fake IDs.</b> Claims on fake/non-existent IDs will be cancelled (no refund).','🚫 <b>Restricted listings:</b> Adult, gambling, weapons and scam/Ponzi websites or apps cannot be claimed — the form blocks them automatically.'],
   ftAbout:'About', ftFaq:'FAQs', ftPrivacy:'Privacy Policy', ftTerms:'Terms & Conditions',
   abT:'ℹ️ About TopRankSM',
   abD:'<p>TopRankSM is the public leaderboard where anyone can claim the #1 spot. Every platform gets its own live board — TikTok, Instagram, Facebook, YouTube, X, Snapchat, LinkedIn and Threads — plus one cross-platform Fan Board.</p><p><b>Your claim is your rank.</b> Whoever claims the highest takes the #1 spot. No algorithms, no favoritism, no SEO games — just transparent, public claiming that anyone can watch.</p><p>Boards run in <b>Seasons of 3 months</b>. When a Season ends, boards reset and the champions are immortalized in the <b>Hall of Fame</b> forever.</p><p>TopRankSM is not affiliated with TikTok, Meta, Google, X or any social platform.</p>',
@@ -556,7 +556,7 @@ ru: {
   howT:'Kaise kaam karta hai? ❓',
   howD:'1️⃣ Board chuno (TikTok, Instagram, Facebook...)<br>2️⃣ Apni ID/handle + profile link do<br>3️⃣ Sirf <b>$1</b> (≈Rs 280) se claim shuru karo — sab ke liye same<br>4️⃣ Jo sab se zyada de, wo <b>#1</b> — <b>Season</b> tak!<br>5️⃣ Har 3 mahine Season reset → Champions <b>Hall of Fame</b> me',
   bidT:'➕ Claim Lagao', fBoard:'Board chunein', fHandle:'ID / Handle (jese @username)', fLink:'Profile ka link',
-  fAmt:'Claim amount (Rs) — min Rs 280', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', selCountry:'Apna country chunein', needCountry:'⚠️ Pehle apna country chuno!', needBoard:'⚠️ Pehle apna board chuno!', allCountries:'Tamam Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
+  fAmt:'Claim amount (Rs) — min Rs 280', fName:'Apna naam / nickname (leaderboard par dikhega)', fCountry:'Apna country', fCity:'Apna city', selCountry:'Apna country chunein', needCountry:'⚠️ Pehle apna country chuno!', needBoard:'⚠️ Pehle apna board chuno!', restrictedMsg:'⛔ Restricted — adult, gambling, hathiyaron ya scam/Ponzi wali websites aur apps par claim nahi lag sakta.', allCountries:'Tamam Countries', fAmtUsd:'Claim amount ($) — min $1', usdtWarn:'Sirf TRC20 network se USDT bhejo (kisi bhi wallet se). Transaction hash ko TID me likho.', usdtFrom:'Kisi bhi wallet se bhejo — Binance, Trust Wallet, etc.',
   fPic:'Profile photo (lazmi hai) *', fDesc:'Choti si description (optional)',
   fPay:'Payment bhejo (koi ek):', fTid:'Transaction ID (TID)', bidBtn:'Claim Confirm Karo ✅',
   fPayM:'Payment ka tareeqa:', payCard:'💳 Card', payManual:'🏦 Manual Payment', checkoutBtn:'💳 Checkout',
@@ -579,8 +579,7 @@ ru: {
     '<b>Claims wapas nahi hoti.</b> Soch kar claim karo.',
     '<b>Season = 3 mahine.</b> Season khatam → boards reset → champions Hall of Fame me.',
     '<b>Fan Board</b> par fans apne hero ke liye claim karte hain — sab platforms ek jagah.',
-    '<b>No fake IDs.</b> Ghalat/maujood-na-hone wali ID ki claim cancel kar di jayegi (paisa wapas nahi).'
-  ],
+    '<b>No fake IDs.</b> Ghalat/maujood-na-hone wali ID ki claim cancel kar di jayegi (paisa wapas nahi).','🚫 <b>Restricted listings:</b> Adult, gambling, hathiyaron ya scam/Ponzi wali websites aur apps par claim nahi lag sakta — form khud hi rok deta hai.'],
   ftAbout:'About', ftFaq:'FAQs', ftPrivacy:'Privacy Policy', ftTerms:'Terms & Conditions',
   abT:'ℹ️ About TopRankSM',
   abD:'<p>TopRankSM wo public leaderboard hai jahan koi bhi #1 spot claim kar sakta hai. Har platform ka apna live board — TikTok, Instagram, Facebook, YouTube, X, Snapchat, LinkedIn aur Threads — plus ek cross-platform Fan Board.</p><p><b>Tumhari claim hi tumhara rank hai.</b> Jo sab se zyada claim kare, wo #1. Na algorithm, na sifarish, na SEO ke khel — sirf khuli, public claiming jo koi bhi dekh sakta hai.</p><p>Boards <b>3 mahine ke Season</b> me chalte hain. Season khatam hone par boards reset aur champions hamesha ke liye <b>Hall of Fame</b> me.</p><p>TopRankSM ka TikTok, Meta, Google, X ya kisi social platform se koi talluq nahi.</p>',
@@ -1363,6 +1362,34 @@ function avatar(b, px) {
   const ch = ((b.handle || '?').replace('@', '').charAt(0) || '?').toUpperCase();
   return `<span class="ava-fb" style="width:${s}px;height:${s}px;font-size:${Math.round(s / 2.2)}px">${ch}</span>`;
 }
+
+const BLOCKED_DOMAINS = ['pornhub.com','xvideos.com','xnxx.com','xhamster.com','redtube.com','youporn.com','brazzers.com','onlyfans.com','chaturbate.com','stripchat.com','bongacams.com','myfreecams.com','livejasmin.com','spankbang.com','porntrex.com','bet365.com','1xbet.com','pokerstars.com','betfair.com','pinnacle.com','bovada.com','stake.com','draftkings.com','fanduel.com','betway.com','parimatch.com','melbet.com','888casino.com','williamhill.com','ladbrokes.com','ggpoker.com','partypoker.com','gunbroker.com','armslist.com','grabagun.com','budsgunshop.com','guns.com','cheaperthandirt.com','gunprime.com'];
+const BLOCKED_WORDS = ['porn','xxx','casino','poker','gambling','betting','sexcam','escort','roulette','blackjack','firearms','gunshop','ponzi','hyip','onlyfans'];
+function restrictedHit(txt) {
+  if (!txt) return '';
+  const s = String(txt).toLowerCase().trim();
+  let host = s;
+  try { host = new URL(s.startsWith('http') ? s : 'https://' + s).hostname; } catch (e) { host = s.split('/')[0]; }
+  host = host.replace(/^www\./, '').replace(/^@/, '');
+  for (const d of BLOCKED_DOMAINS) { if (host === d || host.endsWith('.' + d)) return d; }
+  const labels = host.split(/[.\-_]/).filter(Boolean);
+  for (const l of labels) {
+    if (/^bet\d/.test(l) || l === 'bet') return 'betting';
+    if (l === 'guns' || l === 'gun') return 'weapons';
+    if (l.includes('sex') && !['essex','sussex','middlesex'].includes(l) && l.length <= 8) return 'adult';
+    for (const w of BLOCKED_WORDS) { if (l === w || (w.length >= 4 && l.includes(w))) return w; }
+  }
+  return '';
+}
+function validateRestricted() {
+  const lEl = document.getElementById('bidLink'), hEl = document.getElementById('bidHandle');
+  const hit = restrictedHit(lEl ? lEl.value : '') || restrictedHit(hEl ? hEl.value : '');
+  const w = document.getElementById('restrictedWarn');
+  if (w) w.style.display = hit ? 'block' : 'none';
+  ['checkoutBtn','confirmBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.disabled = !!hit; b.style.opacity = hit ? '.45' : ''; b.style.pointerEvents = hit ? 'none' : ''; } });
+  return !hit;
+}
+['bidLink','bidHandle'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('input', validateRestricted); });
 let cardBusy = false;
 async function placeBidCard() {
   if (cardBusy) return;
@@ -1376,6 +1403,7 @@ async function placeBidCard() {
   const desc = document.getElementById('bidDesc').value.trim();
   const country = document.getElementById('bidCountry').value;
   if (!country) return toast(t('needCountry'));
+  if (restrictedHit(link) || restrictedHit(handle)) return toast(t('restrictedMsg'));
   const city = country === 'PK' ? (document.getElementById('bidCity').value || '') : (document.getElementById('bidCityTxt').value.trim() || '');
   if (!handle) return toast(t('needHandle'));
   if (!link.startsWith('http')) return toast(t('needLink'));
@@ -1416,6 +1444,7 @@ function placeBid() {
   const desc = document.getElementById('bidDesc').value.trim();
   const country = document.getElementById('bidCountry').value;
   if (!country) return toast(t('needCountry'));
+  if (restrictedHit(link) || restrictedHit(handle)) return toast(t('restrictedMsg'));
   const city = country === 'PK' ? (document.getElementById('bidCity').value || '') : (document.getElementById('bidCityTxt').value.trim() || '');
   if (!handle) return toast(t('needHandle'));
   if (!link.startsWith('http')) return toast(t('needLink'));
