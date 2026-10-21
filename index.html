@@ -524,10 +524,11 @@ en: {
   needLink:'⚠️ Enter a valid profile link!',
   needHandle:'⚠️ Enter the ID / Handle!',
   needTid:'⚠️ Enter a valid Transaction ID!',
-  needPic:'⚠️ Profile photo lagana lazmi hai! 📷',
+  needPic:'⚠️ Profile photo is required! 📷',
   needShot:'⚠️ Attach the payment screenshot! 🧾',
-  bidPending:'⏳ Claim pending me chali gayi! Payment verify hone ke baad leaderboard par live hogi.',
+  bidPending:'⏳ Claim submitted! It will go live on the leaderboard after payment verification.',
   bidLive:'✅ Claim is live! Share text copied — send it to friends! 📣',
+  waBtn:'📲 Send to Admin on WhatsApp',
   challengeToast:(n)=>`🔥 The throne is yours for ${n} — take it!`,
   shareTxt:(h,a,b)=>`🏆 I just claim ${fmtMoney(a)} on ${h} for the ${b} board on TopRankSM! #TopRankSM`,
   cur1:(t,r)=>`👑 <b>${t}</b> sits on the throne — <b>${r}</b> to knock them off`,
@@ -614,6 +615,7 @@ ru: {
   needShot:'⚠️ Payment ka screenshot lagana lazmi hai! 🧾',
   bidPending:'⏳ Claim pending me chali gayi! Payment verify hone ke baad leaderboard par live hogi.',
   bidLive:'✅ Claim live! Share text copy ho gaya — doston ko bhejo! 📣',
+  waBtn:'📲 Admin ko WhatsApp par bhejo',
   challengeToast:(n)=>`🔥 Takht tumhara sirf ${n} me — cheen lo!`,
   shareTxt:(h,a,b)=>`🏆 Maine ${h} par ${fmtMoney(a)} ki claim lagai TopRankSM ke ${b} board par! #TopRankSM`,
   cur1:(t,r)=>`Current #1: <b>${t}</b> — outclaim karne ke liye kam az kam <b>${r}</b>`,
@@ -1478,7 +1480,7 @@ function placeBid() {
   document.getElementById('bidDesc').value = ''; document.getElementById('bidPic').value = ''; document.getElementById('picPrev').innerHTML = ''; bidPic = '';
   pendingShot = null;
   const waText = encodeURIComponent('🔔 *NAYI CLAIM* — TopRankSM\n\nBoard: ' + boardName(board) + '\nHandle: ' + handle + '\nAmount: Rs ' + amount.toLocaleString() + '\nChallenger: ' + bidder + '\nTID: ' + tid + '\nTime: ' + new Date().toLocaleString());
-  document.getElementById('waNotify').innerHTML = `<a class="btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px" href="https://wa.me/923352710980?text=${waText}" target="_blank">📲 Admin ko WhatsApp par bhejo</a>`;
+  document.getElementById('waNotify').innerHTML = `<a class="btn" style="display:block;text-align:center;text-decoration:none;margin-top:10px" href="https://wa.me/923352710980?text=${waText}" target="_blank">${t('waBtn')}</a>`;
   toast(t('bidPending'));
 }
 
