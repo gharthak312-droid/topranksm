@@ -77,9 +77,10 @@
   <!-- ============ AUTH ============ -->
   <div id="authScreen">
     <div class="card lock">
+      <div style="text-align:right"><button class="hbtn" id="langBtnA" onclick="toggleAdminLang()">UR</button></div>
       <div class="crownbox"><svg viewBox="0 0 24 24" fill="#111"><path d="M3 8l4.5 3.5L12 5l4.5 6.5L21 8l-1.6 9.5H4.6L3 8zm1.8 11.5h14.4V21H4.8v-1.5z"/></svg></div>
       <h2>TopRankSM Admin</h2>
-      <p class="sub" style="margin-bottom:4px">Private dashboard — sirf admin ke liye</p>
+      <p class="sub" style="margin-bottom:4px" data-i18n="authSub">Private dashboard — admin only</p>
 
       <div id="authLogin">
         <label style="text-align:left">Email</label>
@@ -87,36 +88,36 @@
         <label style="text-align:left">Password</label>
         <input id="auPass" type="password" autocomplete="current-password" placeholder="••••••••">
         <button class="btn" onclick="doLogin()">🔐 Login</button>
-        <div class="links"><a onclick="showAuthMode('forgot')">Password bhool gaye?</a><a onclick="showAuthMode('setup')">Pehli dafa? Account banao</a></div>
+        <div class="links"><a onclick="showAuthMode('forgot')" data-i18n="lkForgot">Forgot password?</a><a onclick="showAuthMode('setup')" data-i18n="lkSetup">First time? Create account</a></div>
       </div>
 
       <div id="authSetup" style="display:none">
         <label style="text-align:left">Admin Email</label>
         <input id="suEmail" type="email" value="wadoodalizai@gmail.com">
-        <label style="text-align:left">Password rakho (kam se kam 8 characters)</label>
+        <label style="text-align:left" data-i18n="suPassLbl">Set a password (at least 8 characters)</label>
         <input id="suPass" type="password" autocomplete="new-password" placeholder="••••••••">
-        <label style="text-align:left">Password dobara likho</label>
+        <label style="text-align:left" data-i18n="againLbl">Type the password again</label>
         <input id="suPass2" type="password" autocomplete="new-password" placeholder="••••••••">
-        <button class="btn" onclick="doSignup()">✅ Account Banao</button>
-        <p class="note" style="text-align:left">Account banne ke baad tumhari **Gmail par ek confirmation link** ayega. Us par click karoge to account active ho jayega — phir yahan email + password se login karna.</p>
-        <div class="links"><a onclick="showAuthMode('login')">← Wapas Login par</a></div>
+        <button class="btn" onclick="doSignup()" data-i18n="suBtn">✅ Create Account</button>
+        <p class="note" style="text-align:left" data-i18n="setupNote">After the account is created, a <b>confirmation link</b> will arrive in your Gmail. Click it to activate the account — then log in here with your email + password.</p>
+        <div class="links"><a onclick="showAuthMode('login')" data-i18n="lkBack">← Back to Login</a></div>
       </div>
 
       <div id="authForgot" style="display:none">
         <label style="text-align:left">Recovery Email</label>
         <input id="fgEmail" type="email" value="wadoodalizai@gmail.com">
-        <button class="btn" onclick="doForgot()">📧 Reset Link Bhejo</button>
-        <p class="note" style="text-align:left">Is email par password reset ka link jayega. Link par click karke naya password laga lena.</p>
-        <div class="links"><a onclick="showAuthMode('login')">← Wapas Login par</a></div>
+        <button class="btn" onclick="doForgot()" data-i18n="fgBtn">📧 Send Reset Link</button>
+        <p class="note" style="text-align:left" data-i18n="fgNote">A password reset link will be sent to this email. Click it to set a new password.</p>
+        <div class="links"><a onclick="showAuthMode('login')" data-i18n="lkBack">← Back to Login</a></div>
       </div>
 
       <div id="authRecovery" style="display:none">
-        <h3 style="margin-bottom:2px">🔑 Naya Password Lagao</h3>
-        <label style="text-align:left">Naya Password (kam se kam 8 characters)</label>
+        <h3 style="margin-bottom:2px" data-i18n="rcT">🔑 Set a New Password</h3>
+        <label style="text-align:left" data-i18n="rcPassLbl">New password (at least 8 characters)</label>
         <input id="rcPass" type="password" autocomplete="new-password" placeholder="••••••••">
-        <label style="text-align:left">Dobara likho</label>
+        <label style="text-align:left" data-i18n="againLbl">Type it again</label>
         <input id="rcPass2" type="password" autocomplete="new-password" placeholder="••••••••">
-        <button class="btn" onclick="doSetRecovery()">✅ Password Badal Do</button>
+        <button class="btn" onclick="doSetRecovery()" data-i18n="rcBtn">✅ Change Password</button>
       </div>
 
       <div id="authMsg" class="amsg"></div>
@@ -128,10 +129,10 @@
     <div class="card lock">
       <div class="crownbox"><svg viewBox="0 0 24 24" fill="#111"><path d="M3 8l4.5 3.5L12 5l4.5 6.5L21 8l-1.6 9.5H4.6L3 8zm1.8 11.5h14.4V21H4.8v-1.5z"/></svg></div>
       <h2>PIN Lock</h2>
-      <p class="sub">Extra security — apna PIN likho</p>
+      <p class="sub" data-i18n="pinSub">Extra security — enter your PIN</p>
       <input id="pin" type="password" inputmode="numeric" maxlength="8" placeholder="PIN" style="max-width:260px;margin:0 auto;text-align:center">
-      <button class="btn" style="max-width:260px" onclick="unlockPin()">🔓 Kholo</button>
-      <div class="links" style="justify-content:center"><a onclick="doLogout()">Logout (doosra account)</a></div>
+      <button class="btn" style="max-width:260px" onclick="unlockPin()" data-i18n="pinBtn">🔓 Unlock</button>
+      <div class="links" style="justify-content:center"><a onclick="doLogout()" data-i18n="pinLogout">Logout (different account)</a></div>
     </div>
   </div>
 
@@ -143,10 +144,11 @@
         <h1>TopRankSM <span style="color:var(--gold)">Admin</span></h1>
         <div class="sub" style="margin:0" id="hdrEmail">—</div>
       </div>
+      <button class="hbtn" id="langBtnD" onclick="toggleAdminLang()">UR</button>
       <button class="hbtn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
       <button class="hbtn" onclick="doLogout()">🚪 Logout</button>
     </div>
-    <p class="sub">Hidden dashboard — iska link public site par nahi hai</p>
+    <p class="sub" data-i18n="hdrSub">Hidden dashboard — this link is not on the public site</p>
 
     <div class="tabs">
       <button class="tab on" id="tab-home" onclick="showTab('home')">🏠 Home</button>
@@ -162,25 +164,25 @@
     <div id="pg-home">
       <div class="card">
         <div class="statgrid">
-          <div class="stat"><div class="n" id="hPend">—</div><div class="l">⏳ Pending (approval baqi)</div></div>
-          <div class="stat"><div class="n" id="hToday">—</div><div class="l">📅 Aaj ke claims</div></div>
+          <div class="stat"><div class="n" id="hPend">—</div><div class="l" data-i18n="hPendL">⏳ Pending (awaiting approval)</div></div>
+          <div class="stat"><div class="n" id="hToday">—</div><div class="l" data-i18n="hTodayL">📅 Today's claims</div></div>
           <div class="stat"><div class="n" id="hLive">—</div><div class="l">✅ Live claims</div></div>
           <div class="stat"><div class="n" id="hValue">—</div><div class="l">💰 Total claim value</div></div>
           <div class="stat"><div class="n" id="hOnline">—</div><div class="l">🟢 Online now</div></div>
-          <div class="stat"><div class="n" id="hVis">—</div><div class="l">👀 Aaj ke visitors</div></div>
+          <div class="stat"><div class="n" id="hVis">—</div><div class="l" data-i18n="hVisL">👀 Today's visitors</div></div>
         </div>
         <div class="m" id="hBig" style="margin-top:10px;color:var(--mut);font-size:13px">—</div>
         <button class="btn ghost" onclick="loadStats()">🔄 Refresh</button>
       </div>
       <div class="card">
-        <h3 style="margin-bottom:10px">🆕 Latest Claims</h3>
+        <h3 style="margin-bottom:10px" data-i18n="latestT">🆕 Latest Claims</h3>
         <div id="homeLatest"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
     <div id="pg-pend" style="display:none">
       <div class="card">
-        <p class="note" style="margin-top:0">Pehle apne Easypaisa/Nayapay app me <b>TID verify</b> karo, phir ✅ dabao — claim foran live ho jayegi!</p>
+        <p class="note" style="margin-top:0" data-i18n="pendNote">First <b>verify the TID</b> in your Easypaisa/Nayapay app, then press ✅ — the claim goes live instantly!</p>
         <div id="pendList"><div class="empty">Loading…</div></div>
       </div>
     </div>
@@ -188,26 +190,26 @@
     <div id="pg-live" style="display:none">
       <div class="card">
         <div class="flexrow">
-          <input id="liveSearch" placeholder="🔍 Search handle / challenger…" oninput="renderLive()">
-          <select id="liveBoard" onchange="renderLive()" style="max-width:170px"><option value="">Tamam Boards</option></select>
+          <input id="liveSearch" placeholder="🔍 Search handle / challenger…" data-i18n-ph="searchPh" oninput="renderLive()">
+          <select id="liveBoard" onchange="renderLive()" style="max-width:170px"><option value="" data-i18n="allBoards">All Boards</option></select>
         </div>
-        <button class="btn ghost small" style="margin:10px 0" onclick="exportCSV()">📥 CSV Export (Excel ke liye)</button>
+        <button class="btn ghost small" style="margin:10px 0" onclick="exportCSV()" data-i18n="exportBtn">📥 CSV Export (for Excel)</button>
         <div id="liveList"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
     <div id="pg-blocked" style="display:none">
       <div class="card">
-        <p class="note" style="margin-top:0">🚫 Ye wo koshishein hain jo site ne <b>khud rok di</b> — restricted websites/apps (adult, gambling, weapons, Ponzi waghera) lagane ki koshish. Ye sirf record hai, site par kabhi live nahi hotay.</p>
-        <button class="btn danger" onclick="clearBlocked()">🗑️ Sab Blocked Saaf Karo</button>
+        <p class="note" style="margin-top:0" data-i18n="blockedNote">🚫 These are attempts the site <b>blocked by itself</b> — tries to list restricted websites/apps (adult, gambling, weapons, Ponzi, etc.). This is only a record; they never go live on the site.</p>
+        <button class="btn danger" onclick="clearBlocked()" data-i18n="clearBlockedBtn">🗑️ Clear All Blocked</button>
         <div id="blockedList" style="margin-top:12px"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
     <div id="pg-seeds" style="display:none">
       <div class="card">
-        <p class="note" style="margin-top:0">🌱 Ye <b>fake seed claims</b> hain (TID = SEED). Asli claims aate jayein to inhe hata do — <b>Jan 2027 (season end) se pehle SAB khatam</b> hone chahiye!</p>
-        <button class="btn danger" onclick="removeAllSeeds()">🗑️ Sab Seeds Hatao</button>
+        <p class="note" style="margin-top:0" data-i18n="seedsNote">🌱 These are <b>fake seed claims</b> (TID = SEED). As real claims come in, remove these — <b>ALL must be gone before Jan 2027 (season end)</b>!</p>
+        <button class="btn danger" onclick="removeAllSeeds()" data-i18n="seedsBtn">🗑️ Remove All Seeds</button>
         <div id="seedList" style="margin-top:12px"><div class="empty">Loading…</div></div>
       </div>
     </div>
@@ -225,8 +227,8 @@
         <div class="m" id="stBig" style="margin-top:10px;color:var(--mut);font-size:13px">—</div>
         <div class="m" id="stBoards" style="margin-top:6px;color:var(--mut);font-size:13px">—</div>
         <div class="m" id="stSeason" style="margin-top:6px;color:var(--mut);font-size:13px">—</div>
-        <p class="note">Visitors = daily unique. Refresh se count nahi barhta.</p>
-        <button class="btn ghost" id="refreshBtn" onclick="loadStats()">🔄 Refresh stats</button>
+        <p class="note" data-i18n="statsNote">Visitors = daily unique. Refreshing does not increase the count.</p>
+        <button class="btn ghost" id="refreshBtn" onclick="loadStats()" data-i18n="refreshStats">🔄 Refresh stats</button>
       </div>
     </div>
 
@@ -246,22 +248,22 @@
         <h3 style="margin-bottom:6px">👤 Account</h3>
         <div class="m" style="color:var(--mut);font-size:13px">Email: <b id="secEmail" style="color:var(--txt)">—</b></div>
         <div class="m" style="color:var(--mut);font-size:13px;margin-top:4px">Last login: <b id="secLastLogin" style="color:var(--txt)">—</b></div>
-        <label>Naya Password (kam se kam 8 characters)</label>
+        <label data-i18n="secPassLbl">New password (at least 8 characters)</label>
         <input id="secNewPass" type="password" autocomplete="new-password" placeholder="••••••••">
-        <button class="btn ghost" onclick="doChangePassword()">Password Badlo</button>
+        <button class="btn ghost" onclick="doChangePassword()" data-i18n="secPassBtn">Change Password</button>
       </div>
       <div class="card">
         <h3 style="margin-bottom:6px">🔢 PIN Lock (extra lock)</h3>
-        <label style="display:flex;align-items:center;gap:8px;color:var(--txt);font-size:13.5px"><input type="checkbox" id="pinOnToggle" style="width:auto" onchange="togglePinLock()"> Login ke baad PIN bhi manga jaye</label>
+        <label style="display:flex;align-items:center;gap:8px;color:var(--txt);font-size:13.5px"><input type="checkbox" id="pinOnToggle" style="width:auto" onchange="togglePinLock()"> <span data-i18n="pinToggleLbl">Also ask for a PIN after login</span></label>
         <label>New PIN (4+ digits)</label>
         <input id="newPin" type="password" inputmode="numeric" maxlength="8" placeholder="****">
-        <button class="btn ghost" onclick="changePin()">PIN Update Karo</button>
-        <p class="note">Note: Asli security tumhara email + password hai (server par mehfooz). PIN is device par ek extra lock hai.</p>
+        <button class="btn ghost" onclick="changePin()" data-i18n="pinUpdBtn">Update PIN</button>
+        <p class="note" data-i18n="secPinNote">Note: Your real security is your email + password (kept safe on the server). The PIN is an extra lock on this device.</p>
       </div>
       <div class="card">
         <h3 style="margin-bottom:6px">🚪 Session</h3>
-        <p class="note" style="margin-top:0">Login tab tak yaad rehta hai jab tak tum khud Logout na karo — refresh karne se dobara nahi mangta.</p>
-        <button class="btn danger" onclick="doLogout()">🚪 Logout Karo</button>
+        <p class="note" style="margin-top:0" data-i18n="sessNote">You stay logged in until you press Logout yourself — refreshing the page will not ask again.</p>
+        <button class="btn danger" onclick="doLogout()" data-i18n="logoutBtn">🚪 Logout</button>
       </div>
     </div>
   </div>
@@ -281,6 +283,95 @@ const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 };
+
+/* ===== LANGUAGE (default English) ===== */
+const ALANG = {
+en: {
+  authSub:'Private dashboard — admin only', suPassLbl:'Set a password (at least 8 characters)', againLbl:'Type the password again',
+  suBtn:'✅ Create Account', setupNote:'After the account is created, a <b>confirmation link</b> will arrive in your Gmail. Click it to activate the account — then log in here with your email + password.',
+  lkForgot:'Forgot password?', lkSetup:'First time? Create account', lkBack:'← Back to Login', fgBtn:'📧 Send Reset Link',
+  fgNote:'A password reset link will be sent to this email. Click it to set a new password.', rcT:'🔑 Set a New Password',
+  rcPassLbl:'New password (at least 8 characters)', rcBtn:'✅ Change Password', pinSub:'Extra security — enter your PIN',
+  pinBtn:'🔓 Unlock', pinLogout:'Logout (different account)', hdrSub:'Hidden dashboard — this link is not on the public site',
+  hPendL:'⏳ Pending (awaiting approval)', hTodayL:'📅 Today\'s claims', hVisL:'👀 Today\'s visitors', latestT:'🆕 Latest Claims',
+  pendNote:'First <b>verify the TID</b> in your Easypaisa/Nayapay app, then press ✅ — the claim goes live instantly!',
+  searchPh:'🔍 Search handle / challenger…', allBoards:'All Boards', exportBtn:'📥 CSV Export (for Excel)',
+  blockedNote:'🚫 These are attempts the site <b>blocked by itself</b> — tries to list restricted websites/apps (adult, gambling, weapons, Ponzi, etc.). This is only a record; they never go live on the site.',
+  clearBlockedBtn:'🗑️ Clear All Blocked', seedsNote:'🌱 These are <b>fake seed claims</b> (TID = SEED). As real claims come in, remove these — <b>ALL must be gone before Jan 2027 (season end)</b>!',
+  seedsBtn:'🗑️ Remove All Seeds', statsNote:'Visitors = daily unique. Refreshing does not increase the count.', refreshStats:'🔄 Refresh stats',
+  secPassLbl:'New password (at least 8 characters)', secPassBtn:'Change Password', pinToggleLbl:'Also ask for a PIN after login',
+  pinUpdBtn:'Update PIN', secPinNote:'Note: Your real security is your email + password (kept safe on the server). The PIN is an extra lock on this device.',
+  sessNote:'You stay logged in until you press Logout yourself — refreshing the page will not ask again.', logoutBtn:'🚪 Logout',
+  connErr:'❌ Could not connect — check your internet and refresh.', bothReq:'❌ Enter both email and password!',
+  invalidLogin:'❌ Wrong email or password!', notConfirmed:'❌ Email not confirmed yet — click the confirmation link in your Gmail, then log in.',
+  alreadyReg:'❌ An account with this email already exists — please log in.', rateLimit:'❌ Too many attempts — try again in a little while.',
+  onlyAdmin:'❌ Only the admin email can create this account.', passShort:'❌ Password must be at least 8 characters!',
+  passMismatch:'❌ The two passwords do not match!', emailReq:'❌ Enter your email!',
+  signupDone:'✅ Account created! Now open your Gmail — a confirmation link has arrived there. Click it, then log in here with your email + password.',
+  forgotDone:'✅ Reset link sent to {email}. Open your Gmail and click the link — a screen to set a new password will open here.',
+  passChanged:'✅ New password set!', passChanged2:'✅ Password changed!', loggedOut:'🚪 Logged out',
+  notAllowed:'❌ This email is not allowed for admin.', wrongPin:'❌ Wrong PIN!', libErr:'❌ Supabase library did not load — check your internet and refresh.',
+  supaErr:'Supabase is not connected', loadErr:'❌ Load error: ', noPend:'No pending claims 🎉', noShot:'📷 no screenshot sent',
+  noClaims:'No claims yet', noBlocked:'No blocked attempts — all clear! 🎉', noBlockedRec:'No blocked records 🎉',
+  clearBlockedQ:'Clear {n} blocked records?', blockedCleared:'🗑️ Blocked list cleared!', copied:'📋 Details copied!', copyFail:'❌ Copy failed',
+  editPrompt:'New claim amount (Rs) — ', amtInvalid:'❌ Enter a valid amount!', amtUpdated:'✅ Amount updated!',
+  noSeeds:'No seeds 🎉', seedsQ1:'Delete {n} SEED claims? This cannot be undone!', seedsQ2:'Are you sure? All seeds will be deleted forever!',
+  seedsGone:'🗑️ All seeds deleted!', claimLive:'✅ Claim is now live!', rejectQ:'Reject/delete this pending claim?', rejected:'🗑️ Claim rejected',
+  removeQ:'Delete this entry? It will disappear from the whole site!', deleted:'🗑️ Deleted', csvDone:'📥 CSV downloaded!',
+  seasonLine:'🗓️ Season <b>{sn}</b> • ends <b>{date}</b> • <b>{days}</b> days left',
+  seasonInfo:'🗓️ <b>Season {sn}</b> is running • Ends: <b>{date}</b> • <b>{days} days</b> left.<br>When a season ends, each board\'s champions move to the Hall of Fame automatically and the boards reset.',
+  noChamp:'No champions yet — champions will appear here when the first season ends 🏆', hofEmpty:'Hall of Fame is empty for now',
+  pinOnMsg:'🔢 PIN lock is ON (it will be asked at next login)', pinOffMsg:'PIN lock is OFF', pinShort:'PIN must be at least 4 digits!', pinChanged:'✅ PIN changed!'
+},
+ru: {
+  authSub:'Private dashboard — sirf admin ke liye', suPassLbl:'Password rakho (kam se kam 8 characters)', againLbl:'Password dobara likho',
+  suBtn:'✅ Account Banao', setupNote:'Account banne ke baad tumhari <b>Gmail par ek confirmation link</b> ayega. Us par click karoge to account active ho jayega — phir yahan email + password se login karna.',
+  lkForgot:'Password bhool gaye?', lkSetup:'Pehli dafa? Account banao', lkBack:'← Wapas Login par', fgBtn:'📧 Reset Link Bhejo',
+  fgNote:'Is email par password reset ka link jayega. Link par click karke naya password laga lena.', rcT:'🔑 Naya Password Lagao',
+  rcPassLbl:'Naya Password (kam se kam 8 characters)', rcBtn:'✅ Password Badal Do', pinSub:'Extra security — apna PIN likho',
+  pinBtn:'🔓 Kholo', pinLogout:'Logout (doosra account)', hdrSub:'Hidden dashboard — iska link public site par nahi hai',
+  hPendL:'⏳ Pending (approval baqi)', hTodayL:'📅 Aaj ke claims', hVisL:'👀 Aaj ke visitors', latestT:'🆕 Taza Tareen Claims',
+  pendNote:'Pehle apne Easypaisa/Nayapay app me <b>TID verify</b> karo, phir ✅ dabao — claim foran live ho jayegi!',
+  searchPh:'🔍 Handle / challenger dhundo…', allBoards:'Tamam Boards', exportBtn:'📥 CSV Export (Excel ke liye)',
+  blockedNote:'🚫 Ye wo koshishein hain jo site ne <b>khud rok di</b> — restricted websites/apps (adult, gambling, weapons, Ponzi waghera) lagane ki koshish. Ye sirf record hai, site par kabhi live nahi hotay.',
+  clearBlockedBtn:'🗑️ Sab Blocked Saaf Karo', seedsNote:'🌱 Ye <b>fake seed claims</b> hain (TID = SEED). Asli claims aate jayein to inhe hata do — <b>Jan 2027 (season end) se pehle SAB khatam</b> hone chahiye!',
+  seedsBtn:'🗑️ Sab Seeds Hatao', statsNote:'Visitors = daily unique. Refresh se count nahi barhta.', refreshStats:'🔄 Stats refresh karo',
+  secPassLbl:'Naya Password (kam se kam 8 characters)', secPassBtn:'Password Badlo', pinToggleLbl:'Login ke baad PIN bhi manga jaye',
+  pinUpdBtn:'PIN Update Karo', secPinNote:'Note: Asli security tumhara email + password hai (server par mehfooz). PIN is device par ek extra lock hai.',
+  sessNote:'Login tab tak yaad rehta hai jab tak tum khud Logout na karo — refresh karne se dobara nahi mangta.', logoutBtn:'🚪 Logout Karo',
+  connErr:'❌ Connection nahi bana — internet check karke refresh karo.', bothReq:'❌ Email aur password dono likho!',
+  invalidLogin:'❌ Email ya password ghalat hai!', notConfirmed:'❌ Email abhi confirm nahi hua — Gmail me confirmation link par click karo, phir login karo.',
+  alreadyReg:'❌ Is email se account pehle se bana hua hai — Login karo.', rateLimit:'❌ Bohat zyada koshishein — thodi dair baad dobara try karo.',
+  onlyAdmin:'❌ Sirf admin email se account ban sakta hai.', passShort:'❌ Password kam se kam 8 characters ka rakho!',
+  passMismatch:'❌ Dono password ek jese nahi hain!', emailReq:'❌ Email likho!',
+  signupDone:'✅ Account ban gaya! Ab apni Gmail kholo — wahan ek confirmation link aya hoga. Us par click karo, phir yahan email + password se login karo.',
+  forgotDone:'✅ Reset link {email} par bhej diya hai. Gmail kholo, link par click karo — phir yahan naya password lagane ki screen aa jayegi.',
+  passChanged:'✅ Naya password lag gaya!', passChanged2:'✅ Password badal gaya!', loggedOut:'🚪 Logout ho gaya',
+  notAllowed:'❌ Ye email admin ke liye allowed nahi hai.', wrongPin:'❌ Ghalat PIN!', libErr:'❌ Supabase library load nahi hui — internet check karke refresh karo.',
+  supaErr:'Supabase connect nahi hua', loadErr:'❌ Load error: ', noPend:'Koi pending claim nahi 🎉', noShot:'📷 screenshot nahi bheja',
+  noClaims:'Abhi koi claim nahi', noBlocked:'Koi blocked koshish nahi — saaf! 🎉', noBlockedRec:'Koi blocked record nahi hai 🎉',
+  clearBlockedQ:'{n} blocked records saaf karni hain?', blockedCleared:'🗑️ Blocked list saaf ho gayi!', copied:'📋 Details copy ho gayi!', copyFail:'❌ Copy nahi hua',
+  editPrompt:'Nayi claim amount (Rs) — ', amtInvalid:'❌ Sahi amount likho!', amtUpdated:'✅ Amount update ho gayi!',
+  noSeeds:'Koi seed nahi hai 🎉', seedsQ1:'{n} SEED claims delete karni hain? Ye UNDO nahi hoga!', seedsQ2:'Pakki baat? Sab seeds hamesha ke liye delete!',
+  seedsGone:'🗑️ Sab seeds delete ho gaye!', claimLive:'✅ Claim live ho gayi!', rejectQ:'Ye pending claim reject/delete karni hai?', rejected:'🗑️ Claim reject kar di',
+  removeQ:'Ye entry delete karni hai? Site se har jagah hat jayegi!', deleted:'🗑️ Delete ho gayi', csvDone:'📥 CSV download ho gaya!',
+  seasonLine:'🗓️ Season <b>{sn}</b> • ends <b>{date}</b> • <b>{days}</b> din baqi',
+  seasonInfo:'🗓️ Abhi <b>Season {sn}</b> chal raha hai • Khatam: <b>{date}</b> • <b>{days} din</b> baqi hain.<br>Season khatam hone par har board ke champions khud-ba-khud Hall of Fame me chale jate hain aur boards reset ho jate hain.',
+  noChamp:'Abhi koi champion nahi — pehla season khatam hone par champions yahan ayenge 🏆', hofEmpty:'Hall of Fame abhi khali hai',
+  pinOnMsg:'🔢 PIN lock ON ho gaya (agle login par mangega)', pinOffMsg:'PIN lock OFF ho gaya', pinShort:'PIN kam se kam 4 digits ka ho!', pinChanged:'✅ PIN change ho gaya!'
+}
+};
+let alang = store.get('trs_admin_lang', 'en');
+if (alang !== 'ru') alang = 'en';
+function t(k) { return (ALANG[alang] && ALANG[alang][k]) || ALANG.en[k] || k; }
+function applyAdminLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { const v = ALANG[alang][el.dataset.i18n]; if (typeof v === 'string') el.innerHTML = v; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { const v = ALANG[alang][el.dataset.i18nPh]; if (typeof v === 'string') el.placeholder = v; });
+  const lbl = alang === 'en' ? 'UR' : 'EN';
+  ['langBtnA', 'langBtnD'].forEach(id => { const b = document.getElementById(id); if (b) b.textContent = lbl; });
+  if (authUser && document.getElementById('dash').style.display !== 'none') { renderLive(); renderSeeds(); renderBlocked(); renderHomeLatest(); loadSeason(); }
+}
+function toggleAdminLang() { alang = alang === 'en' ? 'ru' : 'en'; store.set('trs_admin_lang', alang); applyAdminLang(); }
 
 /* ===== THEME ===== */
 function applyTheme(t) {
@@ -414,75 +505,75 @@ function showAuthMode(mode) {
 }
 function friendlyErr(e) {
   const m = (e && e.message) || 'Error';
-  if (/invalid login/i.test(m)) return '❌ Email ya password ghalat hai!';
-  if (/email not confirmed/i.test(m)) return '❌ Email abhi confirm nahi hua — Gmail me confirmation link par click karo, phir login karo.';
-  if (/already registered/i.test(m)) return '❌ Is email se account pehle se bana hua hai — Login karo.';
-  if (/rate limit/i.test(m)) return '❌ Bohat zyada koshishein — thodi dair baad dobara try karo.';
+  if (/invalid login/i.test(m)) return t('invalidLogin');
+  if (/email not confirmed/i.test(m)) return t('notConfirmed');
+  if (/already registered/i.test(m)) return t('alreadyReg');
+  if (/rate limit/i.test(m)) return t('rateLimit');
   return '❌ ' + m;
 }
 async function doLogin() {
-  if (!supa) return showAuthMsg('❌ Connection nahi bana — internet check karke refresh karo.');
+  if (!supa) return showAuthMsg(t('connErr'));
   const email = document.getElementById('auEmail').value.trim().toLowerCase();
   const password = document.getElementById('auPass').value;
-  if (!email || !password) return showAuthMsg('❌ Email aur password dono likho!');
+  if (!email || !password) return showAuthMsg(t('bothReq'));
   const { data, error } = await supa.auth.signInWithPassword({ email, password });
   if (error) return showAuthMsg(friendlyErr(error));
   document.getElementById('auPass').value = '';
   handleSession(data.session);
 }
 async function doSignup() {
-  if (!supa) return showAuthMsg('❌ Connection nahi bana — refresh karo.');
+  if (!supa) return showAuthMsg(t('connErr'));
   const email = document.getElementById('suEmail').value.trim().toLowerCase();
   const p1 = document.getElementById('suPass').value, p2 = document.getElementById('suPass2').value;
-  if (email !== ADMIN_EMAIL) return showAuthMsg('❌ Sirf admin email (' + ADMIN_EMAIL + ') se account ban sakta hai.');
-  if (p1.length < 8) return showAuthMsg('❌ Password kam se kam 8 characters ka rakho!');
-  if (p1 !== p2) return showAuthMsg('❌ Dono password ek jese nahi hain!');
+  if (email !== ADMIN_EMAIL) return showAuthMsg(t('onlyAdmin'));
+  if (p1.length < 8) return showAuthMsg(t('passShort'));
+  if (p1 !== p2) return showAuthMsg(t('passMismatch'));
   const { data, error } = await supa.auth.signUp({ email, password: p1, options: { emailRedirectTo: ADMIN_URL } });
   if (error) return showAuthMsg(friendlyErr(error));
   if (data.session) { handleSession(data.session); return; }
   showAuthMode('login');
-  showAuthMsg('✅ Account ban gaya! Ab apni Gmail kholo — wahan ek confirmation link aya hoga. Us par click karo, phir yahan email + password se login karo.', true);
+  showAuthMsg(t('signupDone'), true);
 }
 async function doForgot() {
   if (!supa) return showAuthMsg('❌ Connection nahi bana — refresh karo.');
   const email = document.getElementById('fgEmail').value.trim().toLowerCase();
-  if (!email) return showAuthMsg('❌ Email likho!');
+  if (!email) return showAuthMsg(t('emailReq'));
   const { error } = await supa.auth.resetPasswordForEmail(email, { redirectTo: ADMIN_URL });
   if (error) return showAuthMsg(friendlyErr(error));
-  showAuthMsg('✅ Reset link ' + email + ' par bhej diya hai. Gmail kholo, link par click karo — phir yahan naya password lagane ki screen aa jayegi.', true);
+  showAuthMsg(t('forgotDone').replace('{email}', email), true);
 }
 async function doSetRecovery() {
   const p1 = document.getElementById('rcPass').value, p2 = document.getElementById('rcPass2').value;
-  if (p1.length < 8) return showAuthMsg('❌ Password kam se kam 8 characters ka rakho!');
-  if (p1 !== p2) return showAuthMsg('❌ Dono password ek jese nahi hain!');
+  if (p1.length < 8) return showAuthMsg(t('passShort'));
+  if (p1 !== p2) return showAuthMsg(t('passMismatch'));
   const { error } = await supa.auth.updateUser({ password: p1 });
   if (error) return showAuthMsg(friendlyErr(error));
   history.replaceState(null, '', location.pathname);
-  toast('✅ Naya password lag gaya!');
+  toast(t('passChanged'));
   const { data } = await supa.auth.getSession();
   handleSession(data.session);
 }
 async function doChangePassword() {
   const v = document.getElementById('secNewPass').value;
-  if (v.length < 8) return toast('❌ Password kam se kam 8 characters ka ho!');
+  if (v.length < 8) return toast(t('passShort'));
   const { error } = await supa.auth.updateUser({ password: v });
   if (error) return toast(friendlyErr(error));
   document.getElementById('secNewPass').value = '';
-  toast('✅ Password badal gaya!');
+  toast(t('passChanged2'));
 }
 async function doLogout() {
   store.set('trs_pin_ok_uid', '');
   try { if (supa) await supa.auth.signOut(); } catch (e) {}
   authUser = null;
   showAuthMode('login');
-  toast('🚪 Logout ho gaya');
+  toast(t('loggedOut'));
 }
 function handleSession(session) {
   if (!session || !session.user) { showAuthMode('login'); return; }
   if ((session.user.email || '').toLowerCase() !== ADMIN_EMAIL) {
     supa.auth.signOut();
     showAuthMode('login');
-    showAuthMsg('❌ Ye email admin ke liye allowed nahi hai.');
+    showAuthMsg(t('notAllowed'));
     return;
   }
   authUser = session.user;
@@ -501,7 +592,7 @@ function unlockPin() {
     store.set('trs_pin_ok_uid', authUser ? authUser.id : 'x');
     document.getElementById('pin').value = '';
     enterDash();
-  } else toast('❌ Ghalat PIN!');
+  } else toast(t('wrongPin'));
 }
 function enterDash() {
   document.getElementById('authScreen').style.display = 'none';
@@ -519,7 +610,7 @@ function enterDash() {
   loadStats();
 }
 async function initAuth() {
-  if (!supa) { showAuthMsg('❌ Supabase library load nahi hui — internet check karke refresh karo.'); return; }
+  if (!supa) { showAuthMsg(t('libErr')); return; }
   supa.auth.onAuthStateChange((ev) => {
     if (ev === 'PASSWORD_RECOVERY') showAuthMode('recovery');
     if (ev === 'SIGNED_OUT') { authUser = null; showAuthMode('login'); }
@@ -544,7 +635,7 @@ function showTab(t) {
 
 /* ================= DATA ================= */
 async function loadBids() {
-  if (!supa) { toast('Supabase connect nahi hua'); return; }
+  if (!supa) { toast(t('supaErr')); return; }
   try {
     const { data, error } = await supa.from('bids').select('*').order('t', { ascending: false });
     if (error) throw error;
@@ -564,19 +655,19 @@ async function loadBids() {
           <div class="m">TID: <span class="tid">${esc(b.tid || '—')}</span> • ${ago(b.t)}</div>
           ${b.desc ? `<div class="bd">📝 ${esc(b.desc)}</div>` : ''}
           ${b.link ? `<div class="m">🔗 <a href="${esc(b.link)}" target="_blank" style="color:var(--acc)">${esc(b.link.slice(0, 40))}${b.link.length > 40 ? '…' : ''}</a></div>` : ''}
-          ${b.shot ? `<img class="shot" src="${b.shot}" alt="payment screenshot">` : '<div class="m">📷 screenshot nahi bheja</div>'}
+          ${b.shot ? `<img class="shot" src="${b.shot}" alt="payment screenshot">` : '<div class="m">' + t('noShot') + '</div>'}
         </div>
         <div class="acts">
           <button class="ok" onclick="approveBid('${b.id}')">✅</button>
           <button class="no" onclick="copyDetails('${b.id}')">📋</button>
           <button class="no" onclick="rejectBid('${b.id}')">❌</button>
         </div>
-      </div>`).join('') : '<div class="empty">Koi pending claim nahi 🎉</div>';
+      </div>`).join('') : '<div class="empty">' + t('noPend') + '</div>';
     renderLive();
     renderSeeds();
     renderBlocked();
     renderHomeLatest();
-  } catch (e) { toast('❌ Load error: ' + e.message); }
+  } catch (e) { toast(t('loadErr') + e.message); }
 }
 
 function statusChip(b) {
@@ -597,7 +688,7 @@ function renderHomeLatest() {
         <div class="h">${esc(b.handle)} ${statusChip(b)}</div>
         <div class="m">${boardLabel(b.board)} • <span class="amt">${fmtMoney(b.amount)}</span> • by ${esc(b.bidder)} • ${ago(b.t)}</div>
       </div>
-    </div>`).join('') : '<div class="empty">Abhi koi claim nahi</div>';
+    </div>`).join('') : '<div class="empty">' + t('noClaims') + '</div>';
 }
 function renderBlocked() {
   const el = document.getElementById('blockedList');
@@ -611,16 +702,16 @@ function renderBlocked() {
         <div class="m">${boardLabel(b.board)} • ⛔ ${esc((b.tid || '').replace('RESTRICTED:', ''))} • ${ago(b.t)}</div>
       </div>
       <div class="acts"><button class="del" onclick="removeBid('${b.id}')">🗑️</button></div>
-    </div>`).join('') : '<div class="empty">Koi blocked koshish nahi — saaf! 🎉</div>';
+    </div>`).join('') : '<div class="empty">' + t('noBlocked') + '</div>';
 }
 async function clearBlocked() {
   const n = allBids.filter(b => b.status === 'blocked').length;
-  if (!n) return toast('Koi blocked record nahi hai 🎉');
-  if (!confirm(n + ' blocked records saaf karni hain?')) return;
+  if (!n) return toast(t('noBlockedRec'));
+  if (!confirm(t('clearBlockedQ').replace('{n}', n))) return;
   try {
     const { error } = await supa.from('bids').delete().eq('status', 'blocked');
     if (error) throw error;
-    toast('🗑️ Blocked list saaf ho gayi!');
+    toast(t('blockedCleared'));
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
@@ -628,7 +719,7 @@ function copyDetails(id) {
   const b = allBids.find(x => x.id === id);
   if (!b) return;
   const txt = 'Claim ' + b.id + ' | ' + boardName(b.board) + ' | ' + b.handle + ' | ' + fmtMoney(b.amount) + ' | by ' + (b.bidder || '—') + ' | TID: ' + (b.tid || '—') + ' | ' + (b.link || '');
-  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast('📋 Details copy ho gayi!'), () => toast('❌ Copy nahi hua'));
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast(t('copied')), () => toast(t('copyFail')));
   else toast(txt);
 }
 function renderLive() {
@@ -669,31 +760,31 @@ function exportCSV() {
   a.download = 'topranksm-claims.csv';
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-  toast('📥 CSV download ho gaya!');
+  toast(t('csvDone'));
 }
 async function editBid(id) {
   const b = allBids.find(x => x.id === id);
   if (!b) return;
-  const v = prompt('Nayi claim amount (Rs) — ' + b.handle + ':', b.amount);
+  const v = prompt(t('editPrompt') + b.handle + ':', b.amount);
   if (v === null) return;
   const n = Number(String(v).replace(/[^0-9.]/g, ''));
-  if (!n || n <= 0) return toast('❌ Sahi amount likho!');
+  if (!n || n <= 0) return toast(t('amtInvalid'));
   try {
     const { error } = await supa.from('bids').update({ amount: n }).eq('id', id);
     if (error) throw error;
-    toast('✅ Amount update ho gayi!');
+    toast(t('amtUpdated'));
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
 async function removeAllSeeds() {
   const n = allBids.filter(b => b.tid === 'SEED').length;
-  if (!n) return toast('Koi seed nahi hai 🎉');
-  if (!confirm(n + ' SEED claims delete karni hain? Ye UNDO nahi hoga!')) return;
-  if (!confirm('Pakki baat? Sab seeds hamesha ke liye delete!')) return;
+  if (!n) return toast(t('noSeeds'));
+  if (!confirm(t('seedsQ1').replace('{n}', n))) return;
+  if (!confirm(t('seedsQ2'))) return;
   try {
     const { error } = await supa.from('bids').delete().eq('tid', 'SEED');
     if (error) throw error;
-    toast('🗑️ Sab seeds delete ho gaye!');
+    toast(t('seedsGone'));
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
@@ -701,25 +792,25 @@ async function approveBid(id) {
   try {
     const { error } = await supa.from('bids').update({ status: 'live' }).eq('id', id);
     if (error) throw error;
-    toast('✅ Claim live ho gayi!');
+    toast(t('claimLive'));
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
 async function rejectBid(id) {
-  if (!confirm('Ye pending claim reject/delete karni hai?')) return;
+  if (!confirm(t('rejectQ'))) return;
   try {
     const { error } = await supa.from('bids').delete().eq('id', id);
     if (error) throw error;
-    toast('🗑️ Claim reject kar di');
+    toast(t('rejected'));
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
 async function removeBid(id) {
-  if (!confirm('Ye entry delete karni hai? Site se har jagah hat jayegi!')) return;
+  if (!confirm(t('removeQ'))) return;
   try {
     const { error } = await supa.from('bids').delete().eq('id', id);
     if (error) throw error;
-    toast('🗑️ Delete ho gayi');
+    toast(t('deleted'));
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
@@ -768,9 +859,9 @@ async function loadStats() {
     const gv = k => ((data || []).find(r => r.key === k) || {}).value;
     const sn = gv('season') || '1', se = gv('season_end');
     const days = se ? Math.max(0, Math.ceil((new Date(se).getTime() - Date.now()) / 864e5)) : '—';
-    document.getElementById('stSeason').innerHTML = `🗓️ Season <b>${esc(sn)}</b> • ends <b>${se ? new Date(se).toLocaleDateString('en-GB') : '—'}</b> • <b>${days}</b> din baqi`;
+    document.getElementById('stSeason').innerHTML = t('seasonLine').replace('{sn}', esc(sn)).replace('{date}', se ? new Date(se).toLocaleDateString('en-GB') : '—').replace('{days}', days);
   } catch (e) {}
-  if (rb) rb.textContent = '🔄 Refresh stats';
+  if (rb) rb.textContent = t('refreshStats');
 }
 async function loadSeason() {
   if (!supa) return;
@@ -779,7 +870,7 @@ async function loadSeason() {
     const gv = k => ((data || []).find(r => r.key === k) || {}).value;
     const sn = gv('season') || '1', se = gv('season_end');
     const days = se ? Math.max(0, Math.ceil((new Date(se).getTime() - Date.now()) / 864e5)) : '—';
-    document.getElementById('seasonInfo').innerHTML = `🗓️ Abhi <b>Season ${esc(sn)}</b> chal raha hai • Khatam: <b>${se ? new Date(se).toLocaleDateString('en-GB') : '—'}</b> • <b>${days} din</b> baqi hain.<br>Season khatam hone par har board ke champions khud-ba-khud Hall of Fame me chale jate hain aur boards reset ho jate hain.`;
+    document.getElementById('seasonInfo').innerHTML = t('seasonInfo').replace('{sn}', esc(sn)).replace('{date}', se ? new Date(se).toLocaleDateString('en-GB') : '—').replace('{days}', days);
   } catch (e) { document.getElementById('seasonInfo').textContent = '—'; }
   try {
     const { data } = await supa.from('hall_of_fame').select('*');
@@ -790,8 +881,8 @@ async function loadSeason() {
           <div class="h">👑 ${esc(r.handle || '—')}</div>
           <div class="m">Season ${esc(r.season || '?')} • ${boardLabel(r.board)} • <span class="amt">${fmtMoney(r.amount || 0)}</span>${r.country ? ' • ' + countryFlag(r.country) + ' ' + esc(countryName(r.country)) : ''}</div>
         </div>
-      </div>`).join('') : '<div class="empty">Abhi koi champion nahi — pehla season khatam hone par champions yahan ayenge 🏆</div>';
-  } catch (e) { document.getElementById('hofList').innerHTML = '<div class="empty">Hall of Fame abhi khali hai</div>'; }
+      </div>`).join('') : '<div class="empty">' + t('noChamp') + '</div>';
+  } catch (e) { document.getElementById('hofList').innerHTML = '<div class="empty">' + t('hofEmpty') + '</div>'; }
 }
 
 /* ================= PIN ================= */
@@ -799,16 +890,17 @@ function togglePinLock() {
   const on = document.getElementById('pinOnToggle').checked;
   store.set('trs_pin_on', on ? '1' : '0');
   if (on) store.set('trs_pin_ok_uid', '');
-  toast(on ? '🔢 PIN lock ON ho gaya (agle login par mangega)' : 'PIN lock OFF ho gaya');
+  toast(on ? t('pinOnMsg') : t('pinOffMsg'));
 }
 function changePin() {
   const v = document.getElementById('newPin').value.trim();
-  if (v.length < 4) return toast('PIN kam se kam 4 digits ka ho!');
+  if (v.length < 4) return toast(t('pinShort'));
   store.set('trs_pin', v);
   document.getElementById('newPin').value = '';
-  toast('✅ PIN change ho gaya!');
+  toast(t('pinChanged'));
 }
 
+applyAdminLang();
 initAuth();
 </script>
 </body>
