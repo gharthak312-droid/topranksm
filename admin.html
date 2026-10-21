@@ -388,8 +388,8 @@ let allBids = [];
 let authUser = null;
 let aCur = store.get('trs_admin_cur', 'USD'); if (aCur !== 'PKR') aCur = 'USD';
 function updCurBtn() { const b = document.getElementById('curBtn'); if (b) b.textContent = aCur === 'USD' ? 'Rs' : '$'; }
-function toggleCur() { aCur = aCur === 'USD' ? 'PKR' : 'USD'; store.set('trs_admin_cur', aCur); updCurBtn(); if (authUser) { loadBids(); loadStats(); } }
-function fmtTotalValue(n) { n = Number(n) || 0; if (alang === 'ru') return 'Rs ' + n.toLocaleString(); const u = n / 280; return '$' + (u % 1 === 0 ? u.toFixed(0) : u.toFixed(2)); }
+function toggleCur() { aCur = aCur === 'USD' ? 'PKR' : 'USD'; store.set('trs_admin_cur', aCur); updCurBtn(); updateTotals(); if (authUser) { loadBids(); loadStats(); } }
+function fmtTotalValue(n) { n = Number(n) || 0; if (aCur === 'PKR') return 'Rs ' + n.toLocaleString(); const u = n / 280; return '$' + (u % 1 === 0 ? u.toFixed(0) : u.toFixed(2)); }
 function updateTotals() { const tv = allBids.filter(b => b.status === 'live').reduce((s, b) => s + Number(b.amount || 0), 0); const a = document.getElementById('stValue'), b2 = document.getElementById('hValue'); if (a) a.textContent = fmtTotalValue(tv); if (b2) b2.textContent = fmtTotalValue(tv); }
 
 const BOARDS = [
