@@ -1,79 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
 <title>TopRankSM — Admin Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   .blogo { width:23px; height:23px; border-radius:7px; background:#fff; display:inline-flex; align-items:center; justify-content:center; vertical-align:-6px; box-shadow:0 1px 3px rgba(0,0,0,.18); border:1px solid rgba(0,0,0,.06); }
   .blogo svg, .blogo img { width:16px; height:16px; display:block; }
   .blogo-dark { background:#000; }
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  :root { --bg:#0c0c0e; --card:#16161a; --card2:#1e1e24; --txt:#f4f4f5; --mut:#9a9aa5; --line:#2a2a32; --gold:#f5b301; --acc:#6ea8ff; --ok:#2ee6a8; --bad:#ff6b6b; }
-  body { background:var(--bg); color:var(--txt); font-family:'Segoe UI',Trebuchet MS,sans-serif; min-height:100vh; padding:14px; }
-  .wrap { max-width:720px; margin:0 auto; }
-  h1 { font-size:22px; margin:6px 0 2px; }
+  :root { --bg:#ffffff; --card:#ffffff; --card2:#f6f6f7; --txt:#0c0c0e; --mut:#6d6d78; --line:#e7e7ea; --gold:#b8860b; --goldbg:#f5b301; --acc:#2563eb; --ok:#0da678; --bad:#e5484d; --shadow:0 2px 10px rgba(0,0,0,.05); }
+  html[data-theme="dark"] { --bg:#000000; --card:#101012; --card2:#17171a; --txt:#f4f4f5; --mut:#9a9aa5; --line:#26262b; --gold:#f5b301; --acc:#6ea8ff; --shadow:none; }
+  body { background:var(--bg); color:var(--txt); font-family:'Plus Jakarta Sans','Segoe UI',sans-serif; min-height:100vh; padding:14px; transition:background .2s,color .2s; }
+  .wrap { max-width:860px; margin:0 auto; }
+  h1 { font-size:22px; letter-spacing:-.02em; }
   .sub { color:var(--mut); font-size:13px; margin-bottom:14px; }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; }
-  label { display:block; color:var(--mut); font-size:12px; margin:10px 0 4px; }
-  input { width:100%; background:var(--card2); border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:12px; font-size:16px; }
-  .btn { display:inline-block; background:var(--gold); color:#111; border:none; border-radius:10px; padding:12px 18px; font-size:15px; font-weight:800; cursor:pointer; margin-top:12px; width:100%; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px; box-shadow:var(--shadow); }
+  label { display:block; color:var(--mut); font-size:12px; font-weight:700; margin:10px 0 4px; }
+  input, select { width:100%; background:var(--card2); border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:12px; font-size:16px; font-family:inherit; }
+  .btn { display:inline-block; background:var(--goldbg); color:#111; border:none; border-radius:10px; padding:12px 18px; font-size:15px; font-weight:800; cursor:pointer; margin-top:12px; width:100%; font-family:inherit; }
+  .btn:hover { filter:brightness(1.06); }
   .btn.ghost { background:var(--card2); color:var(--txt); border:1px solid var(--line); }
-  .tabs { display:flex; gap:8px; margin:0 0 14px; overflow-x:auto; }
-  .tab { flex:1; background:var(--card); border:1px solid var(--line); color:var(--mut); border-radius:12px; padding:11px 6px; font-size:13px; font-weight:800; cursor:pointer; white-space:nowrap; }
-  .tab.on { background:var(--gold); color:#111; border-color:var(--gold); }
+  .btn.small { width:auto; padding:9px 14px; font-size:13px; margin-top:0; }
+  .btn.danger { background:#3a1d1d; color:#ff8f8f; border:1px solid #5a2b2b; }
+  html[data-theme="light"] .btn.danger { background:#fdecec; color:#b42318; border-color:#f3c2c2; }
+  .tabs { display:flex; gap:8px; margin:0 0 14px; overflow-x:auto; padding-bottom:2px; }
+  .tab { flex:1; background:var(--card); border:1px solid var(--line); color:var(--mut); border-radius:12px; padding:11px 8px; font-size:13px; font-weight:800; cursor:pointer; white-space:nowrap; font-family:inherit; }
+  .tab.on { background:var(--goldbg); color:#111; border-color:var(--goldbg); }
   .row { display:flex; gap:10px; background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; align-items:flex-start; }
   .row .info { flex:1; min-width:0; }
   .row .h { font-weight:800; font-size:15px; word-break:break-word; }
   .row .m { color:var(--mut); font-size:12.5px; margin-top:3px; }
-  .row .bd { font-size:13px; margin-top:6px; color:var(--txt); }
+  .row .bd { font-size:13px; margin-top:6px; }
   .row img.shot { width:100%; border-radius:10px; margin-top:8px; border:1px solid var(--line); }
   .acts { display:flex; flex-direction:column; gap:8px; }
-  .acts button { border:none; border-radius:10px; padding:10px 14px; font-size:16px; font-weight:800; cursor:pointer; }
-  .ok { background:var(--ok); color:#06281c; }
-  .no { background:#444; color:#fff; }
-  .del { background:none; color:var(--bad); border:1px solid #5a2b2b; font-size:14px; padding:8px 12px; }
-  .btn.danger { background:#3a1d1d; color:#ff8f8f; border:1px solid #5a2b2b; }
+  .acts button { border:none; border-radius:10px; padding:10px 14px; font-size:16px; font-weight:800; cursor:pointer; font-family:inherit; }
+  .ok { background:#0da678; color:#fff; }
+  .no { background:#666; color:#fff; }
+  .del { background:none; color:var(--bad); border:1px solid var(--line); font-size:14px; padding:8px 12px; }
   .amt { font-weight:800; color:var(--gold); }
   .tid { color:var(--gold); font-weight:700; }
   .empty { color:var(--mut); text-align:center; padding:20px; font-size:14px; }
-  .statgrid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+  .statgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  @media (max-width:560px){ .statgrid { grid-template-columns:1fr 1fr; } }
   .stat { background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:14px 10px; text-align:center; }
   .stat .n { font-size:24px; font-weight:800; color:var(--gold); }
-  .stat .l { font-size:11.5px; color:var(--mut); margin-top:4px; }
+  .stat .l { font-size:11.5px; color:var(--mut); margin-top:4px; font-weight:700; }
   #toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#222; color:#fff; padding:12px 20px; border-radius:12px; display:none; z-index:99; font-size:14px; max-width:90%; }
   .note { color:var(--mut); font-size:12.5px; margin-top:10px; line-height:1.6; }
-  .lock { text-align:center; padding:40px 10px; }
-  .lock h2 { font-size:20px; margin-bottom:6px; }
+  .lock { text-align:center; padding:34px 16px; max-width:430px; margin:6vh auto 0; }
+  .lock h2 { font-size:21px; margin:10px 0 4px; letter-spacing:-.02em; }
+  .crownbox { width:56px; height:56px; margin:0 auto; border-radius:16px; background:linear-gradient(145deg,#f5b301,#b8860b); display:flex; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(184,134,11,.35); }
+  .crownbox svg { width:32px; height:32px; }
+  .links { display:flex; justify-content:space-between; gap:10px; margin-top:14px; font-size:13px; }
+  .links a { color:var(--acc); cursor:pointer; font-weight:700; text-decoration:none; }
+  .amsg { display:none; border-radius:10px; padding:11px 13px; font-size:13.5px; font-weight:700; margin-top:12px; line-height:1.55; text-align:left; }
+  .amsg.err { background:#fdecec; color:#b42318; border:1px solid #f3c2c2; display:block; }
+  .amsg.good { background:#e6f9f1; color:#067647; border:1px solid #a9e8cc; display:block; }
+  html[data-theme="dark"] .amsg.err { background:#3a1d1d; color:#ff8f8f; border-color:#5a2b2b; }
+  html[data-theme="dark"] .amsg.good { background:#0c2b20; color:#2ee6a8; border-color:#14532d; }
+  .hdr { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+  .hdr .grow { flex:1; min-width:0; }
+  .hbtn { background:var(--card2); border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:9px 13px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; white-space:nowrap; }
+  .chip { display:inline-block; font-size:11px; font-weight:800; padding:2px 8px; border-radius:99px; border:1px solid var(--line); background:var(--card); color:var(--mut); vertical-align:1px; }
   .flagimg { width:18px; height:13px; border-radius:2px; vertical-align:-2px; margin-right:4px; }
+  .flexrow { display:flex; gap:8px; } .flexrow > * { flex:1; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div id="lockScreen">
+
+  <!-- ============ AUTH ============ -->
+  <div id="authScreen">
     <div class="card lock">
-      <h2>🔐 Admin Dashboard</h2>
-      <p class="sub">TopRankSM — private admin area</p>
-      <input id="pin" type="password" inputmode="numeric" maxlength="8" placeholder="PIN" style="max-width:260px;margin:0 auto">
-      <button class="btn" style="max-width:260px" onclick="login()">Login</button>
-      <p class="note">Default PIN: 1234 (andar ja kar change kar lena)</p>
+      <div class="crownbox"><svg viewBox="0 0 24 24" fill="#111"><path d="M3 8l4.5 3.5L12 5l4.5 6.5L21 8l-1.6 9.5H4.6L3 8zm1.8 11.5h14.4V21H4.8v-1.5z"/></svg></div>
+      <h2>TopRankSM Admin</h2>
+      <p class="sub" style="margin-bottom:4px">Private dashboard — sirf admin ke liye</p>
+
+      <div id="authLogin">
+        <label style="text-align:left">Email</label>
+        <input id="auEmail" type="email" autocomplete="username" value="wadoodalizai@gmail.com">
+        <label style="text-align:left">Password</label>
+        <input id="auPass" type="password" autocomplete="current-password" placeholder="••••••••">
+        <button class="btn" onclick="doLogin()">🔐 Login</button>
+        <div class="links"><a onclick="showAuthMode('forgot')">Password bhool gaye?</a><a onclick="showAuthMode('setup')">Pehli dafa? Account banao</a></div>
+      </div>
+
+      <div id="authSetup" style="display:none">
+        <label style="text-align:left">Admin Email</label>
+        <input id="suEmail" type="email" value="wadoodalizai@gmail.com">
+        <label style="text-align:left">Password rakho (kam se kam 8 characters)</label>
+        <input id="suPass" type="password" autocomplete="new-password" placeholder="••••••••">
+        <label style="text-align:left">Password dobara likho</label>
+        <input id="suPass2" type="password" autocomplete="new-password" placeholder="••••••••">
+        <button class="btn" onclick="doSignup()">✅ Account Banao</button>
+        <p class="note" style="text-align:left">Account banne ke baad tumhari **Gmail par ek confirmation link** ayega. Us par click karoge to account active ho jayega — phir yahan email + password se login karna.</p>
+        <div class="links"><a onclick="showAuthMode('login')">← Wapas Login par</a></div>
+      </div>
+
+      <div id="authForgot" style="display:none">
+        <label style="text-align:left">Recovery Email</label>
+        <input id="fgEmail" type="email" value="wadoodalizai@gmail.com">
+        <button class="btn" onclick="doForgot()">📧 Reset Link Bhejo</button>
+        <p class="note" style="text-align:left">Is email par password reset ka link jayega. Link par click karke naya password laga lena.</p>
+        <div class="links"><a onclick="showAuthMode('login')">← Wapas Login par</a></div>
+      </div>
+
+      <div id="authRecovery" style="display:none">
+        <h3 style="margin-bottom:2px">🔑 Naya Password Lagao</h3>
+        <label style="text-align:left">Naya Password (kam se kam 8 characters)</label>
+        <input id="rcPass" type="password" autocomplete="new-password" placeholder="••••••••">
+        <label style="text-align:left">Dobara likho</label>
+        <input id="rcPass2" type="password" autocomplete="new-password" placeholder="••••••••">
+        <button class="btn" onclick="doSetRecovery()">✅ Password Badal Do</button>
+      </div>
+
+      <div id="authMsg" class="amsg"></div>
     </div>
   </div>
 
+  <!-- ============ PIN GATE ============ -->
+  <div id="pinScreen" style="display:none">
+    <div class="card lock">
+      <div class="crownbox"><svg viewBox="0 0 24 24" fill="#111"><path d="M3 8l4.5 3.5L12 5l4.5 6.5L21 8l-1.6 9.5H4.6L3 8zm1.8 11.5h14.4V21H4.8v-1.5z"/></svg></div>
+      <h2>PIN Lock</h2>
+      <p class="sub">Extra security — apna PIN likho</p>
+      <input id="pin" type="password" inputmode="numeric" maxlength="8" placeholder="PIN" style="max-width:260px;margin:0 auto;text-align:center">
+      <button class="btn" style="max-width:260px" onclick="unlockPin()">🔓 Kholo</button>
+      <div class="links" style="justify-content:center"><a onclick="doLogout()">Logout (doosra account)</a></div>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
   <div id="dash" style="display:none">
-    <h1>👑 TopRankSM <span style="color:var(--gold)">Admin</span></h1>
+    <div class="hdr">
+      <div class="crownbox" style="width:44px;height:44px;border-radius:12px;margin:0"><svg viewBox="0 0 24 24" fill="#111" style="width:25px;height:25px"><path d="M3 8l4.5 3.5L12 5l4.5 6.5L21 8l-1.6 9.5H4.6L3 8zm1.8 11.5h14.4V21H4.8v-1.5z"/></svg></div>
+      <div class="grow">
+        <h1>TopRankSM <span style="color:var(--gold)">Admin</span></h1>
+        <div class="sub" style="margin:0" id="hdrEmail">—</div>
+      </div>
+      <button class="hbtn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
+      <button class="hbtn" onclick="doLogout()">🚪 Logout</button>
+    </div>
     <p class="sub">Hidden dashboard — iska link public site par nahi hai</p>
+
     <div class="tabs">
-      <button class="tab on" id="tab-pend" onclick="showTab('pend')">⏳ Pending (<span id="pendN">0</span>)</button>
+      <button class="tab on" id="tab-home" onclick="showTab('home')">🏠 Home</button>
+      <button class="tab" id="tab-pend" onclick="showTab('pend')">⏳ Pending (<span id="pendN">0</span>)</button>
       <button class="tab" id="tab-live" onclick="showTab('live')">✅ Live (<span id="liveN">0</span>)</button>
+      <button class="tab" id="tab-blocked" onclick="showTab('blocked')">🚫 Blocked (<span id="blockedN">0</span>)</button>
       <button class="tab" id="tab-seeds" onclick="showTab('seeds')">🌱 Seeds (<span id="seedN">0</span>)</button>
       <button class="tab" id="tab-stats" onclick="showTab('stats')">📊 Stats</button>
-      <button class="tab" id="tab-pin" onclick="showTab('pin')">🔑 PIN</button>
+      <button class="tab" id="tab-season" onclick="showTab('season')">🏆 Season</button>
+      <button class="tab" id="tab-security" onclick="showTab('security')">🔐 Security</button>
     </div>
 
-    <div id="pg-pend">
+    <div id="pg-home">
+      <div class="card">
+        <div class="statgrid">
+          <div class="stat"><div class="n" id="hPend">—</div><div class="l">⏳ Pending (approval baqi)</div></div>
+          <div class="stat"><div class="n" id="hToday">—</div><div class="l">📅 Aaj ke claims</div></div>
+          <div class="stat"><div class="n" id="hLive">—</div><div class="l">✅ Live claims</div></div>
+          <div class="stat"><div class="n" id="hValue">—</div><div class="l">💰 Total claim value</div></div>
+          <div class="stat"><div class="n" id="hOnline">—</div><div class="l">🟢 Online now</div></div>
+          <div class="stat"><div class="n" id="hVis">—</div><div class="l">👀 Aaj ke visitors</div></div>
+        </div>
+        <div class="m" id="hBig" style="margin-top:10px;color:var(--mut);font-size:13px">—</div>
+        <button class="btn ghost" onclick="loadStats()">🔄 Refresh</button>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:10px">🆕 Latest Claims</h3>
+        <div id="homeLatest"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+
+    <div id="pg-pend" style="display:none">
       <div class="card">
         <p class="note" style="margin-top:0">Pehle apne Easypaisa/Nayapay app me <b>TID verify</b> karo, phir ✅ dabao — claim foran live ho jayegi!</p>
         <div id="pendList"><div class="empty">Loading…</div></div>
@@ -82,8 +187,20 @@
 
     <div id="pg-live" style="display:none">
       <div class="card">
-        <input id="liveSearch" placeholder="🔍 Search handle / challenger…" oninput="renderLive()" style="margin-bottom:10px">
+        <div class="flexrow">
+          <input id="liveSearch" placeholder="🔍 Search handle / challenger…" oninput="renderLive()">
+          <select id="liveBoard" onchange="renderLive()" style="max-width:170px"><option value="">Tamam Boards</option></select>
+        </div>
+        <button class="btn ghost small" style="margin:10px 0" onclick="exportCSV()">📥 CSV Export (Excel ke liye)</button>
         <div id="liveList"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+
+    <div id="pg-blocked" style="display:none">
+      <div class="card">
+        <p class="note" style="margin-top:0">🚫 Ye wo koshishein hain jo site ne <b>khud rok di</b> — restricted websites/apps (adult, gambling, weapons, Ponzi waghera) lagane ki koshish. Ye sirf record hai, site par kabhi live nahi hotay.</p>
+        <button class="btn danger" onclick="clearBlocked()">🗑️ Sab Blocked Saaf Karo</button>
+        <div id="blockedList" style="margin-top:12px"><div class="empty">Loading…</div></div>
       </div>
     </div>
 
@@ -105,20 +222,46 @@
           <div class="stat"><div class="n" id="stPend">—</div><div class="l">⏳ Pending</div></div>
           <div class="stat"><div class="n" id="stValue">—</div><div class="l">💰 Total claim value</div></div>
         </div>
-        <div class="m" id="stBig" style="margin-top:10px">—</div>
-        <div class="m" id="stBoards" style="margin-top:6px">—</div>
-        <div class="m" id="stSeason" style="margin-top:6px">—</div>
+        <div class="m" id="stBig" style="margin-top:10px;color:var(--mut);font-size:13px">—</div>
+        <div class="m" id="stBoards" style="margin-top:6px;color:var(--mut);font-size:13px">—</div>
+        <div class="m" id="stSeason" style="margin-top:6px;color:var(--mut);font-size:13px">—</div>
         <p class="note">Visitors = daily unique. Refresh se count nahi barhta.</p>
         <button class="btn ghost" id="refreshBtn" onclick="loadStats()">🔄 Refresh stats</button>
       </div>
     </div>
 
-    <div id="pg-pin" style="display:none">
+    <div id="pg-season" style="display:none">
       <div class="card">
+        <h3 style="margin-bottom:6px">🗓️ Season</h3>
+        <div id="seasonInfo" class="note" style="margin-top:0">Loading…</div>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:10px">🏆 Hall of Fame — Champions</h3>
+        <div id="hofList"><div class="empty">Loading…</div></div>
+      </div>
+    </div>
+
+    <div id="pg-security" style="display:none">
+      <div class="card">
+        <h3 style="margin-bottom:6px">👤 Account</h3>
+        <div class="m" style="color:var(--mut);font-size:13px">Email: <b id="secEmail" style="color:var(--txt)">—</b></div>
+        <div class="m" style="color:var(--mut);font-size:13px;margin-top:4px">Last login: <b id="secLastLogin" style="color:var(--txt)">—</b></div>
+        <label>Naya Password (kam se kam 8 characters)</label>
+        <input id="secNewPass" type="password" autocomplete="new-password" placeholder="••••••••">
+        <button class="btn ghost" onclick="doChangePassword()">Password Badlo</button>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:6px">🔢 PIN Lock (extra lock)</h3>
+        <label style="display:flex;align-items:center;gap:8px;color:var(--txt);font-size:13.5px"><input type="checkbox" id="pinOnToggle" style="width:auto" onchange="togglePinLock()"> Login ke baad PIN bhi manga jaye</label>
         <label>New PIN (4+ digits)</label>
         <input id="newPin" type="password" inputmode="numeric" maxlength="8" placeholder="****">
-        <button class="btn" onclick="changePin()">PIN Update Karo</button>
-        <p class="note">PIN sirf is device ke browser me save hota hai (localStorage). Doosre device par purana PIN kaam karega.</p>
+        <button class="btn ghost" onclick="changePin()">PIN Update Karo</button>
+        <p class="note">Note: Asli security tumhara email + password hai (server par mehfooz). PIN is device par ek extra lock hai.</p>
+      </div>
+      <div class="card">
+        <h3 style="margin-bottom:6px">🚪 Session</h3>
+        <p class="note" style="margin-top:0">Login tab tak yaad rehta hai jab tak tum khud Logout na karo — refresh karne se dobara nahi mangta.</p>
+        <button class="btn danger" onclick="doLogout()">🚪 Logout Karo</button>
       </div>
     </div>
   </div>
@@ -128,6 +271,9 @@
 <script>
 const SUPABASE_URL = 'https://bgtdixpgosanjchwnomu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_cven97RCNBVYCeWUt2E76w_yKq-RSOE';
+const ADMIN_EMAIL = 'wadoodalizai@gmail.com';
+const ADMIN_URL = location.origin + location.pathname;
+const WANT_RECOVERY = (location.hash || '').includes('recovery');
 let supa = null;
 try { if (window.supabase) supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); } catch (e) {}
 
@@ -136,7 +282,18 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 };
 
+/* ===== THEME ===== */
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  store.set('trs_admin_theme', t);
+  const b = document.getElementById('themeBtn');
+  if (b) b.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+}
+function toggleTheme() { applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+applyTheme(store.get('trs_admin_theme', 'light'));
+
 let allBids = [];
+let authUser = null;
 
 const BOARDS = [
   { id:'tiktok', name:'TikTok', icon:'🎵', logo:'tiktok' }, { id:'facebook', name:'Facebook', icon:'📘', logo:'facebook' },
@@ -239,25 +396,153 @@ const ago = ts => { const s = Math.floor((Date.now() - ts) / 1000); if (s < 60) 
 const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
 
-function login() {
+/* ================= AUTH ================= */
+function showAuthMsg(msg, good) {
+  const m = document.getElementById('authMsg');
+  m.className = 'amsg ' + (good ? 'good' : 'err');
+  m.textContent = msg;
+}
+function clearAuthMsg() { const m = document.getElementById('authMsg'); m.className = 'amsg'; m.textContent = ''; }
+function showAuthMode(mode) {
+  clearAuthMsg();
+  ['authLogin', 'authSetup', 'authForgot', 'authRecovery'].forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById('authScreen').style.display = 'block';
+  document.getElementById('pinScreen').style.display = 'none';
+  document.getElementById('dash').style.display = 'none';
+  const map = { login: 'authLogin', setup: 'authSetup', forgot: 'authForgot', recovery: 'authRecovery' };
+  document.getElementById(map[mode] || 'authLogin').style.display = 'block';
+}
+function friendlyErr(e) {
+  const m = (e && e.message) || 'Error';
+  if (/invalid login/i.test(m)) return '❌ Email ya password ghalat hai!';
+  if (/email not confirmed/i.test(m)) return '❌ Email abhi confirm nahi hua — Gmail me confirmation link par click karo, phir login karo.';
+  if (/already registered/i.test(m)) return '❌ Is email se account pehle se bana hua hai — Login karo.';
+  if (/rate limit/i.test(m)) return '❌ Bohat zyada koshishein — thodi dair baad dobara try karo.';
+  return '❌ ' + m;
+}
+async function doLogin() {
+  if (!supa) return showAuthMsg('❌ Connection nahi bana — internet check karke refresh karo.');
+  const email = document.getElementById('auEmail').value.trim().toLowerCase();
+  const password = document.getElementById('auPass').value;
+  if (!email || !password) return showAuthMsg('❌ Email aur password dono likho!');
+  const { data, error } = await supa.auth.signInWithPassword({ email, password });
+  if (error) return showAuthMsg(friendlyErr(error));
+  document.getElementById('auPass').value = '';
+  handleSession(data.session);
+}
+async function doSignup() {
+  if (!supa) return showAuthMsg('❌ Connection nahi bana — refresh karo.');
+  const email = document.getElementById('suEmail').value.trim().toLowerCase();
+  const p1 = document.getElementById('suPass').value, p2 = document.getElementById('suPass2').value;
+  if (email !== ADMIN_EMAIL) return showAuthMsg('❌ Sirf admin email (' + ADMIN_EMAIL + ') se account ban sakta hai.');
+  if (p1.length < 8) return showAuthMsg('❌ Password kam se kam 8 characters ka rakho!');
+  if (p1 !== p2) return showAuthMsg('❌ Dono password ek jese nahi hain!');
+  const { data, error } = await supa.auth.signUp({ email, password: p1, options: { emailRedirectTo: ADMIN_URL } });
+  if (error) return showAuthMsg(friendlyErr(error));
+  if (data.session) { handleSession(data.session); return; }
+  showAuthMode('login');
+  showAuthMsg('✅ Account ban gaya! Ab apni Gmail kholo — wahan ek confirmation link aya hoga. Us par click karo, phir yahan email + password se login karo.', true);
+}
+async function doForgot() {
+  if (!supa) return showAuthMsg('❌ Connection nahi bana — refresh karo.');
+  const email = document.getElementById('fgEmail').value.trim().toLowerCase();
+  if (!email) return showAuthMsg('❌ Email likho!');
+  const { error } = await supa.auth.resetPasswordForEmail(email, { redirectTo: ADMIN_URL });
+  if (error) return showAuthMsg(friendlyErr(error));
+  showAuthMsg('✅ Reset link ' + email + ' par bhej diya hai. Gmail kholo, link par click karo — phir yahan naya password lagane ki screen aa jayegi.', true);
+}
+async function doSetRecovery() {
+  const p1 = document.getElementById('rcPass').value, p2 = document.getElementById('rcPass2').value;
+  if (p1.length < 8) return showAuthMsg('❌ Password kam se kam 8 characters ka rakho!');
+  if (p1 !== p2) return showAuthMsg('❌ Dono password ek jese nahi hain!');
+  const { error } = await supa.auth.updateUser({ password: p1 });
+  if (error) return showAuthMsg(friendlyErr(error));
+  history.replaceState(null, '', location.pathname);
+  toast('✅ Naya password lag gaya!');
+  const { data } = await supa.auth.getSession();
+  handleSession(data.session);
+}
+async function doChangePassword() {
+  const v = document.getElementById('secNewPass').value;
+  if (v.length < 8) return toast('❌ Password kam se kam 8 characters ka ho!');
+  const { error } = await supa.auth.updateUser({ password: v });
+  if (error) return toast(friendlyErr(error));
+  document.getElementById('secNewPass').value = '';
+  toast('✅ Password badal gaya!');
+}
+async function doLogout() {
+  store.set('trs_pin_ok_uid', '');
+  try { if (supa) await supa.auth.signOut(); } catch (e) {}
+  authUser = null;
+  showAuthMode('login');
+  toast('🚪 Logout ho gaya');
+}
+function handleSession(session) {
+  if (!session || !session.user) { showAuthMode('login'); return; }
+  if ((session.user.email || '').toLowerCase() !== ADMIN_EMAIL) {
+    supa.auth.signOut();
+    showAuthMode('login');
+    showAuthMsg('❌ Ye email admin ke liye allowed nahi hai.');
+    return;
+  }
+  authUser = session.user;
+  if (WANT_RECOVERY) { showAuthMode('recovery'); return; }
+  const pinOn = store.get('trs_pin_on', '1') === '1';
+  if (pinOn && store.get('trs_pin_ok_uid', '') !== authUser.id) {
+    document.getElementById('authScreen').style.display = 'none';
+    document.getElementById('dash').style.display = 'none';
+    document.getElementById('pinScreen').style.display = 'block';
+    return;
+  }
+  enterDash();
+}
+function unlockPin() {
   if (document.getElementById('pin').value === store.get('trs_pin', '1234')) {
-    document.getElementById('lockScreen').style.display = 'none';
-    document.getElementById('dash').style.display = 'block';
+    store.set('trs_pin_ok_uid', authUser ? authUser.id : 'x');
     document.getElementById('pin').value = '';
-    loadBids();
+    enterDash();
   } else toast('❌ Ghalat PIN!');
 }
-document.getElementById('pin').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+function enterDash() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('pinScreen').style.display = 'none';
+  document.getElementById('dash').style.display = 'block';
+  if (authUser) {
+    document.getElementById('hdrEmail').textContent = '👤 ' + authUser.email;
+    document.getElementById('secEmail').textContent = authUser.email;
+    document.getElementById('secLastLogin').textContent = authUser.last_sign_in_at ? new Date(authUser.last_sign_in_at).toLocaleString('en-GB') : '—';
+  }
+  document.getElementById('pinOnToggle').checked = store.get('trs_pin_on', '1') === '1';
+  const bf = document.getElementById('liveBoard');
+  if (bf.options.length <= 1) BOARDS.forEach(b => { const o = document.createElement('option'); o.value = b.id; o.textContent = b.name; bf.appendChild(o); });
+  loadBids();
+  loadStats();
+}
+async function initAuth() {
+  if (!supa) { showAuthMsg('❌ Supabase library load nahi hui — internet check karke refresh karo.'); return; }
+  supa.auth.onAuthStateChange((ev) => {
+    if (ev === 'PASSWORD_RECOVERY') showAuthMode('recovery');
+    if (ev === 'SIGNED_OUT') { authUser = null; showAuthMode('login'); }
+  });
+  const { data } = await supa.auth.getSession();
+  handleSession(data.session);
+}
+document.getElementById('auPass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('pin').addEventListener('keydown', e => { if (e.key === 'Enter') unlockPin(); });
 
+/* ================= TABS ================= */
+const TABS = ['home', 'pend', 'live', 'blocked', 'seeds', 'stats', 'season', 'security'];
 function showTab(t) {
-  ['pend', 'live', 'seeds', 'stats', 'pin'].forEach(x => {
+  TABS.forEach(x => {
     document.getElementById('pg-' + x).style.display = x === t ? 'block' : 'none';
     document.getElementById('tab-' + x).classList.toggle('on', x === t);
   });
-  if (t === 'stats') loadStats();
-  if (t === 'pend' || t === 'live' || t === 'seeds') loadBids();
+  if (t === 'stats' || t === 'home') loadStats();
+  else if (t === 'season') loadSeason();
+  else if (t !== 'security') loadBids();
 }
 
+/* ================= DATA ================= */
 async function loadBids() {
   if (!supa) { toast('Supabase connect nahi hua'); return; }
   try {
@@ -265,9 +550,11 @@ async function loadBids() {
     if (error) throw error;
     allBids = data || [];
     const pend = allBids.filter(b => b.status === 'pending');
+    const blocked = allBids.filter(b => b.status === 'blocked');
     document.getElementById('pendN').textContent = pend.length;
     document.getElementById('liveN').textContent = allBids.filter(b => b.status === 'live').length;
     document.getElementById('seedN').textContent = allBids.filter(b => b.tid === 'SEED').length;
+    document.getElementById('blockedN').textContent = blocked.length;
     document.getElementById('pendList').innerHTML = pend.length ? pend.map(b => `
       <div class="row">
         <div class="info">
@@ -281,21 +568,77 @@ async function loadBids() {
         </div>
         <div class="acts">
           <button class="ok" onclick="approveBid('${b.id}')">✅</button>
+          <button class="no" onclick="copyDetails('${b.id}')">📋</button>
           <button class="no" onclick="rejectBid('${b.id}')">❌</button>
         </div>
       </div>`).join('') : '<div class="empty">Koi pending claim nahi 🎉</div>';
     renderLive();
     renderSeeds();
+    renderBlocked();
+    renderHomeLatest();
   } catch (e) { toast('❌ Load error: ' + e.message); }
 }
 
+function statusChip(b) {
+  if (b.status === 'live') return '<span class="chip">✅ LIVE</span>';
+  if (b.status === 'pending') return '<span class="chip">⏳ PENDING</span>';
+  if (b.status === 'blocked') return '<span class="chip">🚫 BLOCKED</span>';
+  if (b.status === 'refunded') return '<span class="chip">↩️ REFUNDED</span>';
+  if (b.status === 'disputed') return '<span class="chip">⚠️ DISPUTED</span>';
+  return '<span class="chip">' + esc(b.status || '') + '</span>';
+}
+function renderHomeLatest() {
+  const el = document.getElementById('homeLatest');
+  if (!el) return;
+  const rows = allBids.filter(b => b.status !== 'blocked').slice(0, 5);
+  el.innerHTML = rows.length ? rows.map(b => `
+    <div class="row" style="align-items:center">
+      <div class="info">
+        <div class="h">${esc(b.handle)} ${statusChip(b)}</div>
+        <div class="m">${boardLabel(b.board)} • <span class="amt">${fmtMoney(b.amount)}</span> • by ${esc(b.bidder)} • ${ago(b.t)}</div>
+      </div>
+    </div>`).join('') : '<div class="empty">Abhi koi claim nahi</div>';
+}
+function renderBlocked() {
+  const el = document.getElementById('blockedList');
+  if (!el) return;
+  const rows = allBids.filter(b => b.status === 'blocked');
+  el.innerHTML = rows.length ? rows.map(b => `
+    <div class="row" style="align-items:center">
+      <div class="info">
+        <div class="h">${esc(b.handle || '—')}</div>
+        <div class="m">🔗 ${esc(b.link || '—')}</div>
+        <div class="m">${boardLabel(b.board)} • ⛔ ${esc((b.tid || '').replace('RESTRICTED:', ''))} • ${ago(b.t)}</div>
+      </div>
+      <div class="acts"><button class="del" onclick="removeBid('${b.id}')">🗑️</button></div>
+    </div>`).join('') : '<div class="empty">Koi blocked koshish nahi — saaf! 🎉</div>';
+}
+async function clearBlocked() {
+  const n = allBids.filter(b => b.status === 'blocked').length;
+  if (!n) return toast('Koi blocked record nahi hai 🎉');
+  if (!confirm(n + ' blocked records saaf karni hain?')) return;
+  try {
+    const { error } = await supa.from('bids').delete().eq('status', 'blocked');
+    if (error) throw error;
+    toast('🗑️ Blocked list saaf ho gayi!');
+    loadBids();
+  } catch (e) { toast('❌ ' + e.message); }
+}
+function copyDetails(id) {
+  const b = allBids.find(x => x.id === id);
+  if (!b) return;
+  const txt = 'Claim ' + b.id + ' | ' + boardName(b.board) + ' | ' + b.handle + ' | ' + fmtMoney(b.amount) + ' | by ' + (b.bidder || '—') + ' | TID: ' + (b.tid || '—') + ' | ' + (b.link || '');
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => toast('📋 Details copy ho gayi!'), () => toast('❌ Copy nahi hua'));
+  else toast(txt);
+}
 function renderLive() {
   const q = (document.getElementById('liveSearch').value || '').toLowerCase().trim();
-  const live = allBids.filter(b => b.status === 'live' && (!q || (b.handle || '').toLowerCase().includes(q) || (b.bidder || '').toLowerCase().includes(q) || boardName(b.board).toLowerCase().includes(q)));
+  const bf = document.getElementById('liveBoard').value;
+  const live = allBids.filter(b => b.status === 'live' && (!bf || b.board === bf) && (!q || (b.handle || '').toLowerCase().includes(q) || (b.bidder || '').toLowerCase().includes(q) || boardName(b.board).toLowerCase().includes(q)));
   const byBoard = {};
   live.forEach(b => { (byBoard[b.board] = byBoard[b.board] || []).push(b); });
   document.getElementById('liveList').innerHTML = live.length ? Object.keys(byBoard).map(bd =>
-    `<div class="m" style="margin:10px 0 6px;font-weight:800">${boardLabel(bd)} (${byBoard[bd].length})</div>` +
+    `<div class="m" style="margin:10px 0 6px;font-weight:800;color:var(--mut);font-size:13px">${boardLabel(bd)} (${byBoard[bd].length})</div>` +
     byBoard[bd].sort((a, b) => b.amount - a.amount).map(b => `
     <div class="row" style="align-items:center">
       <div class="info">
@@ -306,7 +649,6 @@ function renderLive() {
     </div>`).join('')
   ).join('') : '<div class="empty">—</div>';
 }
-
 function renderSeeds() {
   const seeds = allBids.filter(b => b.tid === 'SEED').sort((a, b) => b.amount - a.amount);
   document.getElementById('seedList').innerHTML = seeds.length ? seeds.map(b => `
@@ -318,7 +660,17 @@ function renderSeeds() {
       <div class="acts"><button class="del" onclick="removeBid('${b.id}')">🗑️</button></div>
     </div>`).join('') : '<div class="empty">Koi seed nahi — sab saaf! 🎉</div>';
 }
-
+function exportCSV() {
+  const rows = [['Date', 'ID', 'Board', 'Handle', 'Challenger', 'Amount (Rs)', 'Status', 'TID', 'Country', 'City', 'Link']];
+  allBids.slice().sort((a, b) => a.t - b.t).forEach(b => rows.push([new Date(b.t).toISOString(), b.id, boardName(b.board), b.handle || '', b.bidder || '', b.amount || 0, b.status || '', b.tid || '', countryName(b.country), b.city || '', b.link || '']));
+  const csv = rows.map(r => r.map(x => '"' + String(x).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
+  a.download = 'topranksm-claims.csv';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast('📥 CSV download ho gaya!');
+}
 async function editBid(id) {
   const b = allBids.find(x => x.id === id);
   if (!b) return;
@@ -333,7 +685,6 @@ async function editBid(id) {
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
-
 async function removeAllSeeds() {
   const n = allBids.filter(b => b.tid === 'SEED').length;
   if (!n) return toast('Koi seed nahi hai 🎉');
@@ -346,7 +697,6 @@ async function removeAllSeeds() {
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
-
 async function approveBid(id) {
   try {
     const { error } = await supa.from('bids').update({ status: 'live' }).eq('id', id);
@@ -365,30 +715,33 @@ async function rejectBid(id) {
   } catch (e) { toast('❌ ' + e.message); }
 }
 async function removeBid(id) {
-  if (!confirm('Ye LIVE claim delete karni hai? Site se har jagah hat jayegi!')) return;
+  if (!confirm('Ye entry delete karni hai? Site se har jagah hat jayegi!')) return;
   try {
     const { error } = await supa.from('bids').delete().eq('id', id);
     if (error) throw error;
-    toast('🗑️ Claim delete ho gayi');
+    toast('🗑️ Delete ho gayi');
     loadBids();
   } catch (e) { toast('❌ ' + e.message); }
 }
 
+/* ================= STATS + SEASON ================= */
 async function loadStats() {
   if (!supa) return;
   const rb = document.getElementById('refreshBtn');
   if (rb) rb.textContent = '⏳ Loading…';
   await loadBids();
+  let todayV = null, online = null;
   try {
     const { count: total } = await supa.from('visits').select('id', { count: 'exact', head: true });
     const day = new Date(); day.setHours(0, 0, 0, 0);
     const { count: today } = await supa.from('visits').select('id', { count: 'exact', head: true }).gte('created_at', day.toISOString());
     const twoMin = new Date(Date.now() - 2 * 60 * 1000).toISOString();
-    const { count: online } = await supa.from('presence').select('session_id', { count: 'exact', head: true }).gte('last_seen', twoMin);
-    document.getElementById('stOnline').textContent = online == null ? '—' : online;
+    const { count: onl } = await supa.from('presence').select('session_id', { count: 'exact', head: true }).gte('last_seen', twoMin);
+    todayV = today; online = onl;
+    document.getElementById('stOnline').textContent = onl == null ? '—' : onl;
     document.getElementById('stToday').textContent = today == null ? '—' : today;
     document.getElementById('stAll').textContent = total == null ? '—' : total;
-  } catch (e) { toast('❌ Stats error'); }
+  } catch (e) {}
   const live = allBids.filter(b => b.status === 'live');
   const pend = allBids.filter(b => b.status === 'pending');
   document.getElementById('stLive').textContent = live.length;
@@ -396,10 +749,20 @@ async function loadStats() {
   const tv = live.reduce((s, b) => s + Number(b.amount || 0), 0);
   document.getElementById('stValue').textContent = 'Rs ' + tv.toLocaleString();
   const big = live.slice().sort((a, b) => b.amount - a.amount)[0];
-  document.getElementById('stBig').innerHTML = big ? `👑 Biggest: <b>${esc(big.handle)}</b> — <span class="amt">${fmtMoney(big.amount)}</span> ${boardLabel(big.board)}` : '—';
+  const bigTxt = big ? `👑 Biggest: <b>${esc(big.handle)}</b> — <span class="amt">${fmtMoney(big.amount)}</span> ${boardLabel(big.board)}` : '—';
+  document.getElementById('stBig').innerHTML = bigTxt;
   const bc = {}; live.forEach(b => { bc[b.board] = (bc[b.board] || 0) + 1; });
   const parts = BOARDS.filter(x => bc[x.id]).map(x => bicon(x) + bc[x.id]);
   document.getElementById('stBoards').innerHTML = parts.length ? '📋 ' + parts.join(' • ') : '—';
+  const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+  const todayClaims = allBids.filter(b => b.t >= dayStart.getTime() && b.status !== 'blocked').length;
+  document.getElementById('hPend').textContent = pend.length;
+  document.getElementById('hToday').textContent = todayClaims;
+  document.getElementById('hLive').textContent = live.length;
+  document.getElementById('hValue').textContent = 'Rs ' + tv.toLocaleString();
+  document.getElementById('hOnline').textContent = online == null ? '—' : online;
+  document.getElementById('hVis').textContent = todayV == null ? '—' : todayV;
+  document.getElementById('hBig').innerHTML = bigTxt;
   try {
     const { data } = await supa.from('settings').select('*');
     const gv = k => ((data || []).find(r => r.key === k) || {}).value;
@@ -408,9 +771,36 @@ async function loadStats() {
     document.getElementById('stSeason').innerHTML = `🗓️ Season <b>${esc(sn)}</b> • ends <b>${se ? new Date(se).toLocaleDateString('en-GB') : '—'}</b> • <b>${days}</b> din baqi`;
   } catch (e) {}
   if (rb) rb.textContent = '🔄 Refresh stats';
-  toast('✅ Stats refresh ho gaye!');
+}
+async function loadSeason() {
+  if (!supa) return;
+  try {
+    const { data } = await supa.from('settings').select('*');
+    const gv = k => ((data || []).find(r => r.key === k) || {}).value;
+    const sn = gv('season') || '1', se = gv('season_end');
+    const days = se ? Math.max(0, Math.ceil((new Date(se).getTime() - Date.now()) / 864e5)) : '—';
+    document.getElementById('seasonInfo').innerHTML = `🗓️ Abhi <b>Season ${esc(sn)}</b> chal raha hai • Khatam: <b>${se ? new Date(se).toLocaleDateString('en-GB') : '—'}</b> • <b>${days} din</b> baqi hain.<br>Season khatam hone par har board ke champions khud-ba-khud Hall of Fame me chale jate hain aur boards reset ho jate hain.`;
+  } catch (e) { document.getElementById('seasonInfo').textContent = '—'; }
+  try {
+    const { data } = await supa.from('hall_of_fame').select('*');
+    const rows = (data || []).slice().sort((a, b) => (b.season - a.season) || (b.amount - a.amount));
+    document.getElementById('hofList').innerHTML = rows.length ? rows.map(r => `
+      <div class="row" style="align-items:center">
+        <div class="info">
+          <div class="h">👑 ${esc(r.handle || '—')}</div>
+          <div class="m">Season ${esc(r.season || '?')} • ${boardLabel(r.board)} • <span class="amt">${fmtMoney(r.amount || 0)}</span>${r.country ? ' • ' + countryFlag(r.country) + ' ' + esc(countryName(r.country)) : ''}</div>
+        </div>
+      </div>`).join('') : '<div class="empty">Abhi koi champion nahi — pehla season khatam hone par champions yahan ayenge 🏆</div>';
+  } catch (e) { document.getElementById('hofList').innerHTML = '<div class="empty">Hall of Fame abhi khali hai</div>'; }
 }
 
+/* ================= PIN ================= */
+function togglePinLock() {
+  const on = document.getElementById('pinOnToggle').checked;
+  store.set('trs_pin_on', on ? '1' : '0');
+  if (on) store.set('trs_pin_ok_uid', '');
+  toast(on ? '🔢 PIN lock ON ho gaya (agle login par mangega)' : 'PIN lock OFF ho gaya');
+}
 function changePin() {
   const v = document.getElementById('newPin').value.trim();
   if (v.length < 4) return toast('PIN kam se kam 4 digits ka ho!');
@@ -419,6 +809,7 @@ function changePin() {
   toast('✅ PIN change ho gaya!');
 }
 
+initAuth();
 </script>
 </body>
 </html>

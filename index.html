@@ -1381,11 +1381,24 @@ function restrictedHit(txt) {
   }
   return '';
 }
+let _lastBlockKey = '';
+function logBlockedAttempt(link, handle, hit) {
+  try {
+    if (!window.supa) return;
+    const board = (document.getElementById('bidBoard') || {}).value || '';
+    const id = 'TR' + Math.floor(100000 + Math.random() * 900000);
+    supa.from('bids').insert({ id: id, board: board, handle: handle || '', link: link || '', amount: 0, bidder: '', t: Date.now(), status: 'blocked', tid: 'RESTRICTED:' + hit, country: '', city: '' }).then(() => {}, () => {});
+  } catch (e) {}
+}
 function validateRestricted() {
   const lEl = document.getElementById('bidLink'), hEl = document.getElementById('bidHandle');
   const hit = restrictedHit(lEl ? lEl.value : '') || restrictedHit(hEl ? hEl.value : '');
   const w = document.getElementById('restrictedWarn');
   if (w) w.style.display = hit ? 'block' : 'none';
+  if (hit) {
+    const key = hit + '|' + (lEl ? lEl.value : '') + '|' + (hEl ? hEl.value : '');
+    if (key !== _lastBlockKey) { _lastBlockKey = key; logBlockedAttempt(lEl ? lEl.value : '', hEl ? hEl.value : '', hit); }
+  } else _lastBlockKey = '';
   ['checkoutBtn','confirmBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.disabled = !!hit; b.style.opacity = hit ? '.45' : ''; b.style.pointerEvents = hit ? 'none' : ''; } });
   return !hit;
 }
