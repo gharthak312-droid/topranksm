@@ -1363,8 +1363,9 @@ function avatar(b, px) {
   return `<span class="ava-fb" style="width:${s}px;height:${s}px;font-size:${Math.round(s / 2.2)}px">${ch}</span>`;
 }
 
-const BLOCKED_DOMAINS = ['pornhub.com','xvideos.com','xnxx.com','xhamster.com','redtube.com','youporn.com','brazzers.com','onlyfans.com','chaturbate.com','stripchat.com','bongacams.com','myfreecams.com','livejasmin.com','spankbang.com','porntrex.com','bet365.com','1xbet.com','pokerstars.com','betfair.com','pinnacle.com','bovada.com','stake.com','draftkings.com','fanduel.com','betway.com','parimatch.com','melbet.com','888casino.com','williamhill.com','ladbrokes.com','ggpoker.com','partypoker.com','gunbroker.com','armslist.com','grabagun.com','budsgunshop.com','guns.com','cheaperthandirt.com','gunprime.com'];
-const BLOCKED_WORDS = ['porn','xxx','casino','poker','gambling','betting','sexcam','escort','roulette','blackjack','firearms','gunshop','ponzi','hyip','onlyfans'];
+const BLOCKED_DOMAINS = ['pornhub.com','xvideos.com','xnxx.com','xhamster.com','redtube.com','youporn.com','brazzers.com','onlyfans.com','chaturbate.com','stripchat.com','bongacams.com','myfreecams.com','livejasmin.com','spankbang.com','porntrex.com','eporner.com','tube8.com','pornhd.com','keezmovies.com','tnaflix.com','hclips.com','youjizz.com','drtuber.com','fuq.com','bet365.com','1xbet.com','pokerstars.com','betfair.com','pinnacle.com','bovada.com','stake.com','draftkings.com','fanduel.com','betway.com','parimatch.com','melbet.com','888casino.com','williamhill.com','ladbrokes.com','ggpoker.com','partypoker.com','mostbet.com','dafabet.com','unibet.com','bwin.com','22bet.com','betwinner.com','bc.game','rollbit.com','gg.bet','gunbroker.com','armslist.com','grabagun.com','budsgunshop.com','guns.com','cheaperthandirt.com','gunprime.com','kygunco.com','deguns.net','eurooptic.com'];
+const BLOCKED_WORDS = ['fuck','fucking','porn','porno','xxx','hentai','milf','boobs','dick','cock','pussy','anal','erotic','nude','nudes','naked','hardcore','camgirl','camgirls','sexcam','escort','onlyfans','sex','sexy','casino','poker','gambling','betting','roulette','blackjack','baccarat','slots','slot','jackpot','sportsbook','bookmaker','bookie','satta','matka','lottery','lotto','craps','rummy','jua','firearms','gunshop','rifle','rifles','shotgun','pistol','handgun','ammo','armory','ponzi','hyip','doubler','pyramid'];
+const STRONG_SUBSTR = ['fuck','porn','xxx','casino','hentai','onlyfans','sexcam','escort','ponzi'];
 function restrictedHit(txt) {
   if (!txt) return '';
   const s = String(txt).toLowerCase().trim();
@@ -1372,23 +1373,15 @@ function restrictedHit(txt) {
   try { host = new URL(s.startsWith('http') ? s : 'https://' + s).hostname; } catch (e) { host = s.split('/')[0]; }
   host = host.replace(/^www\./, '').replace(/^@/, '');
   for (const d of BLOCKED_DOMAINS) { if (host === d || host.endsWith('.' + d)) return d; }
-  const labels = host.split(/[.\-_]/).filter(Boolean);
-  for (const l of labels) {
-    if (/^bet\d/.test(l) || l === 'bet') return 'betting';
+  const tokens = s.split(/[^a-z0-9]+/).filter(Boolean);
+  for (const l of tokens) {
+    if (/^bet\d/.test(l) || l === 'bet' || /(bet\d|\dbet)/.test(l)) return 'betting';
     if (l === 'guns' || l === 'gun') return 'weapons';
     if (l.includes('sex') && !['essex','sussex','middlesex'].includes(l) && l.length <= 8) return 'adult';
-    for (const w of BLOCKED_WORDS) { if (l === w || (w.length >= 4 && l.includes(w))) return w; }
+    for (const w of STRONG_SUBSTR) { if (l.includes(w)) return w; }
+    for (const w of BLOCKED_WORDS) { if (l === w || (w.length >= 5 && l.includes(w))) return w; }
   }
   return '';
-}
-let _lastBlockKey = '';
-function logBlockedAttempt(link, handle, hit) {
-  try {
-    if (!window.supa) return;
-    const board = (document.getElementById('bidBoard') || {}).value || '';
-    const id = 'TR' + Math.floor(100000 + Math.random() * 900000);
-    supa.from('bids').insert({ id: id, board: board, handle: handle || '', link: link || '', amount: 0, bidder: '', t: Date.now(), status: 'blocked', tid: 'RESTRICTED:' + hit, country: '', city: '' }).then(() => {}, () => {});
-  } catch (e) {}
 }
 function validateRestricted() {
   const lEl = document.getElementById('bidLink'), hEl = document.getElementById('bidHandle');
