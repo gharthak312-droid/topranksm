@@ -144,6 +144,7 @@
         <h1>TopRankSM <span style="color:var(--gold)">Admin</span></h1>
         <div class="sub" style="margin:0" id="hdrEmail">—</div>
       </div>
+      <button class="hbtn" id="curBtn" onclick="toggleCur()" title="Currency: $ / Rs">Rs</button>
       <button class="hbtn" id="langBtnD" onclick="toggleAdminLang()">UR</button>
       <button class="hbtn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
       <button class="hbtn" onclick="doLogout()">🚪 Logout</button>
@@ -385,6 +386,9 @@ applyTheme(store.get('trs_admin_theme', 'light'));
 
 let allBids = [];
 let authUser = null;
+let aCur = store.get('trs_admin_cur', 'USD'); if (aCur !== 'PKR') aCur = 'USD';
+function updCurBtn() { const b = document.getElementById('curBtn'); if (b) b.textContent = aCur === 'USD' ? 'Rs' : '$'; }
+function toggleCur() { aCur = aCur === 'USD' ? 'PKR' : 'USD'; store.set('trs_admin_cur', aCur); updCurBtn(); if (authUser) { loadBids(); loadStats(); } }
 
 const BOARDS = [
   { id:'tiktok', name:'TikTok', icon:'🎵', logo:'tiktok' }, { id:'facebook', name:'Facebook', icon:'📘', logo:'facebook' },
@@ -482,7 +486,7 @@ const countryFlag = c => {
 };
 const countryName = c => (COUNTRIES.find(x => x.c === c) || {}).n || c || '';
 
-const fmtMoney = a => { const n = Number(a); const usd = (n / 280); return 'Rs ' + n.toLocaleString() + (usd >= 1 ? ' (≈$' + (usd % 1 === 0 ? usd.toFixed(0) : usd.toFixed(2)) + ')' : ''); };
+const fmtMoney = a => { const n = Number(a) || 0; const usd = n / 280; const usdTxt = '$' + (usd % 1 === 0 ? usd.toFixed(0) : usd.toFixed(2)); if (aCur === 'USD') return usdTxt + ' (≈ Rs ' + n.toLocaleString() + ')'; return 'Rs ' + n.toLocaleString() + (usd >= 1 ? ' (≈' + usdTxt + ')' : ''); };
 const ago = ts => { const s = Math.floor((Date.now() - ts) / 1000); if (s < 60) return s + 's ago'; const m = Math.floor(s / 60); if (m < 60) return m + 'm ago'; const h = Math.floor(m / 60); if (h < 24) return h + 'h ago'; return Math.floor(h / 24) + 'd ago'; };
 const esc = s => String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 2500); }
@@ -752,8 +756,8 @@ function renderSeeds() {
     </div>`).join('') : '<div class="empty">Koi seed nahi — sab saaf! 🎉</div>';
 }
 function exportCSV() {
-  const rows = [['Date', 'ID', 'Board', 'Handle', 'Challenger', 'Amount (Rs)', 'Status', 'TID', 'Country', 'City', 'Link']];
-  allBids.slice().sort((a, b) => a.t - b.t).forEach(b => rows.push([new Date(b.t).toISOString(), b.id, boardName(b.board), b.handle || '', b.bidder || '', b.amount || 0, b.status || '', b.tid || '', countryName(b.country), b.city || '', b.link || '']));
+  const rows = [['Date', 'ID', 'Board', 'Handle', 'Challenger', 'Amount (Rs)', 'Amount (USD)', 'Status', 'TID', 'Country', 'City', 'Link']];
+  allBids.slice().sort((a, b) => a.t - b.t).forEach(b => rows.push([new Date(b.t).toISOString(), b.id, boardName(b.board), b.handle || '', b.bidder || '', b.amount || 0, ((Number(b.amount) || 0) / 280).toFixed(2), b.status || '', b.tid || '', countryName(b.country), b.city || '', b.link || '']));
   const csv = rows.map(r => r.map(x => '"' + String(x).replace(/"/g, '""') + '"').join(',')).join('\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\ufeff' + csv], { type: 'text/csv' }));
@@ -838,7 +842,7 @@ async function loadStats() {
   document.getElementById('stLive').textContent = live.length;
   document.getElementById('stPend').textContent = pend.length;
   const tv = live.reduce((s, b) => s + Number(b.amount || 0), 0);
-  document.getElementById('stValue').textContent = 'Rs ' + tv.toLocaleString();
+  document.getElementById('stValue').textContent = fmtMoney(tv);
   const big = live.slice().sort((a, b) => b.amount - a.amount)[0];
   const bigTxt = big ? `👑 Biggest: <b>${esc(big.handle)}</b> — <span class="amt">${fmtMoney(big.amount)}</span> ${boardLabel(big.board)}` : '—';
   document.getElementById('stBig').innerHTML = bigTxt;
@@ -850,7 +854,7 @@ async function loadStats() {
   document.getElementById('hPend').textContent = pend.length;
   document.getElementById('hToday').textContent = todayClaims;
   document.getElementById('hLive').textContent = live.length;
-  document.getElementById('hValue').textContent = 'Rs ' + tv.toLocaleString();
+  document.getElementById('hValue').textContent = fmtMoney(tv);
   document.getElementById('hOnline').textContent = online == null ? '—' : online;
   document.getElementById('hVis').textContent = todayV == null ? '—' : todayV;
   document.getElementById('hBig').innerHTML = bigTxt;
@@ -901,6 +905,7 @@ function changePin() {
 }
 
 applyAdminLang();
+updCurBtn();
 initAuth();
 </script>
 </body>
