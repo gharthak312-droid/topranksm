@@ -162,17 +162,25 @@
   .rbid b { display:inline-block; font-size:14.5px; font-weight:800; color:#f5b301; background:transparent; padding:5px 13px; border-radius:20px; letter-spacing:-.2px; white-space:nowrap; border:1.5px solid #111; }
   .rbid button { margin-top:6px; background:transparent; color:var(--gold); border:1.5px solid var(--gold); padding:6px 13px; border-radius:9px; font-weight:800; font-size:12px; cursor:pointer; }
   @media (max-width:560px) {
-    .rank-row { gap:8px; padding:11px 10px; }
-    .rnum { min-width:38px; height:38px; font-size:13px; }
+    .page { padding-left:10px; padding-right:10px; }
+    .card { padding:12px; }
+    .rank-row { gap:7px; padding:11px 8px; }
+    .rnum { min-width:36px; height:36px; font-size:13px; }
     .rank-row .ava, .rank-row .ava-fb { width:28px !important; height:28px !important; }
     .rinfo .h { white-space:nowrap; overflow:hidden; text-overflow:clip; font-size:13.5px; letter-spacing:-.2px; }
+    .rinfo .bd { font-size:11px; letter-spacing:-.3px; }
     .rbid b { font-size:13px; padding:4px 10px; }
-    .rbid button { font-size:11px; padding:5px 10px; margin-top:5px; }
+    .rbid button { font-size:9.5px; padding:4px 6px; margin-top:5px; }
   }
   @media (max-width:380px) {
-    .rnum { min-width:34px; height:34px; }
-    .rank-row .ava, .rank-row .ava-fb { width:26px !important; height:26px !important; }
+    .rnum { min-width:32px; height:32px; }
+    .rank-row { gap:5px; padding-left:7px; padding-right:7px; }
+    .rank-row .ava, .rank-row .ava-fb { width:24px !important; height:24px !important; }
     .rinfo .h { font-size:12.5px; }
+    .rinfo .bd { font-size:10px; }
+    .page { padding-left:8px; padding-right:8px; }
+    .card { padding:10px; }
+    .rbid button { font-size:9px; padding:4px 5px; }
   }
   label { display:block; font-size:13px; font-weight:600; color:var(--mut); margin:12px 0 5px; }
   .req { color:#e5484d; font-weight:800; }
