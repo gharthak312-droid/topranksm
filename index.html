@@ -168,16 +168,22 @@
     .rnum { min-width:36px; height:36px; font-size:13px; }
     .rank-row .ava, .rank-row .ava-fb { width:28px !important; height:28px !important; }
     .rinfo .h { white-space:nowrap; overflow:hidden; text-overflow:clip; font-size:13.5px; letter-spacing:-.2px; }
-    .rinfo .bd { font-size:11px; letter-spacing:-.3px; }
+    .rinfo .bd { font-size:11.5px; letter-spacing:-.2px; }
     .rbid b { font-size:13px; padding:4px 10px; }
     .rbid button { font-size:9.5px; padding:4px 6px; margin-top:5px; }
+    .rank-row { flex-wrap:wrap; }
+    .rank-row .rinfo { display:contents; }
+    .rank-row .rinfo .h { order:3; flex:1 1 auto; min-width:0; }
+    .rank-row .rbid { order:4; }
+    .rank-row .rinfo .bd { order:5; flex:0 0 100%; margin-top:7px; }
+    .rank-row .rinfo .m { order:6; flex:0 0 100%; }
   }
   @media (max-width:380px) {
     .rnum { min-width:32px; height:32px; }
     .rank-row { gap:5px; padding-left:7px; padding-right:7px; }
     .rank-row .ava, .rank-row .ava-fb { width:24px !important; height:24px !important; }
     .rinfo .h { font-size:12.5px; }
-    .rinfo .bd { font-size:10px; }
+    .rinfo .bd { font-size:11px; }
     .page { padding-left:8px; padding-right:8px; }
     .card { padding:10px; }
     .rbid button { font-size:9px; padding:4px 5px; }
