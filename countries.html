@@ -10,6 +10,13 @@
 <meta property="og:description" content="TopRankSM challengers by country: live claim counts, top challengers and top cities from all over the world.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://topranksm.com/countries.html">
+<meta property="og:image" content="https://topranksm.com/og-image%20(1).jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Countries — TopRankSM">
+<meta name="twitter:description" content="TopRankSM challengers by country: live claim counts, top challengers and top cities from all over the world.">
+<meta name="twitter:image" content="https://topranksm.com/og-image%20(1).jpg">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -80,7 +87,7 @@ api('claims?select=country,city,amount,handle&status=eq.live&limit=2000').then(f
   var list=Object.keys(by).map(function(k){return {name:k,v:by[k]}}).sort(function(a,b){return b.v.n-a.v.n || b.v.amt-a.v.amt});
   var el=document.getElementById('ctyList');
   if(!list.length){ el.innerHTML='<div class="empty">No claims yet — your country could be first.</div>'; return; }
-  el.innerHTML=list.map(function(x,i){ var cc=CMAP[x.name]; var flag=cc? '<img class="flagimg" src="https://flagcdn.com/w40/'+cc+'.png" onerror="this.style.display=\'none\'">' : '';
+  el.innerHTML=list.map(function(x,i){ var cc=CMAP[x.name]; var flag=cc? '<img class="flagimg" src="https://flagcdn.com/w40/'+cc+'.png" alt="'+esc(x.name)+' flag" onerror="this.style.display=\'none\'">' : '';
     var cities=Object.keys(x.v.cities).sort(function(a,b){return x.v.cities[b]-x.v.cities[a]}).slice(0,3).map(function(cn){return '<span class="chip">'+esc(cn)+' · '+x.v.cities[cn]+'</span>'}).join('');
     return '<div class="row"><div class="rk">#'+(i+1)+'</div><div><div class="h">'+flag+esc(x.name)+'</div><div class="m">'+x.v.n+' claims · top: '+esc(x.v.top)+' ('+usd(x.v.topAmt)+')</div><div>'+cities+'</div></div><div class="amt">'+usd(x.v.amt)+'</div></div>'; }).join('');
 }).catch(function(){document.getElementById('ctyList').innerHTML='<div class="empty">Could not load right now.</div>';});

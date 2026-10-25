@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TopRankSM — Claim for #1 on the Public Leaderboard</title>
 <meta name="description" content="TopRankSM — Claim for #1 on the Public Leaderboard. Starts at just $1 — claim the #1 spot on TikTok, Instagram, YouTube, X, Facebook & more. Money = Rank.">
 <link rel="canonical" href="https://topranksm.com/">
@@ -1400,7 +1400,7 @@ function onPicPick(e) {
     const w = img.width * sc, h = img.height * sc;
     ctx.drawImage(img, (S - w) / 2, (S - h) / 2, w, h);
     bidPic = c.toDataURL('image/jpeg', 0.72);
-    document.getElementById('picPrev').innerHTML = `<img src="${bidPic}" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--goldline)">`;
+    document.getElementById('picPrev').innerHTML = `<img src="${bidPic}" alt="Your profile picture preview" style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2px solid var(--goldline)">`;
     URL.revokeObjectURL(img.src);
   };
   img.src = URL.createObjectURL(f);
