@@ -2,7 +2,7 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>TopRankSM — Admin Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -47,6 +47,16 @@
   .empty { color:var(--mut); text-align:center; padding:20px; font-size:14px; }
   .statgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
   @media (max-width:560px){ .statgrid { grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){
+    body { padding:10px; }
+    h1 { font-size:20px; }
+    .card { padding:14px; }
+    .tabs { flex-wrap:wrap; overflow:visible; }
+    .tab { flex:1 1 22%; font-size:12px; padding:10px 6px; }
+    .row { flex-direction:column; }
+    .acts { flex-direction:row; flex-wrap:wrap; width:100%; }
+    .acts button { flex:1; white-space:nowrap; }
+  }
   .stat { background:var(--card2); border:1px solid var(--line); border-radius:12px; padding:14px 10px; text-align:center; }
   .stat .n { font-size:24px; font-weight:800; color:var(--gold); }
   .stat .l { font-size:11.5px; color:var(--mut); margin-top:4px; font-weight:700; }
