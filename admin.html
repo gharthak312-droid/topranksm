@@ -77,6 +77,8 @@
   html[data-theme="dark"] .amsg.err { background:#3a1d1d; color:#ff8f8f; border-color:#5a2b2b; }
   html[data-theme="dark"] .amsg.good { background:#0c2b20; color:#2ee6a8; border-color:#14532d; }
   .hdr { display:flex; align-items:center; gap:10px; margin-bottom:4px; }
+  .hdrbtns { display:flex; gap:10px; margin-bottom:10px; }
+  .hdrbtns .hbtn { flex:1; text-align:center; }
   .hdr .grow { flex:1; min-width:0; }
   .hbtn { background:var(--card2); border:1px solid var(--line); color:var(--txt); border-radius:10px; padding:9px 13px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; white-space:nowrap; }
   .chip { display:inline-block; font-size:11px; font-weight:800; padding:2px 8px; border-radius:99px; border:1px solid var(--line); background:var(--card); color:var(--mut); vertical-align:1px; }
@@ -157,6 +159,8 @@
         <h1>TopRankSM <span style="color:var(--gold)">Admin</span></h1>
         <div class="sub" style="margin:0" id="hdrEmail">—</div>
       </div>
+    </div>
+    <div class="hdrbtns">
       <button class="hbtn" id="curBtn" onclick="toggleCur()" title="Currency: $ / Rs">Rs</button>
       <button class="hbtn" id="langBtnD" onclick="toggleAdminLang()">UR</button>
       <button class="hbtn" id="themeBtn" onclick="toggleTheme()">🌙 Dark</button>
